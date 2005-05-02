@@ -1019,8 +1019,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 						case 1:
 						{
-								WORD	offset = mousex - x,
-										newpos;
+							WORD offset = mousex - x;
+							WORD newpos = 0;
 
 							if(mousex < x && data->DisplayPos)
 							{
