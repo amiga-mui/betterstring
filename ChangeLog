@@ -7,6 +7,8 @@ $Source$
 
 2005-05-03  Jens Langner <Jens.Langner@light-speed.de>
 
+    * mcc/HandleInput.c: fixed an uninitialized variable by integrating
+      the proposed patch of bug 1193352 from Georg Steger.
     * misc: integrated minor patches kindly provided by Gunther Nikl
       and modified sources to properly compile with gcc versions < 3.
 
