@@ -24,12 +24,10 @@
 #include <string.h>
 
 #include <clib/alib_protos.h>
-#include <proto/dos.h>
-#include <proto/exec.h>
 #include <proto/intuition.h>
-#include <proto/utility.h>
 #include <proto/muimaster.h>
-#include <libraries/mui.h>
+#include <proto/utility.h>
+#include <proto/dos.h>
 
 #include "BetterString_mcc.h"
 
@@ -172,7 +170,8 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
 			case MUIA_String_Integer:
 				tag->ti_Tag = TAG_IGNORE;
-				snprintf(IntegerString, 11, "%ld", ti_Data);
+				//snprintf(IntegerString, 11, "%ld", ti_Data);
+				sprintf(IntegerString, "%11ld", ti_Data);
 				ti_Data = (ULONG)IntegerString;
 				/* The missing break is intended! */
 

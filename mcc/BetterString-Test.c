@@ -20,12 +20,13 @@
 
 ***************************************************************************/
 
-#include <proto/exec.h>
-#include <proto/intuition.h>
-#include <proto/iffparse.h>
-#include <proto/muimaster.h>
 #include <libraries/asl.h>
 #include <libraries/mui.h>
+#include <libraries/iffparse.h>
+#include <clib/alib_protos.h>
+#include <proto/intuition.h>
+#include <proto/muimaster.h>
+#include <proto/exec.h>
 
 #include "BetterString_mcc.h"
 #include "private.h"

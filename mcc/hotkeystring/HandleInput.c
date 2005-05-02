@@ -39,6 +39,8 @@
 ULONG ConvertKey (struct IntuiMessage *imsg)
 {
 	struct InputEvent event;
+	UBYTE code = 0;
+
 	event.ie_NextEvent      = NULL;
 	event.ie_Class          = IECLASS_RAWKEY;
 	event.ie_SubClass       = 0;
@@ -46,7 +48,6 @@ ULONG ConvertKey (struct IntuiMessage *imsg)
 	event.ie_Qualifier      = 0; /* imsg->Qualifier; */
 	event.ie_EventAddress   = 0; /* (APTR *) *((ULONG *)imsg->IAddress); */
 
-	UBYTE code = 0;
 	return MapRawKey(&event, &code, 1, NULL), code;
 }
 

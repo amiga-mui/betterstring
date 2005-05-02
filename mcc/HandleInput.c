@@ -22,22 +22,15 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
 
 #include <clib/alib_protos.h>
 #include <clib/macros.h>
-#include <devices/clipboard.h>
-#include <devices/inputevent.h>
-#include <libraries/mui.h>
-#include <proto/dos.h>
-#include <proto/exec.h>
-#include <proto/keymap.h>
+#include <libraries/iffparse.h>
 #include <proto/intuition.h>
-#include <proto/iffparse.h>
-#include <proto/locale.h>
 #include <proto/muimaster.h>
-#include <proto/utility.h>
+#include <proto/keymap.h>
+#include <proto/locale.h>
+#include <proto/dos.h>
 
 #include "private.h"
 
@@ -424,10 +417,11 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 		{
 			if(data->Flags & FLG_Active)
 			{
+            BOOL input = TRUE;
+            
 				if(!(data->Flags & FLG_BlockEnabled))
 					data->BlockStart = data->BufferPos;
 
-				BOOL input = TRUE;
 				if(data->Flags & FLG_NoInput)
 				{
 					switch(msg->imsg->Code)

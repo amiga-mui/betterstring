@@ -20,11 +20,9 @@
 
 ***************************************************************************/
 
-#include <stdio.h>
 #include <string.h>
 
 #include <clib/alib_protos.h>
-#include <libraries/mui.h>
 #include <proto/intuition.h>
 #include <proto/muimaster.h>
 #include <proto/graphics.h>
@@ -75,7 +73,8 @@ void InitConfig (Object *obj, struct InstData *data)
 
 		while(src[c] != '/' && src[c] != '\0' && c < 32)
 		{
-			fontname[c-1] = src[c++];
+			fontname[c-1] = src[c];
+			++c;
 		}
 		strncpy(&fontname[c], ".font", 6);
 		StrToLong(&src[c+1], &c);

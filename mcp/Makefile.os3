@@ -25,7 +25,7 @@ CC    = m68k-amigaos-gcc
 STRIP = m68k-amigaos-strip
 RM    = rm -f
 RMDIR = rm -rf
-MKDIR	= mkdir
+MKDIR = mkdir
 CP    = cp
 FC    = flexcat
 
@@ -54,8 +54,6 @@ LDLIBS   = -lmui -ldebug -lamiga
 
 MCPTARGET = $(BINDIR)/BetterString.mcp
 PREFTARGET= $(BINDIR)/BetterString-Prefs
-
-M68KSTUBS = $(OBJDIR)/mccclass_68k.o
 
 MCPOBJS = $(OBJDIR)/library.o \
           $(OBJDIR)/locale.o \

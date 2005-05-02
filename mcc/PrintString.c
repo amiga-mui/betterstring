@@ -25,27 +25,26 @@
 
 #include <clib/alib_protos.h>
 #include <graphics/gfxmacros.h>
-#include <libraries/mui.h>
-#include <proto/graphics.h>
 #include <proto/intuition.h>
-#include <proto/muimaster.h>
+#include <proto/graphics.h>
 
 #include "private.h"
 
-VOID PrintString (struct IClass *cl, Object *obj)
+VOID PrintString(struct IClass *cl, Object *obj)
 {
-		struct InstData			*data			= (struct InstData *)INST_DATA(cl, obj);
-		struct RastPort		*oldrport	= muiRenderInfo(obj)->mri_RastPort;
-		struct RastPort		*rport		= &data->rport;
-		struct MUI_AreaData	*ad			= muiAreaData(obj);
-		struct TextFont		*font			= data->Font ? data->Font : ad->mad_Font;
-		STRPTR	contents = data->Contents;
-		WORD 		x=10, y=0, width, height,
-					crsr_x, crsr_width=0, crsr_color,
-					dst_x, dst_y, length, offset = 0, StrLength;
-		STRPTR	text;
-		BOOL		BlockEnabled = (data->Flags & FLG_BlockEnabled && data->BlockStart != data->BlockStop);
-		UWORD		Blk_Start, Blk_Width;
+	struct InstData			*data			= (struct InstData *)INST_DATA(cl, obj);
+	struct RastPort		*oldrport	= muiRenderInfo(obj)->mri_RastPort;
+	struct RastPort		*rport		= &data->rport;
+	struct MUI_AreaData	*ad			= muiAreaData(obj);
+	struct TextFont		*font			= data->Font ? data->Font : ad->mad_Font;
+	STRPTR contents = data->Contents;
+	WORD 	 x=10, y=0, width, height,
+			 crsr_x, crsr_width=0, crsr_color,
+			 dst_x, dst_y, length, offset = 0, StrLength;
+	STRPTR text;
+	BOOL	 BlockEnabled = (data->Flags & FLG_BlockEnabled && data->BlockStart != data->BlockStop);
+	UWORD	 Blk_Start, Blk_Width;
+	STRPTR fake_contents = NULL;
 
 	dst_x = ad->mad_Box.Left + ad->mad_addleft;
 	dst_y = ad->mad_Box.Top  + ad->mad_addtop;
@@ -54,11 +53,10 @@ VOID PrintString (struct IClass *cl, Object *obj)
 
 	StrLength = strlen(contents);
 
-	STRPTR fake_contents = NULL;
 	if(data->Flags & FLG_Secret && (fake_contents = (STRPTR)MyAllocPooled(data->Pool, StrLength+1)))
 	{
-		contents = fake_contents;
 		WORD strlength = StrLength;
+		contents = fake_contents;
 		contents[strlength] = '\0';
 		while(strlength--)
 			contents[strlength] = '*';
