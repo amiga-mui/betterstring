@@ -22,8 +22,6 @@
 
 #include <string.h>
 
-#include <clib/alib_protos.h>
-#include <exec/types.h>
 #include <proto/exec.h>
 
 #include "private.h"
@@ -37,10 +35,8 @@ void *MyAllocPooled(void *pool, unsigned long length)
     *mem = length+4;
     mem += 1;
 
-    return(mem);
   }
-  else
-    return(NULL);
+  return(mem);
 }
 
 void MyFreePooled(void *pool, void *mem)
@@ -59,13 +55,13 @@ APTR ExpandPool(APTR pool, APTR mem, ULONG extra)
 	ULONG length;
 
 	length = *(((ULONG *)mem)-1);
-	if(length <= strlen((STRPTR)mem)+extra+4)
+	if(length <= strlen((char *)mem)+extra+4)
 	{
 		APTR new_mem;
 
 		do
     {	
-      new_mem = MyAllocPooled(pool, strlen((STRPTR)mem)+extra+20);
+      new_mem = MyAllocPooled(pool, strlen((char *)mem)+extra+20);
     }
     while(!new_mem);
 		

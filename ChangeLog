@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $Source$
 
+2005-05-03  Jens Langner <Jens.Langner@light-speed.de>
+
+    * misc: integrated minor patches kindly provided by Gunther Nikl
+      and modified sources to properly compile with gcc versions < 3.
+
 2005-04-21  Jens Langner <Jens.Langner@light-speed.de>
 
     * initial LGPL release published at sf.net

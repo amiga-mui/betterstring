@@ -25,7 +25,7 @@ CC    = m68k-amigaos-gcc
 STRIP = m68k-amigaos-strip
 RM    = rm -f
 RMDIR = rm -rf
-MKDIR	= mkdir
+MKDIR = mkdir
 CP    = cp
 
 # Directories
@@ -39,7 +39,7 @@ WARN     = -W -Wall
 OPTFLAGS = -O3 -fomit-frame-pointer -funroll-loops
 DEBUG    = -DWITH_DEBUG -g -O0
 CFLAGS   = -noixemul -I. -I../mcp -I../includes -c $(CPU) $(WARN) $(OPTFLAGS) $(DEBUG)
-LDFLAGS  = -noixemul -nostartfiles
+LDFLAGS  = -noixemul -nostartfiles $(CPU)
 LDLIBS   = -lmui -ldebug
 
 # CPU and DEBUG can be defined outside, defaults to above
@@ -53,8 +53,6 @@ LDLIBS   = -lmui -ldebug
 
 MCCTARGET = $(BINDIR)/BetterString.mcc
 TESTTARGET= $(BINDIR)/BetterString-Test
-
-M68KSTUBS = $(OBJDIR)/mccclass_68k.o
 
 MCCOBJS = $(OBJDIR)/library.o \
           $(OBJDIR)/AllocBitMap.o \
@@ -121,7 +119,7 @@ $(OBJDIR)/library.o: library.c ../includes/mccheader.c BetterString_mcc.h \
 
 .PHONY: clean
 clean:
-	-$(RM) $(MCCTARGET) $(MCCTARGET).debug $(TESTTARGET) $(TESTTARGET).debug $(MCCOBJS) $(TESTOBJS) $(M68KSTUBS)
+	-$(RM) $(MCCTARGET) $(MCCTARGET).debug $(TESTTARGET) $(TESTTARGET).debug $(MCCOBJS) $(TESTOBJS)
 
 .PHONY: distclean
 distclean: clean

@@ -22,9 +22,11 @@
 
 #include <stdio.h>
 
+#include <clib/alib_protos.h>
 #include <exec/tasks.h>
 #include <exec/memory.h>
 #include <libraries/mui.h>
+#include <libraries/iffparse.h>
 #include <proto/dos.h>
 #include <proto/exec.h>
 #include <proto/muimaster.h>

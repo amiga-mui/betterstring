@@ -20,11 +20,11 @@
 
 ***************************************************************************/
 
-#include <proto/exec.h>
-#include <proto/graphics.h>
-#include <exec/libraries.h>
 #include <exec/memory.h>
+#include <exec/libraries.h>
 #include <graphics/gfxbase.h>
+#include <proto/graphics.h>
+#include <proto/exec.h>
 
 #include "SDI_compiler.h"
 

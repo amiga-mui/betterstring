@@ -20,6 +20,7 @@
 
 ***************************************************************************/
 
+#include <clib/alib_protos.h>
 #include <exec/tasks.h>
 #include <libraries/mui.h>
 #include <proto/exec.h>

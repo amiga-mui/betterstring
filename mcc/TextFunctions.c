@@ -20,10 +20,7 @@
 
 ***************************************************************************/
 
-#include <proto/diskfont.h>
-#include <proto/graphics.h>
 #include <graphics/text.h>
-#include <graphics/rastport.h>
 
 #include "SDI_compiler.h"
 

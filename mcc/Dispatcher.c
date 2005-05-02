@@ -23,15 +23,11 @@
 #include <string.h>
 
 #include <clib/alib_protos.h>
-#include <libraries/gadtools.h>
-#include <libraries/mui.h>
-#include <graphics/gfxbase.h>
-#include <proto/graphics.h>
-#include <proto/exec.h>
 #include <proto/intuition.h>
-#include <proto/locale.h>
 #include <proto/muimaster.h>
+#include <proto/graphics.h>
 #include <proto/utility.h>
+#include <proto/locale.h>
 
 #include "BetterString_mcc.h"
 #include "private.h"
@@ -178,14 +174,15 @@ ULONG Cleanup(struct IClass *cl, Object *obj, Msg msg)
 	return(DoSuperMethodA(cl, obj, msg));
 }
 
-ULONG	AskMinMax	(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
+ULONG	AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 {
-		struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-		WORD Height;
+	struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+   struct TextFont *font;
+	WORD Height;
 
 	DoSuperMethodA(cl, obj, (Msg)msg);
 
-	struct TextFont *font = data->Font ? data->Font : muiAreaData(obj)->mad_Font;
+	font = data->Font ? data->Font : muiAreaData(obj)->mad_Font;
 	Height = font->tf_YSize;
 	msg->MinMaxInfo->MinHeight += Height;
 	msg->MinMaxInfo->DefHeight += Height;
@@ -220,7 +217,7 @@ ULONG Show(struct IClass *cl, Object *obj, Msg msg)
 
 	width = ad->mad_Box.Width - ad->mad_subwidth;
 	height = font->tf_YSize;
-	depth = GfxBase->lib_Version >= 39 ? GetBitMapAttr(friendBMp, BMA_DEPTH) : friendBMp->Depth;
+	depth = ((struct Library *)GfxBase)->lib_Version >= 39 ? GetBitMapAttr(friendBMp, BMA_DEPTH) : friendBMp->Depth;
 
 	InitRastPort(&data->rport);
 	data->rport.BitMap = MUIG_AllocBitMap(width+40, height, depth, (ULONG)NULL, friendBMp);
