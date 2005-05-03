@@ -41,12 +41,12 @@ ULONG ConvertKey (struct IntuiMessage *imsg)
 	struct InputEvent event;
 	UBYTE code = 0;
 
-	event.ie_NextEvent      = NULL;
-	event.ie_Class          = IECLASS_RAWKEY;
-	event.ie_SubClass       = 0;
-	event.ie_Code           = imsg->Code;
-	event.ie_Qualifier      = 0; /* imsg->Qualifier; */
-	event.ie_EventAddress   = 0; /* (APTR *) *((ULONG *)imsg->IAddress); */
+	event.ie_NextEvent		= NULL;
+	event.ie_Class 			= IECLASS_RAWKEY;
+	event.ie_SubClass 		= 0;
+	event.ie_Code  			= imsg->Code;
+	event.ie_Qualifier		= 0; /* imsg->Qualifier; */
+	event.ie_EventAddress	= 0; /* (APTR *) *((ULONG *)imsg->IAddress); */
 
 	return MapRawKey(&event, &code, 1, NULL), code;
 }
@@ -77,7 +77,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 		ULONG qualifier = msg->imsg->Qualifier;
 		ULONG i;
 
-    for(i=0; qualifier_name[i]; i++)
+		for(i=0; qualifier_name[i]; i++)
 		{
 			if(qualifier & (1 << i))
 			{
@@ -96,7 +96,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 			UWORD code = msg->imsg->Code;
 			if(code >= 76 && code <= 89)
 			{
-				const STRPTR key_name[] =
+				const CONST_STRPTR key_name[] =
 				{
 					"up", "down", "right", "left",
 					"f1", "f2", "f3", "f4", "f5",
@@ -106,6 +106,38 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 			}
 			else switch(code)
 			{
+				#ifdef __MORPHOS__
+				case 0x47: strcat(buffer, "insert"); break;
+				case 0x48: strcat(buffer, "page_up"); break;
+				case 0x49: strcat(buffer, "page_down"); break;
+				case 0x4b: strcat(buffer, "f11"); break;
+				case 0x6b: strcat(buffer, "scrlock"); break;
+				case 0x6c: strcat(buffer, "prtscr"); break;
+				case 0x6d: strcat(buffer, "numlock"); break;
+				case 0x6e: strcat(buffer, "pause"); break;
+				case 0x6f: strcat(buffer, "f12"); break;
+				case 0x70: strcat(buffer, "home"); break;
+				case 0x71: strcat(buffer, "end"); break;
+				#elif __amigaos4__
+				case 0x47: strcat(buffer, "insert"); break;
+				case 0x48: strcat(buffer, "page_up"); break;
+				case 0x49: strcat(buffer, "page_down"); break;
+				case 0x4b: strcat(buffer, "f11"); break;
+				case 0x6b: strcat(buffer, "menu"); break;
+				case 0x6d: strcat(buffer, "prtscr"); break;
+				case 0x6e: strcat(buffer, "pause"); break;
+				case 0x6f: strcat(buffer, "f12"); break;
+				case 0x70: strcat(buffer, "home"); break;
+				case 0x71: strcat(buffer, "end"); break;
+				#endif
+
+				case 0x72: strcat(buffer, "media_stop"); break;
+				case 0x73: strcat(buffer, "media_play"); break;
+				case 0x74: strcat(buffer, "media_prev"); break;
+				case 0x75: strcat(buffer, "media_next"); break;
+				case 0x76: strcat(buffer, "media_rewind"); break;
+				case 0x77: strcat(buffer, "media_forward"); break;
+
 				case 95:
 					strcat(buffer, "help");
 				break;
