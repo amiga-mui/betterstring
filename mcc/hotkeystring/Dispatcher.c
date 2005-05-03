@@ -70,6 +70,23 @@ VOID Set (struct IClass *cl, Object *obj, struct opSet *msg)
 		if(data->Flags & FLG_Active)
 			set(_win(obj), MUIA_Window_DisableKeys, (data->Flags & FLG_Snoop) ? 0xffffff : 0);
 	}
+
+	if((tag = FindTagItem(MUIA_HotkeyString_IX, msg->ops_AttrList)))
+	{
+		struct InputXpression	*ix	= (struct InputXpression *)tag->ti_Data;
+		struct IntuiMessage		imsg;
+
+		if (ix && ix->ix_Class == IECLASS_RAWKEY)
+		{
+			struct MUIP_HandleEvent msg = { 0, &imsg, MUIKEY_NONE };
+
+			imsg.Class		= IECLASS_RAWKEY;
+			imsg.Code		= ix->ix_Code;
+			imsg.Qualifier	= ix->ix_Qualifier;
+
+			HandleInput(cl, obj, &msg);
+		}
+	}
 }
 
 extern char _VERSION, _REVISION;

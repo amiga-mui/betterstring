@@ -7,17 +7,21 @@ $Source$
 
 2005-05-03  Ilkka Lehtoranta <ilkleht@isoveli.org>
 
-	 * Added missing key codes for MorphOS and AmigaOS4 (may contain
-		wrong codes).
-	 * Added media keys.
+    * mcc/hotkeystring/HandleInput.c: Added missing key codes for MorphOS
+      and AmigaOS4 (may contain wrong codes).
+    * mcc/hotkeystring/HandleInput.c: Added media keys.
+    * mcc/hotkeystring/Dispatcher.c (OM_SET):
+      Added MUIA_HotkeyString_IX tag. Takes struct InputXpression as data
+      and sets a gadget contents accordingly.
+    * misc: Restored spaces to ChangeLog.
 
 2005-05-03  Jens Langner <Jens.Langner@light-speed.de>
 
-	 * mcc/HandleInput.c: fixed an uninitialized variable by integrating
+    * mcc/HandleInput.c: fixed an uninitialized variable by integrating
 		the proposed patch of bug 1193352 from Georg Steger.
-	 * misc: integrated minor patches kindly provided by Gunther Nikl
+    * misc: integrated minor patches kindly provided by Gunther Nikl
 		and modified sources to properly compile with gcc versions < 3.
 
 2005-04-21  Jens Langner <Jens.Langner@light-speed.de>
 
-	 * initial LGPL release published at sf.net
+    * initial LGPL release published at sf.net
