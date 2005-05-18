@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $Source$
 
+2005-05-19  Jens Langner <Jens.Langner@light-speed.de>
+
+    * mcc/TextFunctions.c: adapted sources to the already fixed function
+      equivalents used in TextEditor.mcc.
+
 2005-05-03  Ilkka Lehtoranta <ilkleht@isoveli.org>
 
     * mcc/hotkeystring/HandleInput.c: Added missing key codes for MorphOS
