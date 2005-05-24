@@ -47,6 +47,8 @@
 #define ClassInit
 #define ClassExit
 
+#define USE_UTILITYBASE
+
 struct Library *DiskfontBase = NULL;
 struct Library *KeymapBase = NULL;
 struct Library *LocaleBase = NULL;
