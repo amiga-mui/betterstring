@@ -47,6 +47,8 @@
 #define ClassInit
 #define ClassExit
 
+#define USE_UTILITYBASE
+
 #include "locale.h"
 
 #if defined(__amigaos4__) || defined(__MORPHOS__)
