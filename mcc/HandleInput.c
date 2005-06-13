@@ -26,6 +26,7 @@
 #include <clib/alib_protos.h>
 #include <clib/macros.h>
 #include <libraries/iffparse.h>
+#include <proto/graphics.h>
 #include <proto/intuition.h>
 #include <proto/muimaster.h>
 #include <proto/keymap.h>
@@ -80,21 +81,23 @@ VOID AddToUndo (struct InstData *data)
 
 WORD AlignOffset (Object *obj, struct InstData *data)
 {
-		struct MUI_AreaData	*ad	= muiAreaData(obj);
-		struct TextFont		*font	= data->Font ? data->Font : ad->mad_Font;
-		WORD	 width = ad->mad_Box.Width - ad->mad_subwidth;
-		WORD	 offset = 0;
+	struct MUI_AreaData	*ad	= muiAreaData(obj);
+	struct TextFont	*font	= data->Font ? data->Font : ad->mad_Font;
+	WORD	 width = ad->mad_Box.Width - ad->mad_subwidth;
+	WORD	 offset = 0;
 
 	if(data->Alignment != MUIV_String_Format_Left)
 	{
-			STRPTR	text = data->Contents+data->DisplayPos;
-			UWORD		StrLength = strlen(text);
-			UWORD		length, textlength, crsr_width;
+		STRPTR text = data->Contents+data->DisplayPos;
+		UWORD	StrLength = strlen(text);
+		UWORD	length, textlength, crsr_width;
+    struct TextExtent tExtend;
 
-		length = MyTextFit(font, text, StrLength, width, 1);
-		textlength = MyTextLength(font, text, length);
+    SetFont(&data->rport, font);
+		length = TextFit(&data->rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
+		textlength = TextLength(&data->rport, text, length);
 
-		crsr_width = (data->Flags & FLG_Active) ? MyTextLength(font, (*(data->Contents+data->BufferPos) == '\0') ? "n" : data->Contents+data->BufferPos, 1) : 0;
+		crsr_width = (data->Flags & FLG_Active) ? TextLength(&data->rport, (*(data->Contents+data->BufferPos) == '\0') ? "n" : data->Contents+data->BufferPos, 1) : 0;
 		if(crsr_width && !BlockEnabled(data) && data->BufferPos == data->DisplayPos+StrLength)
 		{
 			textlength += crsr_width;
@@ -884,10 +887,13 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 					if(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height)
 					{
-							WORD offset = msg->imsg->MouseX - x;
+    				WORD offset = msg->imsg->MouseX - x;
+            struct TextExtent tExtend;
 
 						offset -= AlignOffset(obj, data);
-						data->BufferPos = data->DisplayPos + MyTextFit(Font, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, offset+1, 1);
+		
+            SetFont(&data->rport, Font);
+				    data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
 
 						if(DoubleClick(data->StartSecs, data->StartMicros, msg->imsg->Seconds, msg->imsg->Micros))
 								data->ClickCount++;
@@ -972,11 +978,14 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 #endif
 				if((msg->imsg->Class == IDCMP_MOUSEMOVE || msg->imsg->Class == IDCMP_INTUITICKS) && data->Flags & FLG_Active)
 				{
-						WORD x, width, mousex;
+					WORD x, width, mousex;
+          struct TextExtent tExtend;
 
 					x = ad->mad_Box.Left + ad->mad_addleft;
 					mousex = msg->imsg->MouseX - AlignOffset(obj, data);
 					width = ad->mad_Box.Width - ad->mad_subwidth;
+
+          SetFont(&data->rport, Font);
 
 					switch(data->ClickCount)
 					{
@@ -995,7 +1004,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 									if(data->DisplayPos < StringLength)
 									{
 										data->DisplayPos++;
-										data->BufferPos = data->DisplayPos + MyTextFit(Font, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, ad->mad_Box.Width - ad->mad_subwidth, 1);
+										data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, ad->mad_Box.Width - ad->mad_subwidth, Font->tf_YSize);
 									}
 									else
 									{
@@ -1009,7 +1018,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 /*									if(offset < 0)
 										data->BufferPos = 0;
 									else
-*/									data->BufferPos = data->DisplayPos + MyTextFit(Font, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, offset+1, 1);
+*/									data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
 								}
 							}
 							data->BlockStop = data->BufferPos;
@@ -1031,7 +1040,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 							{
 //								offset -= AlignOffset(obj, data);
 								if(offset > 0)
-									newpos = data->DisplayPos + MyTextFit(Font, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, offset+1, 1);
+									newpos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
 							}
 
 							if(newpos >= data->BlockStart)

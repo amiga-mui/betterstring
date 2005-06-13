@@ -177,7 +177,7 @@ ULONG Cleanup(struct IClass *cl, Object *obj, Msg msg)
 ULONG	AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 {
 	struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-   struct TextFont *font;
+  struct TextFont *font;
 	WORD Height;
 
 	DoSuperMethodA(cl, obj, (Msg)msg);
@@ -190,7 +190,10 @@ ULONG	AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 
 	if(data->Width)
 	{
-		ULONG width = data->Width * MyTextLength(font, "n", 1);
+		ULONG width;
+
+    SetFont(&data->rport, font);
+    width = data->Width * TextLength(&data->rport, "n", 1);
 
 		msg->MinMaxInfo->MinWidth  += width;
 		msg->MinMaxInfo->DefWidth  += width;
@@ -202,7 +205,8 @@ ULONG	AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 		msg->MinMaxInfo->DefWidth  += 100;
 		msg->MinMaxInfo->MaxWidth  += MBQ_MUI_MAXMAX;
 	}
-	return(0);
+	
+  return(0);
 }
 
 ULONG Show(struct IClass *cl, Object *obj, Msg msg)
