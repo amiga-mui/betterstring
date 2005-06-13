@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $Source$
 
+2005-06-14  Jens Langner <Jens.Langner@light-speed.de>
+
+    * mcc: fixed a bunch of compiler warnings
+
 2005-06-13  Jens Langner <Jens.Langner@light-speed.de>
 
     * mcc/TextFunctions.c: replace our own MyTextLength/MyTextFit with the 

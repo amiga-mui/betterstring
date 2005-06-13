@@ -32,7 +32,7 @@
 #include "BetterString_mcp.h"
 #include "private.h"
 
-ULONG GetCol (Object *obj, ULONG item, struct MUI_PenSpec *defaultcol, struct InstData *data)
+ULONG GetCol (Object *obj, ULONG item, struct MUI_PenSpec *defaultcol, UNUSED struct InstData *data)
 {
 	ULONG res;
 	struct MUI_PenSpec *spec;
@@ -66,10 +66,10 @@ void InitConfig (Object *obj, struct InstData *data)
 
 	if(!(data->Flags & FLG_OwnFont) && DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Font, &setting))
 	{
-			STRPTR	src = (STRPTR)setting;
-			UBYTE		fontname[40];
-			struct	TextAttr myfont = { fontname, 8, FS_NORMAL, 0 };
-			LONG		c = 0;
+		STRPTR	src = (STRPTR)setting;
+		char fontname[40];
+		struct TextAttr myfont = { fontname, 8, FS_NORMAL, 0 };
+		LONG c = 0;
 
 		while(src[c] != '/' && src[c] != '\0' && c < 32)
 		{

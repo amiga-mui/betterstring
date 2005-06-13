@@ -124,19 +124,19 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
 
 ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
 {
-		struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-		struct TagItem *tags, *tag;
-		UBYTE IntegerString[12];
-		ULONG ti_Data;
+	struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+	struct TagItem *tags, *tag;
+	char IntegerString[12];
+	ULONG ti_Data;
 
 	struct TagItem boolMap[] =
 	{
-		{ MUIA_Disabled,							    FLG_Ghosted },
+		{ MUIA_Disabled,							    FLG_Ghosted     },
 		{ MUIA_String_AdvanceOnCR,			  FLG_AdvanceOnCr },
-		{ MUIA_String_Secret,					    FLG_Secret },
-		{ MUIA_BetterString_StayActive,		FLG_StayActive },
-		{ MUIA_BetterString_NoInput,			FLG_NoInput },
-		{ TAG_DONE,                       NULL }
+		{ MUIA_String_Secret,					    FLG_Secret      },
+		{ MUIA_BetterString_StayActive,		FLG_StayActive  },
+		{ MUIA_BetterString_NoInput,			FLG_NoInput     },
+		{ TAG_DONE,                       0               }
 	};
 
 	tags = msg->ops_AttrList;
@@ -250,14 +250,18 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
 			break;
 
 			case MUIA_BetterString_SelectSize:
+      {
 				data->BlockStart = data->BufferPos;
 				data->Flags |= FLG_BlockEnabled;
 
 				data->BlockStop = data->BufferPos+ti_Data;
-				if(data->BlockStop < 0)
+				
+        if(data->BlockStop < 0)
 					data->BlockStop = 0;
-				if(data->BlockStop > strlen(data->Contents))
+				
+        if((ULONG)data->BlockStop > strlen(data->Contents))
 					data->BlockStop = strlen(data->Contents);
+      }
 			break;
 
 			case 0x80420d71: /* MUIA_String_Popup */
