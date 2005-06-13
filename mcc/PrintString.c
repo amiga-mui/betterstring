@@ -37,6 +37,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 	struct RastPort		*rport		= &data->rport;
 	struct MUI_AreaData	*ad			= muiAreaData(obj);
 	struct TextFont		*font			= data->Font ? data->Font : ad->mad_Font;
+  struct TextExtent tExtend;
 	STRPTR contents = data->Contents;
 	WORD 	 x=10, y=0, width, height,
 			 crsr_x, crsr_width=0, crsr_color,
@@ -62,6 +63,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 			contents[strlength] = '*';
 	}
 
+  SetFont(rport, font);
 	crsr_width = (data->Flags & FLG_Active) && !BlockEnabled ? TextLength(rport, (*(contents+data->BufferPos) == '\0') ? "n" : contents+data->BufferPos, 1) : 0;
 
 	if(data->DisplayPos > data->BufferPos)
@@ -69,7 +71,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
 	if(StrLength)
 	{
-			UWORD backdistance = MyTextFit(font, contents+StrLength-1, StrLength, width/*-crsr_width*/, -1);
+		UWORD backdistance = TextFit(rport, contents+StrLength-1, StrLength, &tExtend, NULL, -1, width/*-crsr_width*/, font->tf_YSize);
 
 		if(backdistance > StrLength-data->DisplayPos)
 			data->DisplayPos = StrLength-backdistance;
@@ -77,7 +79,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
 	if(data->BufferPos)
 	{
-			UWORD distance = MyTextFit(font, contents+data->BufferPos-1, data->BufferPos, width-crsr_width, -1);
+		UWORD distance = TextFit(rport, contents+data->BufferPos-1, data->BufferPos, &tExtend, NULL, -1, width-crsr_width, font->tf_YSize);
 
 		if(distance < data->BufferPos-data->DisplayPos)
 			data->DisplayPos = data->BufferPos - distance;
@@ -113,14 +115,14 @@ VOID PrintString(struct IClass *cl, Object *obj)
 	DoMethod(obj, MUIM_DrawBackground, x, y, width, height, dst_x, dst_y, 0L);
 	muiRenderInfo(obj)->mri_RastPort = oldrport;
 
-	length = MyTextFit(font, text, StrLength, width, 1);
+	length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
 	if(data->Alignment != MUIV_String_Format_Left)
 	{
-			UWORD textlength = MyTextLength(font, text, length);
+		UWORD textlength = TextLength(rport, text, length);
 
 		if(crsr_width && !BlockEnabled && data->BufferPos == data->DisplayPos+StrLength)
 		{
-			length = MyTextFit(font, text, StrLength, width-crsr_width, 1);
+			length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width-crsr_width, font->tf_YSize);
 			textlength += crsr_width;
 		}
 

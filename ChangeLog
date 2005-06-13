@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $Source$
 
+2005-06-13  Jens Langner <Jens.Langner@light-speed.de>
+
+    * mcc/TextFunctions.c: replace our own MyTextLength/MyTextFit with the 
+	   standard OS TextLength/TextFit functions as they work exactly the same
+		and are hopefully less buggy.
+	 
 2005-05-25  Jens Langner <Jens.Langner@light-speed.de>
 
     * library.c: added missing USE_UTILITYBASE define which may have caused 

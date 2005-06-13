@@ -116,9 +116,6 @@ ULONG HandleInput(struct IClass *, Object *, struct MUIP_HandleEvent *);
 ULONG ConvertKey(struct IntuiMessage *);
 VOID DeleteBlock(struct InstData *);
 
-LONG MyTextLength(struct TextFont *, STRPTR, LONG);
-LONG MyTextFit(struct TextFont *, STRPTR, LONG, LONG, LONG);
-
 ULONG Get(struct IClass *, Object *, struct opGet *);
 ULONG Set(struct IClass *, Object *, struct opSet *);
 
