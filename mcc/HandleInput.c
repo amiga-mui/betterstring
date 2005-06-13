@@ -26,6 +26,7 @@
 #include <clib/alib_protos.h>
 #include <clib/macros.h>
 #include <libraries/iffparse.h>
+#include <proto/exec.h>
 #include <proto/graphics.h>
 #include <proto/intuition.h>
 #include <proto/muimaster.h>
@@ -333,7 +334,7 @@ VOID Paste (struct InstData *data)
 					{
 						ULONG pastelength = IFF_Head[1];
 
-						if(data->MaxLength && strlen(data->Contents)+pastelength > data->MaxLength-1)
+						if(data->MaxLength && strlen(data->Contents)+pastelength > (ULONG)(data->MaxLength-1))
 						{
 							DisplayBeep(NULL);
 							pastelength = (data->MaxLength-1)-strlen(data->Contents);
@@ -376,8 +377,8 @@ VOID Paste (struct InstData *data)
 
 ULONG ConvertKey (struct IntuiMessage *imsg)
 {
-		struct	InputEvent  event;
-		UBYTE		code = 0;
+	struct InputEvent  event;
+	char code = 0;
 
 	event.ie_NextEvent      = NULL;
 	event.ie_Class          = IECLASS_RAWKEY;
@@ -392,16 +393,16 @@ ULONG ConvertKey (struct IntuiMessage *imsg)
 
 ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
-		struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-		struct MUI_AreaData *ad = muiAreaData(obj);
-		struct TextFont *Font = data->Font ? data->Font : ad->mad_Font;
-		ULONG	result = 0;
-		BOOL	movement = FALSE;
-		BOOL	deletion = FALSE;
-		BOOL	edited = FALSE;
-		BOOL	FNC = FALSE;
-
+	struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+	struct MUI_AreaData *ad = muiAreaData(obj);
+	struct TextFont *Font = data->Font ? data->Font : ad->mad_Font;
+	ULONG	result = 0;
+	BOOL	movement = FALSE;
+	BOOL	deletion = FALSE;
+	BOOL	edited = FALSE;
+	BOOL	FNC = FALSE;
 	Object *focus = NULL;
+
 	if(msg->muikey == MUIKEY_UP)
 		focus = data->KeyUpFocus;
 	else if(msg->muikey == MUIKEY_DOWN)
@@ -416,7 +417,9 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 	{
 		WORD StringLength = strlen(data->Contents);
 
-		if(msg->imsg->Class == IDCMP_RAWKEY && msg->imsg->Code >= IECODE_KEY_CODE_FIRST && msg->imsg->Code <= IECODE_KEY_CODE_LAST)
+		if(msg->imsg->Class == IDCMP_RAWKEY &&
+       msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
+       msg->imsg->Code <= IECODE_KEY_CODE_LAST)
 		{
 			if(data->Flags & FLG_Active)
 			{
@@ -580,7 +583,9 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 								if(!(data->Flags & FLG_NoInput))
 								{
 									DeleteBlock(data);
-									if((data->MaxLength == 0 || data->MaxLength-1 > strlen(data->Contents)) && Accept(code, data->Accept) && Reject(code, data->Reject))
+									
+                  if((data->MaxLength == 0 || (ULONG)data->MaxLength-1 > strlen(data->Contents)) &&
+                     Accept(code, data->Accept) && Reject(code, data->Reject))
 									{
 										data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, 1);
 										strcpyback(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos);
@@ -681,7 +686,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 										{
 											if((cut = StrToLong(data->Contents+pos, (LONG *)&result)))
 											{
-													UBYTE string[12], format[12];
+											  char string[12];
+                        char format[12];
 
 												result++;
                         MySPrintf(format, "%%0%ldlu", cut);
@@ -707,8 +713,10 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 											{
 												if(result || code == '$')
 												{
-													UBYTE string[12], format2[12];
+													char string[12];
+                          char format2[12];
 													STRPTR format = "%lx";
+
 													if(code == 'd')
 													{
 														result--;
@@ -728,9 +736,9 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 									case '#':
 									{
-											LONG	cut = 0;
-											UWORD pos = data->BufferPos;
-											ULONG	result = 0;
+										LONG	cut = 0;
+										UWORD pos = data->BufferPos;
+										ULONG	result = 0;
 
 										while(pos && IsHex(*(data->Contents+pos-1)))
 											pos--;
@@ -743,7 +751,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 										if(cut)
 										{
-												UBYTE string[12];
+											char string[12];
 
 											MySPrintf(string, "%lu", result);
 											Overwrite(string, pos, cut, data);
@@ -826,7 +834,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 					struct TagItem tags[] =
 					{
 						{ MUIA_String_Contents, (ULONG)data->Contents },
-						{ TAG_DONE, NULL }
+						{ TAG_DONE,             0                     }
 					};
 					DoSuperMethod(cl, obj, OM_SET, tags, NULL);
 //					set(obj, MUIA_String_Contents, data->Contents);

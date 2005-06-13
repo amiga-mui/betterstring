@@ -24,6 +24,7 @@
 
 #include <dos/dosextens.h>
 #include <clib/alib_protos.h>
+#include <proto/exec.h>
 #include <proto/intuition.h>
 #include <proto/utility.h>
 #include <proto/dos.h>
@@ -33,13 +34,13 @@
 
 BOOL OverwriteA (STRPTR text, UWORD x, UWORD length, UWORD ptrn_length, struct InstData *data)
 {
-		BOOL result = TRUE;
+  BOOL result = TRUE;
 
 	if(length < ptrn_length)
 	{
 		UWORD expand = ptrn_length-length;
 		
-    if(data->MaxLength && strlen(data->Contents)+expand > data->MaxLength-1)
+    if(data->MaxLength && strlen(data->Contents)+expand > (unsigned int)(data->MaxLength-1))
 		{
 			ptrn_length -= expand;
 			ptrn_length += (data->MaxLength-1)-strlen(data->Contents);
@@ -110,23 +111,23 @@ LONG FileNameStart (struct MUIP_BetterString_FileNameStart *msg)
 
 VOID InsertFileName (UWORD namestart, struct InstData *data)
 {
-		struct ExAllData	*ead1 = &data->FNCBuffer->buffer;
-		struct ExAllData	*ead2;
-		struct FNCData		*fncframe;
-		struct FNCData		*fncframe1 = data->FNCBuffer;
-		UWORD entrynum;
-		UWORD findnum = data->FileNumber;
-		UBYTE	tmpname[32];
+	struct ExAllData	*ead1 = &data->FNCBuffer->buffer;
+	struct ExAllData	*ead2;
+	struct FNCData		*fncframe;
+	struct FNCData		*fncframe1 = data->FNCBuffer;
+	UWORD entrynum;
+	UWORD findnum = data->FileNumber;
+	char tmpname[32];
 
-	do	{
-
+  do
+  {
 		entrynum = 0;
 		fncframe = data->FNCBuffer;
 		ead2 = &fncframe->buffer;
 		while(ead2)
 		{
 			//if(CmpStrings(ead1->ed_Name, ead2->ed_Name) > 0)
-      if(strcmp(ead1->ed_Name, ead2->ed_Name) > 0)
+      if(strcmp((const char *)ead1->ed_Name, (const char *)ead2->ed_Name) > 0)
 				entrynum++;
 
 			ead2 = ead2->ed_Next;
@@ -146,7 +147,7 @@ VOID InsertFileName (UWORD namestart, struct InstData *data)
 		}
 	}	while(entrynum != findnum);
 
-	strcpy(tmpname, ead1->ed_Name);
+	strcpy(tmpname, (char *)ead1->ed_Name);
 	strcat(tmpname, ead1->ed_Type == 2 ? "/" : " ");
 
 	Overwrite(tmpname, namestart, data->BufferPos-namestart, data);
@@ -196,7 +197,7 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 					{
 						STRPTR NodeName = (STRPTR)((dl->dol_Name << 2)+1);
 
-						if(!Strnicmp(NodeName, data->Contents+pos, cut))
+						if(!Strnicmp((unsigned char *)NodeName, (unsigned char *)data->Contents+pos, cut))
 						{
 							VolumeName = NodeName;
 							break;
@@ -216,14 +217,14 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 
 			default:
 			{
-					struct	FNCData			*fncbuffer;
-					struct	FNCData			*fncframe;
-					struct	ExAllControl	*control;
-					BPTR		dirlock;
-					UBYTE		pattern[42];
-					UWORD		namestart = data->BufferPos;
-					UBYTE		oldletter;
-					BOOL		filename = TRUE;
+				struct FNCData *fncbuffer;
+				struct FNCData *fncframe;
+				struct ExAllControl *control;
+				BPTR dirlock;
+				char pattern[42];
+				UWORD namestart = data->BufferPos;
+				char oldletter = '\0';
+				BOOL filename = TRUE;
 
 				while(filename)
 				{
@@ -239,6 +240,7 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 							break;
 					}
 				}
+
 				if((data->BufferPos-namestart) < 32)
 				{
 					strncpy(pattern, data->Contents+namestart, data->BufferPos-namestart);
@@ -252,10 +254,10 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 
 						if((control = (struct ExAllControl *)AllocDosObject(DOS_EXALLCONTROL, NULL)))
 						{
-								UBYTE tokenized[80];
+							char tokenized[80];
 
 							if(ParsePatternNoCase(pattern, tokenized, 40) != -1)
-								control->eac_MatchString = tokenized;
+								control->eac_MatchString = (unsigned char *)tokenized;
 
 							if((dirlock = Lock(data->Contents+pos, ACCESS_READ)))
 							{
@@ -290,6 +292,7 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 						}
 					}
 				}
+
 				if(!edited)
 					data->Contents[namestart] = oldletter;
 			}

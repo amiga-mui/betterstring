@@ -39,12 +39,12 @@ VOID PrintString(struct IClass *cl, Object *obj)
 	struct TextFont		*font			= data->Font ? data->Font : ad->mad_Font;
   struct TextExtent tExtend;
 	STRPTR contents = data->Contents;
-	WORD 	 x=10, y=0, width, height,
-			 crsr_x, crsr_width=0, crsr_color,
-			 dst_x, dst_y, length, offset = 0, StrLength;
+	WORD x=10, y=0, width, height;
+  WORD crsr_x=0, crsr_width=0, crsr_color=0;
+  WORD dst_x, dst_y, length, offset = 0, StrLength;
 	STRPTR text;
 	BOOL	 BlockEnabled = (data->Flags & FLG_BlockEnabled && data->BlockStart != data->BlockStop);
-	UWORD	 Blk_Start, Blk_Width;
+	UWORD	 Blk_Start=0, Blk_Width=0;
 	STRPTR fake_contents = NULL;
 
 	dst_x = ad->mad_Box.Left + ad->mad_addleft;
@@ -149,12 +149,12 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
 	if(length)
 	{
-			UWORD newlength;
-			LONG textcolor = (data->Flags & FLG_Active) ? data->ActiveText : data->InactiveText;
+		UWORD newlength;
+		LONG textcolor = (data->Flags & FLG_Active) ? data->ActiveText : data->InactiveText;
 
 		Move(rport, x+offset, y+font->tf_Baseline);
 
-		if(BlockEnabled && textcolor != data->MarkedTextColor)
+		if(BlockEnabled && textcolor != (LONG)data->MarkedTextColor)
 		{
 			newlength = Blk_Start-data->DisplayPos;
 			SetAPen(rport, textcolor);
