@@ -39,12 +39,12 @@
 ULONG ConvertKey (struct IntuiMessage *imsg)
 {
 	struct InputEvent event;
-	UBYTE code = 0;
+	char code = '\0';
 
 	event.ie_NextEvent		= NULL;
-	event.ie_Class 			= IECLASS_RAWKEY;
+	event.ie_Class 			  = IECLASS_RAWKEY;
 	event.ie_SubClass 		= 0;
-	event.ie_Code  			= imsg->Code;
+	event.ie_Code  			  = imsg->Code;
 	event.ie_Qualifier		= 0; /* imsg->Qualifier; */
 	event.ie_EventAddress	= 0; /* (APTR *) *((ULONG *)imsg->IAddress); */
 
@@ -63,8 +63,13 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 	ULONG result = 0;
 	BOOL nokey = FALSE, backspace = FALSE, qual_only;
 
-	qual_only = BETWEEN(msg->imsg->Code, 0x60, 0x67);
-	if(qual_only || (data->Flags & FLG_Snoop && data->Flags & FLG_Active && msg->imsg->Class == IDCMP_RAWKEY && BETWEEN(msg->imsg->Code, IECODE_KEY_CODE_FIRST, IECODE_KEY_CODE_LAST) && msg->muikey != MUIKEY_GADGET_NEXT && msg->muikey != MUIKEY_GADGET_PREV))
+	qual_only = BETWEEN(msg->imsg->Code, 0x60, 0x67); // betwenn LSHIFT/RCOMMAND
+
+	if(qual_only || (data->Flags & FLG_Snoop && data->Flags & FLG_Active &&
+     msg->imsg->Class == IDCMP_RAWKEY &&
+     BETWEEN(msg->imsg->Code, IECODE_KEY_CODE_FIRST, IECODE_KEY_CODE_LAST) &&
+     msg->muikey != MUIKEY_GADGET_NEXT &&
+     msg->muikey != MUIKEY_GADGET_PREV))
 	{
 		const STRPTR qualifier_name[] =
 		{
@@ -73,7 +78,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 			NULL
 		};
 
-		UBYTE buffer[256] = { '\0' };
+		char buffer[256] = "\0";
 		ULONG qualifier = msg->imsg->Qualifier;
 		ULONG i;
 
@@ -94,7 +99,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 		else
 		{
 			UWORD code = msg->imsg->Code;
-			if(code >= 76 && code <= 89)
+			if(code >= RAWKEY_CRSRUP && code <= RAWKEY_F10)
 			{
 				const CONST_STRPTR key_name[] =
 				{
@@ -102,43 +107,36 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 					"f1", "f2", "f3", "f4", "f5",
 					"f6", "f7", "f8", "f9", "f10"
 				};
-				strcat(buffer, key_name[code-76]);
+
+				strcat(buffer, key_name[code-RAWKEY_CRSRUP]);
 			}
 			else switch(code)
 			{
-				#ifdef __MORPHOS__
-				case 0x47: strcat(buffer, "insert"); break;
-				case 0x48: strcat(buffer, "page_up"); break;
-				case 0x49: strcat(buffer, "page_down"); break;
-				case 0x4b: strcat(buffer, "f11"); break;
-				case 0x6b: strcat(buffer, "scrlock"); break;
-				case 0x6c: strcat(buffer, "prtscr"); break;
-				case 0x6d: strcat(buffer, "numlock"); break;
-				case 0x6e: strcat(buffer, "pause"); break;
-				case 0x6f: strcat(buffer, "f12"); break;
-				case 0x70: strcat(buffer, "home"); break;
-				case 0x71: strcat(buffer, "end"); break;
-				#elif __amigaos4__
-				case 0x47: strcat(buffer, "insert"); break;
-				case 0x48: strcat(buffer, "page_up"); break;
-				case 0x49: strcat(buffer, "page_down"); break;
-				case 0x4b: strcat(buffer, "f11"); break;
-				case 0x6b: strcat(buffer, "menu"); break;
-				case 0x6d: strcat(buffer, "prtscr"); break;
-				case 0x6e: strcat(buffer, "pause"); break;
-				case 0x6f: strcat(buffer, "f12"); break;
-				case 0x70: strcat(buffer, "home"); break;
-				case 0x71: strcat(buffer, "end"); break;
-				#endif
+        #if defined(__amigaos4__)
+				case RAWKEY_MENU:     strcat(buffer, "menu"); break;
+        #elif defined(__MORPHOS__)
+				case RAWKEY_SCRLOCK:  strcat(buffer, "scrlock"); break;
+        #endif
 
-				case 0x72: strcat(buffer, "media_stop"); break;
-				case 0x73: strcat(buffer, "media_play"); break;
-				case 0x74: strcat(buffer, "media_prev"); break;
-				case 0x75: strcat(buffer, "media_next"); break;
-				case 0x76: strcat(buffer, "media_rewind"); break;
-				case 0x77: strcat(buffer, "media_forward"); break;
+				case RAWKEY_NUMLOCK:  strcat(buffer, "numlock"); break;
+        case RAWKEY_INSERT:   strcat(buffer, "insert"); break;
+				case RAWKEY_PAGEUP:   strcat(buffer, "page_up"); break;
+				case RAWKEY_PAGEDOWN: strcat(buffer, "page_down"); break;
+				case RAWKEY_F11:      strcat(buffer, "f11"); break;
+				case RAWKEY_PRINTSCR: strcat(buffer, "prtscr"); break;
+				case RAWKEY_BREAK:    strcat(buffer, "pause"); break;
+				case RAWKEY_F12:      strcat(buffer, "f12"); break;
+				case RAWKEY_HOME:     strcat(buffer, "home"); break;
+				case RAWKEY_END:      strcat(buffer, "end"); break;
 
-				case 95:
+				case RAWKEY_AUD_STOP:       strcat(buffer, "media_stop"); break;
+				case RAWKEY_AUD_PLAY_PAUSE: strcat(buffer, "media_play"); break;
+				case RAWKEY_AUD_PREV_TRACK: strcat(buffer, "media_prev"); break;
+				case RAWKEY_AUD_NEXT_TRACK: strcat(buffer, "media_next"); break;
+				case RAWKEY_AUD_SHUFFLE:    strcat(buffer, "media_rewind"); break;
+				case RAWKEY_AUD_REPEAT:     strcat(buffer, "media_forward"); break;
+
+				case RAWKEY_HELP:
 					strcat(buffer, "help");
 				break;
 
@@ -165,7 +163,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 				default:
 				{
 					STRPTR append = NULL;
-					UBYTE key;
+					char key;
+
 					switch(key = ConvertKey(msg->imsg))
 					{
 						case 0:
