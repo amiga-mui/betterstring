@@ -7,6 +7,9 @@ $Source$
 
 2005-06-14  Jens Langner <Jens.Langner@light-speed.de>
 
+    * mcc/hotkeystring: replaced the fixed values for the special OS4/MOS keys
+      by a more general set of RAWKEY_ defines already common on both platforms
+    * mcc/hotkeystring: fixed a whole bunch of compiler warnings
     * mcc: fixed a bunch of compiler warnings
 
 2005-06-13  Jens Langner <Jens.Langner@light-speed.de>
