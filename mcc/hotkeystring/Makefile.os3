@@ -25,12 +25,13 @@ CC    = m68k-amigaos-gcc
 STRIP = m68k-amigaos-strip
 RM    = rm -f
 RMDIR = rm -rf
-MKDIR	= mkdir
+MKDIR = mkdir
 CP    = cp
 
 # Directories
 OBJDIR = .obj_os3
 BINDIR = bin_os3
+INCDIR = ../../includes
 
 # Compiler/Linker flags
 CPU      = -m68020-60 -msoft-float
@@ -38,8 +39,8 @@ CDEFS    = -D__BS_VERDATE=\"`date +%d.%m.%Y`\" -D__BS_VERDAYS="`expr \`date +%s\
 WARN     = -W -Wall
 OPTFLAGS = -O3 -fomit-frame-pointer -funroll-loops
 DEBUG    = -DWITH_DEBUG -g -O0
-CFLAGS   = -noixemul -I. -I.. -I../../includes -c $(CPU) $(WARN) $(OPTFLAGS) $(DEBUG)
-LDFLAGS  = -noixemul -nostartfiles
+CFLAGS   = -noixemul -I. -I.. -I$(INCDIR) -c $(CPU) $(WARN) $(OPTFLAGS) $(DEBUG)
+LDFLAGS  = -noixemul -nostartfiles $(CPU)
 LDLIBS   = -lmui -ldebug
 
 # CPU and DEBUG can be defined outside, defaults to above
@@ -97,17 +98,17 @@ $(TESTTARGET): $(TESTOBJS)
 	@$(CC) -o $@.debug $(TESTOBJS) $(LDLIBS)
 	@$(CC) -s -o $@ $(TESTOBJS) $(LDLIBS)
 
-$(OBJDIR)/library.o: library.c ../../includes/mccheader.c \
+$(OBJDIR)/library.o: library.c $(INCDIR)/mccheader.c \
   HotkeyString_mcc.h private.h rev.h
 
-$(OBJDIR)/library.o: library.c ../../includes/mccheader.c HotkeyString_mcc.h \
+$(OBJDIR)/library.o: library.c $(INCDIR)/mccheader.c HotkeyString_mcc.h \
   private.h rev.h
 
 #
 
 .PHONY: clean
 clean:
-	-$(RM) $(MCCTARGET) $(MCCTARGET).debug $(TESTTARGET) $(TESTTARGET).debug $(MCCOBJS) $(TESTOBJS) $(M68KSTUBS)
+	-$(RM) $(MCCTARGET) $(MCCTARGET).debug $(TESTTARGET) $(TESTTARGET).debug $(MCCOBJS) $(TESTOBJS)
 
 .PHONY: distclean
 distclean: clean
