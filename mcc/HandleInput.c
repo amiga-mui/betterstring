@@ -55,13 +55,17 @@ static int VARARGS68K MySPrintf(char *buf, char *fmt, ...)
   return(strlen(buf));
 }
 #else
-static int STDARGS MySPrintf(char *buf, char *fmt,...)
+static int STDARGS MySPrintf(char *buf, char *fmt, ...)
 {
 	static const UWORD PutCharProc[2] = {0x16C0,0x4E75};
 	/* dirty hack to avoid assembler part :-)
-   	16C0: move.b d0,(a3)+
+	   16C0: move.b d0,(a3)+
 	   4E75: rts */
-	RawDoFmt(fmt, (APTR)(((ULONG)&fmt)+4), (APTR)PutCharProc, buf);
+	va_list args;
+
+	va_start(args, fmt);
+	RawDoFmt(fmt, args, (void (*)(void))PutCharProc, buf);
+	va_end(args);
 
 	return(strlen(buf));
 }
