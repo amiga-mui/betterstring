@@ -20,13 +20,12 @@
 
 ***************************************************************************/
 
-#include <clib/alib_protos.h>
-#include <exec/tasks.h>
 #include <libraries/mui.h>
-#include <proto/exec.h>
+#include <libraries/iffparse.h>
+#include <clib/alib_protos.h>
 #include <proto/intuition.h>
-#include <proto/iffparse.h>
 #include <proto/muimaster.h>
+#include <proto/exec.h>
 
 #include "HotkeyString_mcc.h"
 #include "private.h"
