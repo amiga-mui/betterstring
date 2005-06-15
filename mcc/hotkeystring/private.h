@@ -23,7 +23,7 @@
 #ifndef HOTKEYSTRING_MCC_PRIV_H
 #define HOTKEYSTRING_MCC_PRIV_H
 
-#include <proto/muimaster.h>
+#include <libraries/mui.h>
 
 #include <muiextra.h>
 #include <mcc_common.h>
