@@ -22,21 +22,15 @@
 
 #include <string.h>
 
-#include <clib/alib_protos.h>
-#include <proto/intuition.h>
-#include <proto/keymap.h>
-#include <proto/muimaster.h>
-#include <proto/utility.h>
 #include <devices/inputevent.h>
 #include <libraries/mui.h>
+#include <proto/keymap.h>
 
 #include <newmouse.h>
 
-#include "HotkeyString_mcc.h"
-
 #include "private.h"
 
-ULONG ConvertKey (struct IntuiMessage *imsg)
+static ULONG ConvertKey (struct IntuiMessage *imsg)
 {
 	struct InputEvent event;
 	char code = '\0';
@@ -48,7 +42,9 @@ ULONG ConvertKey (struct IntuiMessage *imsg)
 	event.ie_Qualifier		= 0; /* imsg->Qualifier; */
 	event.ie_EventAddress	= 0; /* (APTR *) *((ULONG *)imsg->IAddress); */
 
-	return MapRawKey(&event, &code, 1, NULL), code;
+	MapRawKey(&event, &code, 1, NULL);
+
+	return code;
 }
 
 #define BETWEEN(a, min, max) (a >= min && a <= max)
@@ -60,27 +56,29 @@ ULONG ConvertKey (struct IntuiMessage *imsg)
 ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
 	struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-	ULONG result = 0;
 	BOOL nokey = FALSE, backspace = FALSE, qual_only;
+	ULONG result;
 
 	qual_only = BETWEEN(msg->imsg->Code, 0x60, 0x67); // betwenn LSHIFT/RCOMMAND
 
-	if(qual_only || (data->Flags & FLG_Snoop && data->Flags & FLG_Active &&
+	if(qual_only || (data->Flags & (FLG_Snoop|FLG_Active) &&
      msg->imsg->Class == IDCMP_RAWKEY &&
      BETWEEN(msg->imsg->Code, IECODE_KEY_CODE_FIRST, IECODE_KEY_CODE_LAST) &&
      msg->muikey != MUIKEY_GADGET_NEXT &&
      msg->muikey != MUIKEY_GADGET_PREV))
 	{
-		const STRPTR qualifier_name[] =
+		static char *const qualifier_name[] =
 		{
 			"lshift", "rshift", "capslock", "control", "lalt",
 			"ralt", "lcommand", "rcommand", "numericpad", "repeat",
 			NULL
 		};
 
-		char buffer[256] = "\0";
 		ULONG qualifier = msg->imsg->Qualifier;
+		char buffer[256];
 		ULONG i;
+
+		buffer[0] = 0;
 
 		for(i=0; qualifier_name[i]; i++)
 		{
@@ -101,7 +99,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 			UWORD code = msg->imsg->Code;
 			if(code >= RAWKEY_CRSRUP && code <= RAWKEY_F10)
 			{
-				const CONST_STRPTR key_name[] =
+				static char *const key_name[] =
 				{
 					"up", "down", "right", "left",
 					"f1", "f2", "f3", "f4", "f5",
@@ -162,7 +160,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 				default:
 				{
-					STRPTR append = NULL;
+					char *append = NULL;
 					char key;
 
 					switch(key = ConvertKey(msg->imsg))
@@ -230,5 +228,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 		}
 		result = MUI_EventHandlerRC_Eat;
 	}
+	else
+	  result = 0;
+
 	return result;
 }
