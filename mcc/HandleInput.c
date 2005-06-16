@@ -717,15 +717,15 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 											{
 												if(result || code == '$')
 												{
+													char *format = "%lx";
 													char string[12];
                           char format2[12];
-													STRPTR format = "%lx";
 
 													if(code == 'd')
 													{
-														result--;
-														format = format2;
+														format = &format2[0];
 														MySPrintf(format, "%%0%ldlu", cut);
+														result--;
 													}
 													MySPrintf(string, format, result);
 													Overwrite(string, pos, cut, data);
