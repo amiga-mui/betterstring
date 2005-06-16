@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $Source$
 
+2005-06-16  Gunther Nikl <gni@gecko.de>
+
+    * mcc/HandleInput.c: Fix OS3 MySPrintf for GCC 3.4.x or newer (has to
+      use stdarg.h macros!). Small cleanup (eg. STRPTR -> char*).
+
 2005-06-15  Gunther Nikl <gni@gecko.de>
 
     * mcc/hotkeystring/Makefile.os3: Added $(CPU) to $LDFLAGS. Added INCDIR=
