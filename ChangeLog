@@ -5,6 +5,16 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $Source$
 
+2005-06-15  Gunther Nikl <gni@gecko.de>
+
+    * mcc/hotkeystring/Makefile.os3: Added $(CPU) to $LDFLAGS. Added INCDIR=
+      setting and used it where appropriate.
+    * mcc/hotkeystring/HotkeyString-Test.c Added libraries/iffparse.h for
+      MAKE_ID define. Includes cleanup.
+    * mcc/hotkeystring/private.h: Replaced proto/mui.h with libraries/mui.h.
+    * mcc/hotkeystring/HandleInput.c: Replaced STRPTR and friends with char*
+      (thats what standard functions use!). Include and code cleanup.
+
 2005-06-14  Jens Langner <Jens.Langner@light-speed.de>
 
     * mcc/hotkeystring: replaced the fixed values for the special OS4/MOS keys
@@ -15,9 +25,9 @@ $Source$
 2005-06-13  Jens Langner <Jens.Langner@light-speed.de>
 
     * mcc/TextFunctions.c: replace our own MyTextLength/MyTextFit with the 
-	   standard OS TextLength/TextFit functions as they work exactly the same
-		and are hopefully less buggy.
-	 
+      standard OS TextLength/TextFit functions as they work exactly the same
+      and are hopefully less buggy.
+
 2005-05-25  Jens Langner <Jens.Langner@light-speed.de>
 
     * library.c: added missing USE_UTILITYBASE define which may have caused 
@@ -41,9 +51,9 @@ $Source$
 2005-05-03  Jens Langner <Jens.Langner@light-speed.de>
 
     * mcc/HandleInput.c: fixed an uninitialized variable by integrating
-		the proposed patch of bug 1193352 from Georg Steger.
+      the proposed patch of bug 1193352 from Georg Steger.
     * misc: integrated minor patches kindly provided by Gunther Nikl
-		and modified sources to properly compile with gcc versions < 3.
+      and modified sources to properly compile with gcc versions < 3.
 
 2005-04-21  Jens Langner <Jens.Langner@light-speed.de>
 
