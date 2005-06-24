@@ -27,9 +27,15 @@
 
 #include "SDI_compiler.h"
 
+#if 0
+#define USE_OS3 (1)
+#else
+#define USE_OS3 (((struct Library *)GfxBase)->lib_Version >= 39)
+#endif
+
 struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG width), REG(d1, LONG height), REG(d2, LONG depth), REG(d3, LONG flags), REG(a0, struct BitMap *friend))
 {
-  if(((struct Library *)GfxBase)->lib_Version >= 39)
+  if(USE_OS3)
   {
     BOOL CyberGFX = FindSemaphore("cybergraphics.library") ? TRUE : FALSE;
 
@@ -76,7 +82,7 @@ VOID SAVEDS ASM MUIG_FreeBitMap(REG(a0, struct BitMap *bm))
 {
   WaitBlit();
 
-  if(((struct Library *)GfxBase)->lib_Version >= 39)
+  if(USE_OS3)
   {
     FreeBitMap(bm);
   }
