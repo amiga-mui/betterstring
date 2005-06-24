@@ -22,17 +22,10 @@
 
 #include <exec/memory.h>
 #include <exec/libraries.h>
-#include <graphics/gfxbase.h>
 #include <proto/graphics.h>
 #include <proto/exec.h>
 
 #include "SDI_compiler.h"
-
-#if defined(__amigaos4__)
-extern struct Library *GfxBase;
-#else
-extern struct GfxBase *GfxBase;
-#endif
 
 struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG width), REG(d1, LONG height), REG(d2, LONG depth), REG(d3, LONG flags), REG(a0, struct BitMap *friend))
 {
@@ -53,12 +46,12 @@ struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG width), REG(d1, LONG he
   }
   else
   {
-    struct BitMap *bm;
-    int plsize = RASSIZE(width,height);
-    int i;
+    struct BitMap *bm = AllocMem(sizeof(struct BitMap), MEMF_CLEAR);
 
-    if((bm = AllocMem(sizeof(struct BitMap), MEMF_CLEAR)))
+    if(bm != NULL)
     {
+      int i, plsize=RASSIZE(width,height);
+
       InitBitMap(bm,depth,width,height);
 
       if((bm->Planes[0] = AllocVec(plsize*depth,(flags & BMF_CLEAR) ? MEMF_CHIP|MEMF_CLEAR : MEMF_CHIP))) // !!!
@@ -66,7 +59,11 @@ struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG width), REG(d1, LONG he
         for(i=1;i<depth;i++)
           bm->Planes[i] = (PLANEPTR)(((ULONG)bm->Planes[i-1]) + plsize);
 
-        return (struct BitMap *)bm;
+        return bm;
+      }
+      else
+      {
+        FreeMem(bm,sizeof(struct BitMap));
       }
     }
 
