@@ -26,49 +26,44 @@
 
 #include "private.h"
 
-void *MyAllocPooled(void *pool, unsigned long length)
+APTR MyAllocPooled(APTR pool, ULONG length)
 {
-  long *mem;
+  ULONG *mem;
 
-  if((mem = AllocPooled(pool, length+4)))
+  length = (length + sizeof(ULONG) + sizeof(ULONG) - 1) & ~(sizeof(ULONG)-1);
+  if((mem = AllocPooled(pool, length)))
   {
-    *mem = length+4;
+    *mem = length;
     mem += 1;
-
   }
+
   return(mem);
 }
 
-void MyFreePooled(void *pool, void *mem)
+VOID MyFreePooled(APTR pool, APTR mem)
 {
-  long *memptr = (long *)mem;
-  long length;
+  ULONG *memptr, length;
 
-  memptr -= 1;
-  length = *(memptr);
+  memptr = &((ULONG *)mem)[-1];
+  length = *memptr;
 
   FreePooled(pool, memptr, length);
 }
 
 APTR ExpandPool(APTR pool, APTR mem, ULONG extra)
 {
-	ULONG length;
+  ULONG length = ((ULONG *)mem)[-1] - sizeof(ULONG);
+  ULONG sz = strlen((char *)mem) + extra;
 
-	length = *(((ULONG *)mem)-1);
-	if(length <= strlen((char *)mem)+extra+4)
-	{
-		APTR new_mem;
+  if(length <= sz)
+  {
+    APTR new_mem = MyAllocPooled(pool, sz + 20);
 
-		do
-    {	
-      new_mem = MyAllocPooled(pool, strlen((char *)mem)+extra+20);
-    }
-    while(!new_mem);
-		
     CopyMem(mem, new_mem, length);
-		MyFreePooled(pool, mem);
-		mem = new_mem;
-	}
-	
+    MyFreePooled(pool, mem);
+
+    mem = new_mem;
+  }
+
   return(mem);
 }
