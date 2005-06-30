@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $Source$
 
+2005-06-30  Gunther Nikl <gni@gecko.de>
+
+    * mcc/HandleInput.c (ConvertKey): fix signedness bug.
+    * mcc/hotkeystring/HandleInput.c (ConvertKey): Likewise.
+
 2005-06-24  Gunther Nikl <gni@gecko.de>
 
     * mcc/AllocBitMap.c: Free allocated bitmap on failure in non-V39 case.
