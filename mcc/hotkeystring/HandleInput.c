@@ -161,9 +161,12 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 				default:
 				{
 					char *append = NULL;
-					char key;
+					unsigned char key[2];
 
-					switch(key = ConvertKey(msg->imsg))
+					key[0] = ConvertKey(msg->imsg);
+					key[1] = 0;
+
+					switch(key[0])
 					{
 						case 0:
 							nokey = TRUE;
@@ -195,7 +198,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 						break;
 
 						default:
-							strncat(buffer, &key, 1);
+							append = (char *)key;
 						break;
 					}
 
