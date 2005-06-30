@@ -33,7 +33,7 @@
 static ULONG ConvertKey (struct IntuiMessage *imsg)
 {
 	struct InputEvent event;
-	char code = '\0';
+	unsigned char code = '\0';
 
 	event.ie_NextEvent		= NULL;
 	event.ie_Class 			  = IECLASS_RAWKEY;
@@ -42,7 +42,7 @@ static ULONG ConvertKey (struct IntuiMessage *imsg)
 	event.ie_Qualifier		= 0; /* imsg->Qualifier; */
 	event.ie_EventAddress	= 0; /* (APTR *) *((ULONG *)imsg->IAddress); */
 
-	MapRawKey(&event, &code, 1, NULL);
+	MapRawKey(&event, (STRPTR)&code, 1, NULL);
 
 	return code;
 }
@@ -62,10 +62,10 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 	qual_only = BETWEEN(msg->imsg->Code, 0x60, 0x67); // betwenn LSHIFT/RCOMMAND
 
 	if(qual_only || (data->Flags & (FLG_Snoop|FLG_Active) &&
-     msg->imsg->Class == IDCMP_RAWKEY &&
-     BETWEEN(msg->imsg->Code, IECODE_KEY_CODE_FIRST, IECODE_KEY_CODE_LAST) &&
-     msg->muikey != MUIKEY_GADGET_NEXT &&
-     msg->muikey != MUIKEY_GADGET_PREV))
+		 msg->imsg->Class == IDCMP_RAWKEY &&
+		 BETWEEN(msg->imsg->Code, IECODE_KEY_CODE_FIRST, IECODE_KEY_CODE_LAST) &&
+		 msg->muikey != MUIKEY_GADGET_NEXT &&
+		 msg->muikey != MUIKEY_GADGET_PREV))
 	{
 		static char *const qualifier_name[] =
 		{
@@ -110,14 +110,14 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 			}
 			else switch(code)
 			{
-        #if defined(__amigaos4__)
+				#if defined(__amigaos4__)
 				case RAWKEY_MENU:     strcat(buffer, "menu"); break;
-        #elif defined(__MORPHOS__)
+				#elif defined(__MORPHOS__)
 				case RAWKEY_SCRLOCK:  strcat(buffer, "scrlock"); break;
-        #endif
+				#endif
 
 				case RAWKEY_NUMLOCK:  strcat(buffer, "numlock"); break;
-        case RAWKEY_INSERT:   strcat(buffer, "insert"); break;
+				case RAWKEY_INSERT:   strcat(buffer, "insert"); break;
 				case RAWKEY_PAGEUP:   strcat(buffer, "page_up"); break;
 				case RAWKEY_PAGEDOWN: strcat(buffer, "page_down"); break;
 				case RAWKEY_F11:      strcat(buffer, "f11"); break;

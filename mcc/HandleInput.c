@@ -76,7 +76,7 @@ VOID AddToUndo (struct InstData *data)
 	if(data->Undo)
 		MyFreePooled(data->Pool, data->Undo);
 	
-  if((data->Undo = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)))
+	if((data->Undo = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)))
 	{
 		strcpy(data->Undo, data->Contents);
 		data->UndoPos = data->BufferPos;
@@ -96,9 +96,9 @@ WORD AlignOffset (Object *obj, struct InstData *data)
 		STRPTR text = data->Contents+data->DisplayPos;
 		UWORD	StrLength = strlen(text);
 		UWORD	length, textlength, crsr_width;
-    struct TextExtent tExtend;
+		struct TextExtent tExtend;
 
-    SetFont(&data->rport, font);
+		SetFont(&data->rport, font);
 		length = TextFit(&data->rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
 		textlength = TextLength(&data->rport, text, length);
 
@@ -382,7 +382,7 @@ VOID Paste (struct InstData *data)
 ULONG ConvertKey (struct IntuiMessage *imsg)
 {
 	struct InputEvent  event;
-	char code = 0;
+	unsigned char code = 0;
 
 	event.ie_NextEvent      = NULL;
 	event.ie_Class          = IECLASS_RAWKEY;
@@ -391,7 +391,7 @@ ULONG ConvertKey (struct IntuiMessage *imsg)
 	event.ie_Qualifier      = imsg->Qualifier;
 	event.ie_EventAddress   = (APTR *) *((ULONG *)imsg->IAddress);
 
-	MapRawKey(&event, &code, 1, NULL);
+	MapRawKey(&event, (STRPTR)&code, 1, NULL);
 	return(code);
 }
 
@@ -422,12 +422,12 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 		WORD StringLength = strlen(data->Contents);
 
 		if(msg->imsg->Class == IDCMP_RAWKEY &&
-       msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
-       msg->imsg->Code <= IECODE_KEY_CODE_LAST)
+		   msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
+		   msg->imsg->Code <= IECODE_KEY_CODE_LAST)
 		{
 			if(data->Flags & FLG_Active)
 			{
-            BOOL input = TRUE;
+				BOOL input = TRUE;
             
 				if(!(data->Flags & FLG_BlockEnabled))
 					data->BlockStart = data->BufferPos;
@@ -473,7 +473,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 									if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
 									  data->BufferPos = MAX(data->BlockStart, data->BlockStop);
 									else
-                    data->BufferPos++;
+									  data->BufferPos++;
 								}
 							}
 						}
@@ -588,8 +588,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 								{
 									DeleteBlock(data);
 									
-                  if((data->MaxLength == 0 || (ULONG)data->MaxLength-1 > strlen(data->Contents)) &&
-                     Accept(code, data->Accept) && Reject(code, data->Reject))
+									if((data->MaxLength == 0 || (ULONG)data->MaxLength-1 > strlen(data->Contents)) &&
+									   Accept(code, data->Accept) && Reject(code, data->Reject))
 									{
 										data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, 1);
 										strcpyback(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos);
@@ -690,11 +690,11 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 										{
 											if((cut = StrToLong(data->Contents+pos, (LONG *)&result)))
 											{
-											  char string[12];
-                        char format[12];
+												char string[12];
+												char format[12];
 
 												result++;
-                        MySPrintf(format, "%%0%ldlu", cut);
+												MySPrintf(format, "%%0%ldlu", cut);
 												MySPrintf(string, format, result);
 												Overwrite(string, pos, cut, data);
 												edited = TRUE;
@@ -719,7 +719,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 												{
 													char *format = "%lx";
 													char string[12];
-                          char format2[12];
+													char format2[12];
 
 													if(code == 'd')
 													{
@@ -899,13 +899,13 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 					if(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height)
 					{
-    				WORD offset = msg->imsg->MouseX - x;
-            struct TextExtent tExtend;
+						WORD offset = msg->imsg->MouseX - x;
+						struct TextExtent tExtend;
 
 						offset -= AlignOffset(obj, data);
 		
-            SetFont(&data->rport, Font);
-				    data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
+						SetFont(&data->rport, Font);
+						data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
 
 						if(DoubleClick(data->StartSecs, data->StartMicros, msg->imsg->Seconds, msg->imsg->Micros))
 								data->ClickCount++;
@@ -991,13 +991,13 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 				if((msg->imsg->Class == IDCMP_MOUSEMOVE || msg->imsg->Class == IDCMP_INTUITICKS) && data->Flags & FLG_Active)
 				{
 					WORD x, width, mousex;
-          struct TextExtent tExtend;
+					struct TextExtent tExtend;
 
 					x = ad->mad_Box.Left + ad->mad_addleft;
 					mousex = msg->imsg->MouseX - AlignOffset(obj, data);
 					width = ad->mad_Box.Width - ad->mad_subwidth;
 
-          SetFont(&data->rport, Font);
+					SetFont(&data->rport, Font);
 
 					switch(data->ClickCount)
 					{
