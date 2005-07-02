@@ -24,6 +24,7 @@
 
 #include <devices/inputevent.h>
 #include <libraries/mui.h>
+#include <proto/intuition.h>
 #include <proto/keymap.h>
 
 #include <newmouse.h>
