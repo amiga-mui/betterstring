@@ -36,10 +36,10 @@
 
 ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
 {
-		struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-
+	struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 	ULONG ti_Data;
-	switch(msg->opg_AttrID)
+	
+  switch(msg->opg_AttrID)
 	{
 		case MUIA_Font:
 			ti_Data = (ULONG)(data->Font ? data->Font : muiAreaData(obj)->mad_Font);
@@ -170,15 +170,20 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
 			case MUIA_String_Integer:
 				tag->ti_Tag = TAG_IGNORE;
-				//snprintf(IntegerString, 11, "%ld", ti_Data);
-				sprintf(IntegerString, "%11ld", ti_Data);
+
+        // we are using snprintf() here not only to be on the safe
+        // side, but also because modern C runtime libraries should definitly
+        // support it!
+				snprintf(IntegerString, 12, "%ld", ti_Data);
 				ti_Data = (ULONG)IntegerString;
-				/* The missing break is intended! */
+
+				// The missing break is intended!
 
 			case MUIA_String_Contents:
 			{
 				STRPTR new_str = (STRPTR)ti_Data;
 				BOOL circular = FALSE;
+
 				if(new_str)
 				{
 					circular = !strcmp(data->Contents, new_str);
