@@ -5,11 +5,17 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $Source$
 
+2005-07-03  Jens Langner <Jens.Langner@light-speed.de>
+
+    * mcc/GetSetAttrs.c: fixed a minor bug in the MUIA_String_Integer set
+      method which prevented it from correctly converting the supplied
+      integer into a string and therefore left the method defective.
+
 2005-07-02  Jens Langner <Jens.Langner@light-speed.de>
 
-    *  mcc/hotkeystring/HandleInput.c: added missing <proto/intuition.h>
-       include statements which prevent compilation with OS4 SDK (missing
-		 SetAttrs)
+    * mcc/hotkeystring/HandleInput.c: added missing <proto/intuition.h>
+      include statements which prevent compilation with OS4 SDK (missing
+		  SetAttrs)
 
 2005-06-30  Gunther Nikl <gni@gecko.de>
 
