@@ -68,7 +68,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 		 msg->muikey != MUIKEY_GADGET_NEXT &&
 		 msg->muikey != MUIKEY_GADGET_PREV))
 	{
-		static char *const qualifier_name[] =
+		static CONST CONST_STRPTR qualifier_name[] =
 		{
 			"lshift", "rshift", "capslock", "control", "lalt",
 			"ralt", "lcommand", "rcommand", "numericpad", "repeat",
@@ -98,10 +98,12 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 		else
 		{
 			UWORD code = msg->imsg->Code;
-			if(code >= RAWKEY_CRSRUP && code <= RAWKEY_F10)
+
+			if(code >= RAWKEY_F11 && code <= RAWKEY_F10)
 			{
-				static char *const key_name[] =
+				static CONST CONST_STRPTR key_name[] =
 				{
+					"f11",
 					"up", "down", "right", "left",
 					"f1", "f2", "f3", "f4", "f5",
 					"f6", "f7", "f8", "f9", "f10"
@@ -121,7 +123,6 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 				case RAWKEY_INSERT:   strcat(buffer, "insert"); break;
 				case RAWKEY_PAGEUP:   strcat(buffer, "page_up"); break;
 				case RAWKEY_PAGEDOWN: strcat(buffer, "page_down"); break;
-				case RAWKEY_F11:      strcat(buffer, "f11"); break;
 				case RAWKEY_PRINTSCR: strcat(buffer, "prtscr"); break;
 				case RAWKEY_BREAK:    strcat(buffer, "pause"); break;
 				case RAWKEY_F12:      strcat(buffer, "f12"); break;

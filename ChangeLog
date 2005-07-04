@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $Source$
 
+2005-07-04  Ilkka Lehtoranta <ilkleht@isoveli.org>
+
+    * mcc/hotkeystring/HandleInput.c: made small changes only to create
+      (possibly) smaller code.
+
 2005-07-03  Jens Langner <Jens.Langner@light-speed.de>
 
     * mcc/GetSetAttrs.c: fixed a minor bug in the MUIA_String_Integer set
