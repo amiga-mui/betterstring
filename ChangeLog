@@ -4,6 +4,11 @@ MUI BetterString MCC class - ChangeLog
 
 $Id$
 $Source$
+ 
+2005-07-07  Jens Langner <Jens.Langner@light-speed.de>
+
+    * mcc/library.c: added missing USEDCLASSESP define so that MUI knowns
+      which mcp class belongs to the mcc.
 
 2005-07-04  Ilkka Lehtoranta <ilkleht@isoveli.org>
 
@@ -20,7 +25,7 @@ $Source$
 
     * mcc/hotkeystring/HandleInput.c: added missing <proto/intuition.h>
       include statements which prevent compilation with OS4 SDK (missing
-		  SetAttrs)
+      SetAttrs)
 
 2005-06-30  Gunther Nikl <gni@gecko.de>
 
