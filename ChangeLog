@@ -10,6 +10,11 @@ $Source$
     * mcc/library.c: added missing USEDCLASSESP define so that MUI knowns
       which mcp class belongs to the mcc.
 
+2005-07-07  Ilkka Lehtoranta <ilkleht@isoveli.org>
+
+    * mcc/hotkeystring/HandleInput.c: changed CONST CONST_STRPTR back to
+      const char *, as requested.
+
 2005-07-04  Ilkka Lehtoranta <ilkleht@isoveli.org>
 
     * mcc/hotkeystring/HandleInput.c: made small changes only to create

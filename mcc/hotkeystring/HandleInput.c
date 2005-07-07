@@ -68,7 +68,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 		 msg->muikey != MUIKEY_GADGET_NEXT &&
 		 msg->muikey != MUIKEY_GADGET_PREV))
 	{
-		static CONST CONST_STRPTR qualifier_name[] =
+		static const char *qualifier_name[] =
 		{
 			"lshift", "rshift", "capslock", "control", "lalt",
 			"ralt", "lcommand", "rcommand", "numericpad", "repeat",
@@ -101,7 +101,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 			if(code >= RAWKEY_F11 && code <= RAWKEY_F10)
 			{
-				static CONST CONST_STRPTR key_name[] =
+				static const char *key_name[] =
 				{
 					"f11",
 					"up", "down", "right", "left",
