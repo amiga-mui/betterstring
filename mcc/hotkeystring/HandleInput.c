@@ -141,23 +141,23 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 				break;
 
 				case NM_WHEEL_UP:
-					strcat(buffer, "wheel_up");
+					strcat(buffer, "nm_wheel_up");
 				break;
 
 				case NM_WHEEL_DOWN:
-					strcat(buffer, "wheel_down");
+					strcat(buffer, "nm_wheel_down");
 				break;
 
 				case NM_WHEEL_LEFT:
-					strcat(buffer, "wheel_left");
+					strcat(buffer, "nm_wheel_left");
 				break;
 
 				case NM_WHEEL_RIGHT:
-					strcat(buffer, "wheel_right");
+					strcat(buffer, "nm_wheel_right");
 				break;
 
 				case NM_BUTTON_FOURTH:
-					strcat(buffer, "wheel_button");
+					strcat(buffer, "nm_wheel_button");
 				break;
 
 				default:
