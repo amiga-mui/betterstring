@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $Source$
  
+2005-07-30  Jens Langner <Jens.Langner@light-speed.de>
+
+    * mcc/hotkeystring/HandleInput.c: changed the rawkey based wheelmouse name to
+      carry a "nm_" prefix so that it refers to newmouse based wheelmouse events
+      and doesn't conflict with the new wheelmouse events in AmigaOS4.
+
 #### v11.7 RELEASE ############################################################
 
 2005-07-07  Jens Langner <Jens.Langner@light-speed.de>
