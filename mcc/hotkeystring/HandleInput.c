@@ -64,7 +64,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 	if(qual_only || (data->Flags & (FLG_Snoop|FLG_Active) &&
 		 msg->imsg->Class == IDCMP_RAWKEY &&
-		 BETWEEN(msg->imsg->Code, IECODE_KEY_CODE_FIRST, IECODE_KEY_CODE_LAST) &&
+     msg->imsg->Code <= IECODE_KEY_CODE_LAST &&
 		 msg->muikey != MUIKEY_GADGET_NEXT &&
 		 msg->muikey != MUIKEY_GADGET_PREV))
 	{
@@ -129,12 +129,22 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 				case RAWKEY_HOME:     strcat(buffer, "home"); break;
 				case RAWKEY_END:      strcat(buffer, "end"); break;
 
+        #if defined(__amigaos4__)
+				case RAWKEY_MEDIA_STOP:       strcat(buffer, "media_stop"); break;
+				case RAWKEY_MEDIA_PLAY_PAUSE: strcat(buffer, "media_play"); break;
+				case RAWKEY_MEDIA_PREV_TRACK: strcat(buffer, "media_prev"); break;
+				case RAWKEY_MEDIA_NEXT_TRACK: strcat(buffer, "media_next"); break;
+				case RAWKEY_MEDIA_SHUFFLE:    strcat(buffer, "media_rewind"); break;
+				case RAWKEY_MEDIA_REPEAT:     strcat(buffer, "media_forward"); break;
+        #else
 				case RAWKEY_AUD_STOP:       strcat(buffer, "media_stop"); break;
 				case RAWKEY_AUD_PLAY_PAUSE: strcat(buffer, "media_play"); break;
 				case RAWKEY_AUD_PREV_TRACK: strcat(buffer, "media_prev"); break;
 				case RAWKEY_AUD_NEXT_TRACK: strcat(buffer, "media_next"); break;
 				case RAWKEY_AUD_SHUFFLE:    strcat(buffer, "media_rewind"); break;
 				case RAWKEY_AUD_REPEAT:     strcat(buffer, "media_forward"); break;
+        #endif
+
 
 				case RAWKEY_HELP:
 					strcat(buffer, "help");

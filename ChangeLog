@@ -3,8 +3,18 @@ MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
 $Id$
-$Source$
  
+2006-08-20  Jens Langner <Jens.Langner@light-speed.de>
+
+    * mcc/Dispatcher.c: if a BetterString gadget moves into 'Inactive' state,
+      eventually selected content will be automatically unselected as it is done
+      with the default MUI string class.
+    * misc: switched all OS4 builds to compile against newlib.library.
+    * misc: updated 'mccheader.c' include file from latest TextEditor.mcc
+      sources and also applied the new Debug.c,h interface to all our subprojects.
+    * mcc/hotkeystring/HandleInput.c: fixed the OS4 build to use the new media
+      key definitions instead.
+
 2005-07-30  Jens Langner <Jens.Langner@light-speed.de>
 
     * mcc/hotkeystring/HandleInput.c: changed the rawkey based wheelmouse name to

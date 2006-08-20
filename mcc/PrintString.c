@@ -43,7 +43,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   WORD crsr_x=0, crsr_width=0, crsr_color=0;
   WORD dst_x, dst_y, length, offset = 0, StrLength;
 	STRPTR text;
-	BOOL	 BlockEnabled = (data->Flags & FLG_BlockEnabled && data->BlockStart != data->BlockStop);
+	BOOL	 BlockEnabled = ((data->Flags & FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
 	UWORD	 Blk_Start=0, Blk_Width=0;
 	STRPTR fake_contents = NULL;
 
@@ -64,7 +64,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 	}
 
   SetFont(rport, font);
-	crsr_width = (data->Flags & FLG_Active) && !BlockEnabled ? TextLength(rport, (*(contents+data->BufferPos) == '\0') ? "n" : contents+data->BufferPos, 1) : 0;
+	crsr_width = (data->Flags & FLG_Active) && !BlockEnabled ? TextLength(rport, (*(contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(contents+data->BufferPos), 1) : 0;
 
 	if(data->DisplayPos > data->BufferPos)
 		data->DisplayPos = data->BufferPos;

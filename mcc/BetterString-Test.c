@@ -239,7 +239,7 @@ int main(void)
   		set(window, MUIA_Window_ActiveObject, bstring);
   		set(window, MUIA_Window_Open, TRUE);
 
-  		while(DoMethod(app, MUIM_Application_NewInput, &sigs) != MUIV_Application_ReturnID_Quit)
+  		while((LONG)DoMethod(app, MUIM_Application_NewInput, &sigs) != MUIV_Application_ReturnID_Quit)
   		{
   			if(sigs)
   			{

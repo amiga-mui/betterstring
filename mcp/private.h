@@ -24,9 +24,9 @@
 #define BETTERSTRING_MCP_PRIV_H
 
 #include "BetterString_mcp.h"
+#include "Debug.h"
 
 #include <mcc_common.h>
-#include <mcc_debug.h>
 
 #define PREFSIMAGEOBJECT \
   BitmapObject,\

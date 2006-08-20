@@ -33,6 +33,7 @@ OBJDIR = .obj_os4
 BINDIR = bin_os4
 
 # Compiler/Linker flags
+CRT      = newlib
 CPU      = -mcpu=604e
 CPUFLAGS = -mmultiple
 CDEFS    = -D__BS_VERDATE=\"`date +%d.%m.%Y`\" -D__BS_VERDAYS="`expr \`date +%s\` / 86400 - 2922`"
@@ -40,10 +41,10 @@ WARN     = -W -Wall
 OPTFLAGS = -O3 -finline-functions -fomit-frame-pointer -funroll-loops
 DEBUG    = -DWITH_DEBUG -g -O0
 REDEFINE =
-CFLAGS   = -I. -I.. -I../../includes $(CPU) $(CPUFLAGS) $(WARN) $(OPTFLAGS) $(DEBUG)\
+CFLAGS   = -mcrt=$(CRT) -I. -I.. -I../../includes $(CPU) $(CPUFLAGS) $(WARN) $(OPTFLAGS) $(DEBUG)\
            -D__USE_INLINE__ $(REDEFINE) -c
-LDFLAGS  = -nostartfiles
-LDLIBS   = -ldebug
+LDFLAGS  = $(CPU) -mcrt=$(CRT) -nostartfiles
+LDLIBS   =
 
 # CPU and DEBUG can be defined outside, defaults to above
 # using e.g. "make DEBUG= CPU=-mcpu=603e" produces optimized non-debug PPC-603e version
@@ -60,11 +61,13 @@ TESTTARGET= $(BINDIR)/HotkeyString-Test
 M68KSTUBS = $(OBJDIR)/mccclass_68k.o
 
 MCCOBJS = $(OBJDIR)/library.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/Dispatcher.o \
           $(OBJDIR)/HandleInput.o
 
 
 TESTOBJS= $(OBJDIR)/HotkeyString-Test.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/Dispatcher.o \
           $(OBJDIR)/HandleInput.o
 

@@ -27,10 +27,10 @@
 
 #include <muiextra.h>
 #include <mcc_common.h>
-#include <mcc_debug.h>
 
 #include "HotkeyString_mcc.h"
 #include "BetterString_mcc.h"
+#include "Debug.h"
 
 struct InstData
 {

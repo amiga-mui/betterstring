@@ -55,6 +55,7 @@ MCCTARGET = $(BINDIR)/BetterString.mcc
 TESTTARGET= $(BINDIR)/BetterString-Test
 
 MCCOBJS = $(OBJDIR)/library.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/AllocBitMap.o \
           $(OBJDIR)/AllocFunctions.o \
           $(OBJDIR)/Dispatcher.o \
@@ -66,6 +67,7 @@ MCCOBJS = $(OBJDIR)/library.o \
 
 
 TESTOBJS= $(OBJDIR)/BetterString-Test.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/AllocBitMap.o \
           $(OBJDIR)/AllocFunctions.o \
           $(OBJDIR)/Dispatcher.o \

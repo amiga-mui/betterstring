@@ -197,7 +197,7 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 					{
 						STRPTR NodeName = (STRPTR)((dl->dol_Name << 2)+1);
 
-						if(!Strnicmp((unsigned char *)NodeName, (unsigned char *)data->Contents+pos, cut))
+						if(!Strnicmp(NodeName, data->Contents+pos, cut))
 						{
 							VolumeName = NodeName;
 							break;
@@ -257,7 +257,7 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 							char tokenized[80];
 
 							if(ParsePatternNoCase(pattern, tokenized, 40) != -1)
-								control->eac_MatchString = (unsigned char *)tokenized;
+								control->eac_MatchString = tokenized;
 
 							if((dirlock = Lock(data->Contents+pos, ACCESS_READ)))
 							{
