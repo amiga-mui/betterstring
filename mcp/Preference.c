@@ -32,6 +32,7 @@
 #include <proto/muimaster.h>
 #include <proto/intuition.h>
 #include <proto/iffparse.h>
+#include <proto/utility.h>
 
 #include "BetterString_mcp.h"
 #include "locale.h"

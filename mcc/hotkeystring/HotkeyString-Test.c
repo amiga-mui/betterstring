@@ -26,6 +26,7 @@
 #include <proto/intuition.h>
 #include <proto/muimaster.h>
 #include <proto/exec.h>
+#include <proto/utility.h>
 
 #include "HotkeyString_mcc.h"
 #include "private.h"
