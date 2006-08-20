@@ -1,0 +1,43 @@
+Short:        BetterString custom class for MUI
+Author:       BetterString.mcc Open Source Team, Allan Odgaard <duff@diku.dk>
+Uploader:     Jens Langner <Jens.Langner@light-speed de>
+Type:         dev/mui
+Version:      11.8
+Replaces:     dev/mui/mcc_betterstring-11.8.lha
+Requires:     AmigaOS 3.0+ or MorphOS, MUI 3.8+, 68020+/PPC604e+
+Architecture: ppc-amigaos >= 4.0.0; m68k-amigaos >= 3.0; ppc-morphos >= 1.4.2
+Distribution: Aminet
+
+BetterString is a stringgadget replacement. It is created for MUI, so using it
+should eliminate the problems with the original BOOPSI stringclass.
+The class offers the user to do number arithmetic, like increase, decrease and
+bin<->hex conversion. It has filename completion, ability to mark, cut, copy
+and paste text - Both via mouse and keyboard. The length of the contents
+buffer will dynamically be expanded to hold all of what the user type (unless
+a maximum length is given)
+
+It is used by a wide range of well-known MUI-based application like YAM
+(Yet Another Mailer) or SimpleMail as the main textediting MUI gadget.
+
+The gadget was originally written in 1997, and is Copyright (c) 1997-2000 by
+Allan Odgaard. As of version 11.7, release in July 2005, the gadget is
+maintained and Copyright (c) by the BetterString.mcc Open Source Team.
+
+It was released under the GNU Lesser Public License in July 2005 and its
+development is hosted at:
+
+http://www.sourceforge.net/projects/bstring-mcc/
+
+Please consult the included "COPYING" file for a more detailed information
+on the licensing of the gadget and its source code.
+
+Please refer to the included ChangeLog in the archive for a detailed information
+on the changes since the last version release.
+
+Enjoy this release and if you find any bugs or have suggestions please always
+prefer to go to the project homepage http://www.sf.net/projects/bstring-mcc/ and
+use the Bug/Feature Trackers there to report anything to the authors!
+
+Have phun,
+
+Your BetterString.mcc Open Source Team
