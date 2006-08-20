@@ -21,6 +21,7 @@
 ***************************************************************************/
 
 #include <string.h>
+#include <stdio.h>
 
 #include <dos/dosextens.h>
 #include <clib/alib_protos.h>
@@ -147,8 +148,7 @@ VOID InsertFileName (UWORD namestart, struct InstData *data)
 		}
 	}	while(entrynum != findnum);
 
-	strcpy(tmpname, (char *)ead1->ed_Name);
-	strcat(tmpname, ead1->ed_Type == 2 ? "/" : " ");
+  snprintf(tmpname, sizeof(tmpname), "%s%s", ead1->ed_Name, ead1->ed_Type == 2 ? "/" : " ");
 
 	Overwrite(tmpname, namestart, data->BufferPos-namestart, data);
 }
@@ -243,9 +243,10 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 
 				if((data->BufferPos-namestart) < 32)
 				{
-					strncpy(pattern, data->Contents+namestart, data->BufferPos-namestart);
+					strlcpy(pattern, data->Contents+namestart, data->BufferPos-namestart);
+          strlcat(pattern, "~(#?.info)", data->BufferPos-namestart);
+
 					oldletter = data->Contents[namestart];
-					strcpy(pattern+(data->BufferPos-namestart), "~(#?.info)");
 					data->Contents[namestart] = '\0';
 
 					if((fncbuffer = (struct FNCData *)MyAllocPooled(data->Pool, 4100)))

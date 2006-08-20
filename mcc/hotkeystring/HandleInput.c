@@ -79,14 +79,14 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 		char buffer[256];
 		ULONG i;
 
-		buffer[0] = 0;
+		buffer[0] = '\0';
 
 		for(i=0; qualifier_name[i]; i++)
 		{
 			if(qualifier & (1 << i))
 			{
-				strcat(buffer, qualifier_name[i]);
-				strcat(buffer, " ");
+				strlcat(buffer, qualifier_name[i], sizeof(buffer));
+				strlcat(buffer, " ", sizeof(buffer));
 			}
 		}
 
@@ -109,65 +109,65 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 					"f6", "f7", "f8", "f9", "f10"
 				};
 
-				strcat(buffer, key_name[code-RAWKEY_CRSRUP]);
+				strlcat(buffer, key_name[code-RAWKEY_CRSRUP], sizeof(buffer));
 			}
 			else switch(code)
 			{
 				#if defined(__amigaos4__)
-				case RAWKEY_MENU:     strcat(buffer, "menu"); break;
+				case RAWKEY_MENU:     strlcat(buffer, "menu", sizeof(buffer)); break;
 				#elif defined(__MORPHOS__)
-				case RAWKEY_SCRLOCK:  strcat(buffer, "scrlock"); break;
+				case RAWKEY_SCRLOCK:  strlcat(buffer, "scrlock", sizeof(buffer)); break;
 				#endif
 
-				case RAWKEY_NUMLOCK:  strcat(buffer, "numlock"); break;
-				case RAWKEY_INSERT:   strcat(buffer, "insert"); break;
-				case RAWKEY_PAGEUP:   strcat(buffer, "page_up"); break;
-				case RAWKEY_PAGEDOWN: strcat(buffer, "page_down"); break;
-				case RAWKEY_PRINTSCR: strcat(buffer, "prtscr"); break;
-				case RAWKEY_BREAK:    strcat(buffer, "pause"); break;
-				case RAWKEY_F12:      strcat(buffer, "f12"); break;
-				case RAWKEY_HOME:     strcat(buffer, "home"); break;
-				case RAWKEY_END:      strcat(buffer, "end"); break;
+				case RAWKEY_NUMLOCK:  strlcat(buffer, "numlock", sizeof(buffer)); break;
+				case RAWKEY_INSERT:   strlcat(buffer, "insert", sizeof(buffer)); break;
+				case RAWKEY_PAGEUP:   strlcat(buffer, "page_up", sizeof(buffer)); break;
+				case RAWKEY_PAGEDOWN: strlcat(buffer, "page_down", sizeof(buffer)); break;
+				case RAWKEY_PRINTSCR: strlcat(buffer, "prtscr", sizeof(buffer)); break;
+				case RAWKEY_BREAK:    strlcat(buffer, "pause", sizeof(buffer)); break;
+				case RAWKEY_F12:      strlcat(buffer, "f12", sizeof(buffer)); break;
+				case RAWKEY_HOME:     strlcat(buffer, "home", sizeof(buffer)); break;
+				case RAWKEY_END:      strlcat(buffer, "end", sizeof(buffer)); break;
 
         #if defined(__amigaos4__)
-				case RAWKEY_MEDIA_STOP:       strcat(buffer, "media_stop"); break;
-				case RAWKEY_MEDIA_PLAY_PAUSE: strcat(buffer, "media_play"); break;
-				case RAWKEY_MEDIA_PREV_TRACK: strcat(buffer, "media_prev"); break;
-				case RAWKEY_MEDIA_NEXT_TRACK: strcat(buffer, "media_next"); break;
-				case RAWKEY_MEDIA_SHUFFLE:    strcat(buffer, "media_rewind"); break;
-				case RAWKEY_MEDIA_REPEAT:     strcat(buffer, "media_forward"); break;
+				case RAWKEY_MEDIA_STOP:       strlcat(buffer, "media_stop", sizeof(buffer)); break;
+				case RAWKEY_MEDIA_PLAY_PAUSE: strlcat(buffer, "media_play", sizeof(buffer)); break;
+				case RAWKEY_MEDIA_PREV_TRACK: strlcat(buffer, "media_prev", sizeof(buffer)); break;
+				case RAWKEY_MEDIA_NEXT_TRACK: strlcat(buffer, "media_next", sizeof(buffer)); break;
+				case RAWKEY_MEDIA_SHUFFLE:    strlcat(buffer, "media_rewind", sizeof(buffer)); break;
+				case RAWKEY_MEDIA_REPEAT:     strlcat(buffer, "media_forward", sizeof(buffer)); break;
         #else
-				case RAWKEY_AUD_STOP:       strcat(buffer, "media_stop"); break;
-				case RAWKEY_AUD_PLAY_PAUSE: strcat(buffer, "media_play"); break;
-				case RAWKEY_AUD_PREV_TRACK: strcat(buffer, "media_prev"); break;
-				case RAWKEY_AUD_NEXT_TRACK: strcat(buffer, "media_next"); break;
-				case RAWKEY_AUD_SHUFFLE:    strcat(buffer, "media_rewind"); break;
-				case RAWKEY_AUD_REPEAT:     strcat(buffer, "media_forward"); break;
+				case RAWKEY_AUD_STOP:       strlcat(buffer, "media_stop", sizeof(buffer)); break;
+				case RAWKEY_AUD_PLAY_PAUSE: strlcat(buffer, "media_play", sizeof(buffer)); break;
+				case RAWKEY_AUD_PREV_TRACK: strlcat(buffer, "media_prev", sizeof(buffer)); break;
+				case RAWKEY_AUD_NEXT_TRACK: strlcat(buffer, "media_next", sizeof(buffer)); break;
+				case RAWKEY_AUD_SHUFFLE:    strlcat(buffer, "media_rewind", sizeof(buffer)); break;
+				case RAWKEY_AUD_REPEAT:     strlcat(buffer, "media_forward", sizeof(buffer)); break;
         #endif
 
 
 				case RAWKEY_HELP:
-					strcat(buffer, "help");
+					strlcat(buffer, "help", sizeof(buffer));
 				break;
 
 				case NM_WHEEL_UP:
-					strcat(buffer, "nm_wheel_up");
+					strlcat(buffer, "nm_wheel_up", sizeof(buffer));
 				break;
 
 				case NM_WHEEL_DOWN:
-					strcat(buffer, "nm_wheel_down");
+					strlcat(buffer, "nm_wheel_down", sizeof(buffer));
 				break;
 
 				case NM_WHEEL_LEFT:
-					strcat(buffer, "nm_wheel_left");
+					strlcat(buffer, "nm_wheel_left", sizeof(buffer));
 				break;
 
 				case NM_WHEEL_RIGHT:
-					strcat(buffer, "nm_wheel_right");
+					strlcat(buffer, "nm_wheel_right", sizeof(buffer));
 				break;
 
 				case NM_BUTTON_FOURTH:
-					strcat(buffer, "nm_wheel_button");
+					strlcat(buffer, "nm_wheel_button", sizeof(buffer));
 				break;
 
 				default:
@@ -215,7 +215,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 					}
 
 					if(append)
-						strcat(buffer, append);
+						strlcat(buffer, append, sizeof(buffer));
 				}
 				break;
 			}

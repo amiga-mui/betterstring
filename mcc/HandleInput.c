@@ -78,7 +78,7 @@ VOID AddToUndo (struct InstData *data)
 	
 	if((data->Undo = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)))
 	{
-		strcpy(data->Undo, data->Contents);
+		strlcpy(data->Undo, data->Contents, strlen(data->Contents)+1);
 		data->UndoPos = data->BufferPos;
 		data->Flags &= ~FLG_RedoAvailable;
 	}
@@ -218,7 +218,7 @@ UWORD PrevWord (STRPTR text, UWORD x, struct Locale *locale)
 
 VOID strcpyback (STRPTR dest, STRPTR src)
 {
-		UWORD	length;
+  UWORD	length;
 
 	length = strlen(src)+1;
 	dest = dest + length;

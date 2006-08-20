@@ -339,8 +339,9 @@ DISPATCHERPROTO(_Dispatcher)
 */
 			if(data->Original)
 				MyFreePooled(data->Pool, (APTR)data->Original);
+
 			if((data->Original = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)))
-				strcpy(data->Original, data->Contents);
+				strlcpy(data->Original, data->Contents, strlen(data->Contents+1));
 
 			if(!(data->Flags & FLG_OwnBackground))
 					set(obj, MUIA_Background, data->ActiveBackground);

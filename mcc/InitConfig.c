@@ -66,26 +66,30 @@ void InitConfig (Object *obj, struct InstData *data)
 
 	if(!(data->Flags & FLG_OwnFont) && DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Font, &setting))
 	{
-		STRPTR	src = (STRPTR)setting;
-		char fontname[40];
-		struct TextAttr myfont = { fontname, 8, FS_NORMAL, 0 };
-		LONG c = 0;
+		STRPTR src = (STRPTR)setting;
 
-		while(src[c] != '/' && src[c] != '\0' && c < 32)
-		{
-			fontname[c-1] = src[c];
-			++c;
-		}
-		strncpy(&fontname[c], ".font", 6);
-		StrToLong(&src[c+1], &c);
-		myfont.ta_YSize = c;
+    if(strlen(src) > 0)
+    {
+  		char fontname[256];
+	  	struct TextAttr myfont = { fontname, 8, FS_NORMAL, 0 };
+		  LONG c = 0;
 
-		data->Font = OpenDiskFont(&myfont);
+  		while(src[c] != '/' && src[c] != '\0' && c < 255)
+	  	{
+		  	fontname[c] = src[c];
+			  ++c;
+  		}
+	  	strlcpy(&fontname[c], ".font", 256-c);
+		  StrToLong(&src[c+1], &c);
+  		myfont.ta_YSize = c;
+
+		  data->Font = OpenDiskFont(&myfont);
+    }
+    else
+      data->Font = NULL;
 	}
 	else
-	{
 		data->Font = NULL;
-	}
 
 	if(!(data->Flags & FLG_OwnBackground))
 		set(obj, MUIA_Background, data->InactiveBackground);
