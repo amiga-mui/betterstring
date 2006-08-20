@@ -6,6 +6,12 @@ $Id$
  
 2006-08-20  Jens Langner <Jens.Langner@light-speed.de>
 
+    * mcc/HandleInput.c: fixed bug #1218170 where on "MUIA_String_Secret"
+      enabled objects the doubleclicking marking of text should not select
+      single words.
+    * mcc/HandleInput.c: on double-clicked into a betterstring gadget, text
+      passages will only be marked if the user really always clicked on the
+      very same position in the string. Otherwise marking will be removed.
     * mcc/InitConfig.c: fixed a bug in the font name parsing/loading routines
       which didn't work as expected and could crash a machine under certain
       situations.

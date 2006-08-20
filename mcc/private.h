@@ -53,6 +53,7 @@ struct InstData
 	Object	*Popup;			/* ctrl-p popup object */
 	UWORD		DisplayPos;
 	UWORD		BufferPos;
+  UWORD   BufferLastPos;
 	UWORD		MaxLength;
 	WORD		Alignment;
 	UWORD		UndoPos;

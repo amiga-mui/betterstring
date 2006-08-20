@@ -875,7 +875,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 						Object *active;
 						get(_win(obj), MUIA_Window_ActiveObject, &active);
 						if(obj != active)
-							kprintf("MUI error: %lx, %lx\n", active, obj);
+							E(DBF_STARTUP, "MUI error: %lx, %lx", active, obj);
 
 						WORD x = ad->mad_Box.Left + ad->mad_addleft;
 						WORD y = ad->mad_Box.Top  + ad->mad_addtop;
@@ -884,7 +884,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 						if(!(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height))
 						{
-							kprintf("Detected LMB+up outside (drag: %ld)\n", data->Flags & FLG_DragOutside ? 1:0);
+							D(DBF_STARTUP, "Detected LMB+up outside (drag: %ld)", data->Flags & FLG_DragOutside ? 1:0);
 							set(_win(obj), MUIA_Window_ActiveObject, MUIV_Window_ActiveObject_None);
 						}
 					}
@@ -907,46 +907,67 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 						SetFont(&data->rport, Font);
 						data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
 
-						if(DoubleClick(data->StartSecs, data->StartMicros, msg->imsg->Seconds, msg->imsg->Micros))
-								data->ClickCount++;
-						else	data->ClickCount = 0;
-						data->StartSecs	= msg->imsg->Seconds;
+						if(data->BufferPos == data->BufferLastPos &&
+               DoubleClick(data->StartSecs, data->StartMicros, msg->imsg->Seconds, msg->imsg->Micros))
+            {
+              // on a secret gadget we skip clickcount step 1 as
+              // it might be misused to guess the words in the gadget.
+              if((data->Flags & FLG_Secret) && data->ClickCount == 0)
+                data->ClickCount++;
+
+					    data->ClickCount++;
+            }
+						else
+              data->ClickCount = 0;
+
+						// lets save the current bufferpos to the lastpos variable
+            data->BufferLastPos = data->BufferPos;
+
+            data->StartSecs	= msg->imsg->Seconds;
 						data->StartMicros	= msg->imsg->Micros;
 
 						switch(data->ClickCount)
 						{
 							case 0:
+              {
 								if(!(data->Flags & FLG_BlockEnabled && msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
 									data->BlockStart = data->BufferPos;
-								break;
+							}
+              break;
 
 							case 1:
-								if(*(data->Contents+data->BufferPos) != '\0')
-								{
-										UWORD start = data->BufferPos,
-												stop  = data->BufferPos;
-										BOOL	alpha	= IsAlNum(data->locale, (UBYTE)*(data->Contents+data->BufferPos));
+              {
+    						if(*(data->Contents+data->BufferPos) != '\0')
+	    					{
+                  UWORD start = data->BufferPos;
+	  		    			UWORD	stop  = data->BufferPos;
+  	  		    		BOOL alpha = IsAlNum(data->locale, (UBYTE)*(data->Contents+data->BufferPos));
 
-									while(start > 0 && alpha == IsAlNum(data->locale, (UBYTE)*(data->Contents+start-1)))
-										start--;
+			  		  		while(start > 0 && alpha == IsAlNum(data->locale, (UBYTE)*(data->Contents+start-1)))
+				  		    	start--;
 
-									while(alpha == IsAlNum(data->locale, (UBYTE)*(data->Contents+stop)) && *(data->Contents+stop) != '\0')
-										stop++;
+					  		  while(alpha == IsAlNum(data->locale, (UBYTE)*(data->Contents+stop)) && *(data->Contents+stop) != '\0')
+						  		  stop++;
 
-									data->BlockStart = start;
-									data->BufferPos = stop;
-								}
-								break;
+								  data->BlockStart = start;
+  								data->BufferPos = stop;
+	  					  }
+              }
+							break;
 
 							case 2:
+              {
 								data->BlockStart = 0;
 								data->BufferPos = strlen(data->Contents);
-								break;
+              }
+							break;
 
 							case 3:
+              {
 								data->BlockStart = data->BufferPos;
 								data->ClickCount = 0;
-								break;
+              }
+							break;
 						}
 						data->BlockStop = data->BufferPos;
 						data->Flags |= FLG_BlockEnabled;
@@ -956,9 +977,11 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 						DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 
 						if(data->Flags & FLG_Active)
-								MUI_Redraw(obj, MADF_DRAWUPDATE);
-						else	set(_win(obj), MUIA_Window_ActiveObject, obj);
-						result = MUI_EventHandlerRC_Eat;
+  						MUI_Redraw(obj, MADF_DRAWUPDATE);
+						else
+              set(_win(obj), MUIA_Window_ActiveObject, obj);
+						
+            result = MUI_EventHandlerRC_Eat;
 					}
 					else
 					{
@@ -966,7 +989,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 						if(data->Flags & FLG_Active && !(data->Flags & FLG_StayActive))
 						{
 #ifdef ALLOW_OUTSIDE_MARKING
-							kprintf("Clicked outside gadget\n");
+							D(DBF_STARTUP, "Clicked outside gadget");
 							data->Flags |= FLG_DragOutside;
 
 							DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
@@ -985,7 +1008,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 				if(msg->imsg->Class == IDCMP_MOUSEMOVE)
 				{
 					data->Flags &= ~FLG_DragOutside;
-					kprintf("Detected drag\n");
+					D(DBF_STARTUP, "Detected drag");
 				}
 #endif
 				if((msg->imsg->Class == IDCMP_MOUSEMOVE || msg->imsg->Class == IDCMP_INTUITICKS) && data->Flags & FLG_Active)
