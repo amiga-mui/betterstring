@@ -158,10 +158,11 @@ ULONG	Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 
 ULONG Cleanup(struct IClass *cl, Object *obj, Msg msg)
 {
-		struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
 	DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
 
+  // make sure the gadget is being set to inactive state
 /*	if(data->Flags & FLG_Active)
 	{
 		data->Flags &= ~FLG_Active;
@@ -350,14 +351,19 @@ DISPATCHERPROTO(_Dispatcher)
 		case MUIM_GoInactive:
 		{
 //			kprintf("0x%lx: GoInactive\n", obj);
+
+      // clean an eventually marked block and the
+      // active state flag of the gadget
+			data->Flags &= ~FLG_BlockEnabled;
 			data->Flags &= ~FLG_Active;
 			DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
 			data->ehnode.ehn_Events &= ~IDCMP_MOUSEMOVE;
 			DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 
 			if(!(data->Flags & FLG_OwnBackground))
-					set(obj, MUIA_Background, data->InactiveBackground);
-			else	MUI_Redraw(obj, MADF_DRAWUPDATE);
+        set(obj, MUIA_Background, data->InactiveBackground);
+			else
+        MUI_Redraw(obj, MADF_DRAWUPDATE);
 		}
 		break;
 

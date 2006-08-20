@@ -56,11 +56,13 @@ MCPTARGET = $(BINDIR)/BetterString.mcp
 PREFTARGET= $(BINDIR)/BetterString-Prefs
 
 MCPOBJS = $(OBJDIR)/library.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/locale.o \
           $(OBJDIR)/CreatePrefsGroup.o \
           $(OBJDIR)/Dispatcher.o
 
 PREFOBJS= $(OBJDIR)/locale.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/CreatePrefsGroup.o \
           $(OBJDIR)/Dispatcher.o \
           $(OBJDIR)/Preference.o

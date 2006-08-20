@@ -57,9 +57,8 @@ LDLIBS   = -ldebug
 MCPTARGET = $(BINDIR)/BetterString.mcp
 PREFTARGET= $(BINDIR)/BetterString-Prefs
 
-M68KSTUBS = $(OBJDIR)/mccclass_68k.o
-
 MCPOBJS = $(OBJDIR)/library.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/locale.o \
           $(OBJDIR)/CreatePrefsGroup.o \
           $(OBJDIR)/Dispatcher.o

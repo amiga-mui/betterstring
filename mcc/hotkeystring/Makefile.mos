@@ -56,14 +56,14 @@ LDLIBS   = -ldebug
 MCCTARGET = $(BINDIR)/HotkeyString.mcc
 TESTTARGET= $(BINDIR)/HotkeyString-Test
 
-M68KSTUBS = $(OBJDIR)/mccclass_68k.o
-
 MCCOBJS = $(OBJDIR)/library.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/Dispatcher.o \
           $(OBJDIR)/HandleInput.o
 
 
 TESTOBJS= $(OBJDIR)/HotkeyString-Test.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/Dispatcher.o \
           $(OBJDIR)/HandleInput.o
 

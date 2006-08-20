@@ -69,9 +69,9 @@ int	main(void)
 {
   if((UtilityBase = OpenLibrary("utility.library", 38)) &&
     GETINTERFACE(IUtility, UtilityBase))
-  if((IntuitionBase = OpenLibrary("intuition.library", 38)) &&
+  if((IntuitionBase = (APTR)OpenLibrary("intuition.library", 38)) &&
     GETINTERFACE(IIntuition, IntuitionBase))
-  if((LocaleBase = OpenLibrary("locale.library", 38)) &&
+  if((LocaleBase = (APTR)OpenLibrary("locale.library", 38)) &&
     GETINTERFACE(ILocale, LocaleBase))
 	if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
     GETINTERFACE(IMUIMaster, MUIMasterBase))
@@ -143,13 +143,13 @@ int	main(void)
   if(LocaleBase)
   {
     DROPINTERFACE(ILocale);
-    CloseLibrary(LocaleBase);
+    CloseLibrary((struct Library *)LocaleBase);
   }
 
   if(IntuitionBase)
   {
     DROPINTERFACE(IIntuition);
-    CloseLibrary(IntuitionBase);
+    CloseLibrary((struct Library *)IntuitionBase);
   }
 
   if(UtilityBase)

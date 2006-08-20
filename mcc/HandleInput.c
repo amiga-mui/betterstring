@@ -102,7 +102,7 @@ WORD AlignOffset (Object *obj, struct InstData *data)
 		length = TextFit(&data->rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
 		textlength = TextLength(&data->rport, text, length);
 
-		crsr_width = (data->Flags & FLG_Active) ? TextLength(&data->rport, (*(data->Contents+data->BufferPos) == '\0') ? "n" : data->Contents+data->BufferPos, 1) : 0;
+		crsr_width = (data->Flags & FLG_Active) ? TextLength(&data->rport, (*(data->Contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(data->Contents+data->BufferPos), 1) : 0;
 		if(crsr_width && !BlockEnabled(data) && data->BufferPos == data->DisplayPos+StrLength)
 		{
 			textlength += crsr_width;
@@ -422,7 +422,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 		WORD StringLength = strlen(data->Contents);
 
 		if(msg->imsg->Class == IDCMP_RAWKEY &&
-		   msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
+//		   msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
 		   msg->imsg->Code <= IECODE_KEY_CODE_LAST)
 		{
 			if(data->Flags & FLG_Active)

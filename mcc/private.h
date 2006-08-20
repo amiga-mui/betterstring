@@ -25,14 +25,15 @@
 
 #include <dos/exall.h>
 #include <exec/types.h>
+#include <proto/intuition.h>
 #include <intuition/classusr.h>
 #include <libraries/mui.h>
 
 #include <muiextra.h>
 #include <mcc_common.h>
-#include <mcc_debug.h>
 
 #include "BetterString_mcc.h"
+#include "Debug.h"
 
 struct FNCData
 {

@@ -56,9 +56,8 @@ LDLIBS   = -ldebug
 MCCTARGET = $(BINDIR)/BetterString.mcc
 TESTTARGET= $(BINDIR)/BetterString-Test
 
-M68KSTUBS = $(OBJDIR)/mccclass_68k.o
-
 MCCOBJS = $(OBJDIR)/library.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/AllocBitMap.o \
           $(OBJDIR)/AllocFunctions.o \
           $(OBJDIR)/Dispatcher.o \
@@ -70,6 +69,7 @@ MCCOBJS = $(OBJDIR)/library.o \
 
 
 TESTOBJS= $(OBJDIR)/BetterString-Test.o \
+          $(OBJDIR)/Debug.o \
           $(OBJDIR)/AllocBitMap.o \
           $(OBJDIR)/AllocFunctions.o \
           $(OBJDIR)/Dispatcher.o \
