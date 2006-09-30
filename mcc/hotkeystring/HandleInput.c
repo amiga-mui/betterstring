@@ -109,7 +109,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 					"f6", "f7", "f8", "f9", "f10"
 				};
 
-				strlcat(buffer, key_name[code-RAWKEY_CRSRUP], sizeof(buffer));
+				strlcat(buffer, key_name[code-RAWKEY_F11], sizeof(buffer));
 			}
 			else switch(code)
 			{

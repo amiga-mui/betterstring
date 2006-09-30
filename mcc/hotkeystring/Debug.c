@@ -56,10 +56,10 @@ void SetupDebug(void)
 {
   char var[256];
 
-  kprintf("** BetterString.mcc v" LIB_REV_STRING " startup ********************\n");
+  kprintf("** HotkeyString.mcc v" LIB_REV_STRING " startup ********************\n");
   kprintf("Initializing runtime debugging:\n");
 
-	if(GetVar("betterstring.mcc.debug", var, sizeof(var), 0) > 0)
+	if(GetVar("hotkeystring.mcc.debug", var, sizeof(var), 0) > 0)
 	{
 		char *tok;
     char *debug = var;
@@ -164,7 +164,7 @@ void SetupDebug(void)
 		}
 	}
 
-	kprintf("set debug classes/flags (env:texteditor.mcc.debug): %08x/%08x\n", debug_classes, debug_flags);
+	kprintf("set debug classes/flags (env:hotkeystring.mcc.debug): %08x/%08x\n", debug_classes, debug_flags);
   kprintf("** Normal processing follows ***************************************\n");
 }
 
