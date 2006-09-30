@@ -4,6 +4,14 @@ MUI BetterString MCC class - ChangeLog
 
 $Id$
 
+2006-09-30 Thore Böckelmann <tboeckel@gmx.de>
+
+    * mcc/hotkeystring/HandleInput.c: fixed bug #1568031 where a wrong index
+      calculation which shifted all F-keys and cursor keys by one, making all
+      inputs wrong.
+    * mcc/Debug.c, mcp/Debug.c, mcc/hotkeystring/Debug.c: corrected several
+      wrong class names in the debug output.
+
 #### v11.8 RELEASE ############################################################
  
 2006-08-20  Jens Langner <Jens.Langner@light-speed.de>
