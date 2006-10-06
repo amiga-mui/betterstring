@@ -45,7 +45,7 @@ static struct PrefsExchangeData PrefsInfo[] =
 	{ Frame,				MUIA_Framedisplay_Spec, MUICFG_BetterString_Frame,				32, "302211"	}
 };
 
-DISPATCHERPROTO(_DispatcherP)
+DISPATCHER(_DispatcherP)
 {
 	struct InstData_MCP *data = (struct InstData_MCP *)INST_DATA(cl, obj);
 	ULONG result = 0;

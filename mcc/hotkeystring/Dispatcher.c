@@ -113,7 +113,7 @@ ULONG Get (struct IClass *cl, Object *obj, struct opGet *msg)
 	return TRUE;
 }
 
-DISPATCHERPROTO(_Dispatcher)
+DISPATCHER(_Dispatcher)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 	ULONG	result = 0;

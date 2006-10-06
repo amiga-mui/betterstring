@@ -260,7 +260,7 @@ ULONG mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
 	return(0);
 }
 
-DISPATCHERPROTO(_Dispatcher)
+DISPATCHER(_Dispatcher)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 	ULONG	result = TRUE;
