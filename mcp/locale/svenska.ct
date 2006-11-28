@@ -1,0 +1,39 @@
+## chunk AUTH Pär Boberg
+## language svenska
+## version $VER: BetterString_mcp.ct 2.0 (27.11.06)
+MSG_Label_Active
+Aktiv:
+;#DEF Active:
+;#SET (0//)
+MSG_Label_Background
+Bakgrund
+;#DEF Background
+;#SET (1//)
+MSG_Label_Cursor
+Markör:
+;#DEF Cursor:
+;#SET (2//)
+MSG_Label_Fonts
+Typsnitt:
+;#DEF Font:
+;#SET (3//)
+MSG_Label_Frame
+Ram:
+;#DEF Frame:
+;#SET (4//)
+MSG_Label_Inactive
+Inaktiv:
+;#DEF Inactive:
+;#SET (5//)
+MSG_Label_Marked
+Markerad:
+;#DEF Marked:
+;#SET (6//)
+MSG_Label_Text
+Text
+;#DEF Text
+;#SET (7//)
+MSG_String_TestString
+Testa BetterStrings styrka här!
+;#DEF Test the power of BetterString here!
+;#SET (8//)
