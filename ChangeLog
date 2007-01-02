@@ -3,10 +3,17 @@ MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
 $Id$
+$URL: $
+
+2007-01-02  Jens Langner <Jens.Langner@light-speed.de>
+
+    * misc: updated all copyright notices to 2007.
+    * mcp/locale/french.ct: added french catalog translation kindly provided
+      by Philippe Bovier.
 
 2006-11-28  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcp/local/svenska.ct: added swedish catalog translation kindly provided
+    * mcp/locale/svenska.ct: added swedish catalog translation kindly provided
       by PÃr Boberg.
 
 2006-10-06  Jens Langner <Jens.Langner@light-speed.de>
