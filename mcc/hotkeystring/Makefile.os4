@@ -41,7 +41,7 @@ WARN     = -W -Wall
 OPTFLAGS = -O3 -finline-functions -fomit-frame-pointer -funroll-loops
 DEBUG    = -DWITH_DEBUG -g -O0
 REDEFINE =
-CFLAGS   = -mcrt=$(CRT) -I. -I.. -I../../includes $(CPU) $(CPUFLAGS) $(WARN) $(OPTFLAGS) $(DEBUG)\
+CFLAGS   = -mcrt=$(CRT) -I. -I.. -I../../include $(CPU) $(CPUFLAGS) $(WARN) $(OPTFLAGS) $(DEBUG)\
            -D__USE_INLINE__ $(REDEFINE) -c
 LDFLAGS  = $(CPU) -mcrt=$(CRT) -nostartfiles
 LDLIBS   =
@@ -91,7 +91,7 @@ $(OBJDIR)/%.o: %.c
 	@printf '\033[32mCompiling $<\033[0m\n'
 	@$(CC) $(CFLAGS) $< -o $@ -DNO_PPCINLINE_STDARG
 
-$(OBJDIR)/mccclass_68k.o: ../../includes/mccclass_68k.c
+$(OBJDIR)/mccclass_68k.o: ../../include/mccclass_68k.c
 	@printf '\033[32mCompiling $<\033[0m\n'
 	@$(CC) $(CFLAGS) $< -o $@
 
@@ -107,10 +107,10 @@ $(TESTTARGET): $(TESTOBJS)
 	@$(CC) -o $@.debug $(TESTOBJS) $(LDLIBS)
 	@$(STRIP) -o $@ $@.debug
 
-$(OBJDIR)/library.o: library.c ../../includes/mccheader.c \
+$(OBJDIR)/library.o: library.c ../../include/mccheader.c \
   HotkeyString_mcc.h private.h rev.h
 
-$(OBJDIR)/library.o: library.c ../../includes/mccheader.c HotkeyString_mcc.h \
+$(OBJDIR)/library.o: library.c ../../include/mccheader.c HotkeyString_mcc.h \
   private.h rev.h
 
 #

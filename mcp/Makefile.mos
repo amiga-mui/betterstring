@@ -40,7 +40,7 @@ CDEFS    = -D__NLVP_VERDATE=\"`date +%d.%m.%Y`\" -D__NLVP_VERDAYS="`expr \`date 
 WARN     = -W -Wall
 OPTFLAGS = -O3 -finline-functions -fomit-frame-pointer -funroll-loops
 DEBUG    = -DWITH_DEBUG -g -O0
-CFLAGS   = -noixemul -I. -I../mcc -I../includes $(CPU) $(CPUFLAGS) $(WARN) $(OPTFLAGS)\
+CFLAGS   = -noixemul -I. -I../mcc -I../include $(CPU) $(CPUFLAGS) $(WARN) $(OPTFLAGS)\
            $(DEBUG) -c
 LDFLAGS  = -noixemul -nostartfiles
 LDLIBS   = -ldebug
@@ -104,10 +104,10 @@ $(PREFTARGET): $(PREFOBJS) $(OBJDIR)/Preference.o
 	@$(CC) -noixemul -o $@.debug $(PREFOBJS) $(LDLIBS)
 	@$(STRIP) -o $@ $@.debug
 
-$(OBJDIR)/library.o: library.c ../includes/mccheader.c \
+$(OBJDIR)/library.o: library.c ../include/mccheader.c \
   ../mcc/BetterString_mcc.h private.h rev.h
 
-$(OBJDIR)/library.o: library.c ../includes/mccheader.c BetterString_mcp.h \
+$(OBJDIR)/library.o: library.c ../include/mccheader.c BetterString_mcp.h \
   private.h icon.bh rev.h
 
 locale.h: locale.c
