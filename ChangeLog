@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL: $
 
+2007-03-04 Thore Böckelmann <tboeckel@gmx.de>
+
+    * all makefiles: all makefiles were still accessing the no longer existing
+      directory "includes" instead of "include".
+
 2007-01-02  Jens Langner <Jens.Langner@light-speed.de>
 
     * misc: updated all copyright notices to 2007.

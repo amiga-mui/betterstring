@@ -31,7 +31,7 @@ CP    = cp
 # Directories
 OBJDIR = .obj_os3
 BINDIR = bin_os3
-INCDIR = ../../includes
+INCDIR = ../../include
 
 # Compiler/Linker flags
 CPU      = -m68020-60 -msoft-float
