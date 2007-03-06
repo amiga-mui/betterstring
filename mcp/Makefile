@@ -230,6 +230,11 @@ PREFOBJS= $(OBJDIR)/locale.o \
           $(OBJDIR)/Dispatcher.o \
           $(OBJDIR)/Preference.o
 
+# available catalog translations
+CATALOGS = $(LOCALE)/deutsch.catalog \
+           $(LOCALE)/french.catalog \
+           $(LOCALE)/svenska.catalog
+
 #
 
 all: $(BINDIR) $(OBJDIR) locale.c $(MCPTARGET) $(PREFTARGET)
@@ -277,6 +282,16 @@ locale.h: locale.c
 locale.c: locale/BetterString_mcp.cd C_h.sd C_c.sd
 	@printf '\033[33mGenerating locale file $@...\033[0m\n'
 	@$(FC) locale/BetterString_mcp.cd locale.h=C_h.sd locale.c=C_c.sd
+
+## CATALOG GENERATION #################
+
+$(LOCALE)/%.catalog: $(LOCALE)/%.ct
+	@printf '\033[33mGenerating $@\033[0m\n'
+	@$(FC) $(LOCALE)/BetterString_mcp.cd $< CATALOG $@
+
+.IGNORE: $(CATALOGS)
+
+catalogs: $(CATALOGS)
 
 #
 
