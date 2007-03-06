@@ -44,18 +44,18 @@ static BOOL BlockEnabled(struct InstData *data)
 }
 
 #if defined(__amigaos4__) || defined(__MORPHOS__)
-static int VARARGS68K MySPrintf(char *buf, char *fmt, ...)
+static int VARARGS68K MySPrintf(const char *buf, const char *fmt, ...)
 {
   VA_LIST args;
 
   VA_START(args, fmt);
-  RawDoFmt(fmt, VA_ARG(args, void *), NULL, buf);
+  RawDoFmt(fmt, VA_ARG(args, void *), NULL, (STRPTR)buf);
   VA_END(args);
 
   return(strlen(buf));
 }
 #else
-static int STDARGS MySPrintf(char *buf, char *fmt, ...)
+static int STDARGS MySPrintf(const char *buf, const char *fmt, ...)
 {
 	static const UWORD PutCharProc[2] = {0x16C0,0x4E75};
 	/* dirty hack to avoid assembler part :-)
@@ -64,7 +64,7 @@ static int STDARGS MySPrintf(char *buf, char *fmt, ...)
 	va_list args;
 
 	va_start(args, fmt);
-	RawDoFmt(fmt, args, (void (*)(void))PutCharProc, buf);
+	RawDoFmt(fmt, args, (void (*)(void))PutCharProc, (STRPTR)buf);
 	va_end(args);
 
 	return(strlen(buf));
@@ -683,11 +683,13 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 									case 'i':
 									{
-											LONG	pos, cut;
-											ULONG	result;
+									  LONG pos;
 
 										if((pos = FindDigit(data)) >= 0)
 										{
+  									  LONG	cut;
+	  									ULONG	result;
+
 											if((cut = StrToLong(data->Contents+pos, (LONG *)&result)))
 											{
 												char string[12];
@@ -717,7 +719,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 											{
 												if(result || code == '$')
 												{
-													char *format = "%lx";
+													const char *format = "%lx";
 													char string[12];
 													char format2[12];
 

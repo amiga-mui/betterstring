@@ -74,7 +74,7 @@ int main(void)
 	{
 		struct	MUI_CustomClass	*mcc;
 		Object	*app, *window, *bstring, *button;
-		STRPTR	classes[] = {"BetterString.mcc", NULL};
+		const char *classes[] = {"BetterString.mcc", NULL};
 
 		mcc = MUI_CreateCustomClass(NULL, "BetterString.mcc", NULL, sizeof(struct InstData), ENTRY(_Dispatcher));
 		app =	ApplicationObject,

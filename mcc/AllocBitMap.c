@@ -39,7 +39,7 @@ struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG width), REG(d1, LONG he
   {
     if(friend != NULL)
     {
-      if(FindSemaphore("cybergraphics.library") != NULL
+      if(FindSemaphore((STRPTR)"cybergraphics.library") != NULL
          && (GetBitMapAttr(friend,BMA_FLAGS) & BMF_INTERLEAVED) == 0)
         flags |= BMF_MINPLANES;
       else

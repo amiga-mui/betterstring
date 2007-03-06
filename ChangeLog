@@ -3,7 +3,13 @@ MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
 $Id$
-$URL: $
+$URL$
+
+2007-03-06  Jens Langner <Jens.Langner@light-speed.de>
+
+    * misc: fixed several compiler warnings
+    * misc: replaced all single-target makefiles with general "Makefile"
+      that automatically identifies the build target via uname.
 
 2007-03-04 Thore Böckelmann <tboeckel@gmx.de>
 
@@ -19,7 +25,7 @@ $URL: $
 2006-11-28  Jens Langner <Jens.Langner@light-speed.de>
 
     * mcp/locale/svenska.ct: added swedish catalog translation kindly provided
-      by PÃr Boberg.
+      by Pär Boberg.
 
 2006-10-06  Jens Langner <Jens.Langner@light-speed.de>
 
@@ -35,7 +41,7 @@ $URL: $
       wrong class names in the debug output.
 
 #### v11.8 RELEASE ############################################################
- 
+   
 2006-08-20  Jens Langner <Jens.Langner@light-speed.de>
 
     * mcc/HandleInput.c: fixed bug #1218170 where on "MUIA_String_Secret"

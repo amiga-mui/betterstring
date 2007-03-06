@@ -33,30 +33,30 @@
 #include "muiextra.h"
 #include "rev.h"
 
-STRPTR Key1[]  = { "Amiga + c", "Copy all or marked text" };
-STRPTR Key2[]  = { "Amiga + x", "Cut all or marked text" };
-STRPTR Key3[]  = { "Amiga + v", "Paste" };
-STRPTR Key4[]  = { "Amiga + z", "Undo last deletion" };
-STRPTR Key5[]  = { "Amiga + Z", "Redo last deletion" };
-STRPTR Key6[]  = { "Amiga + q", "Toggle between original and modified buffer" };
-STRPTR Key7[]  = { "Amiga + g", "Toggle case on char" };
-STRPTR Key8[]  = { "Amiga + G", "Toggle case on word" };
-STRPTR Key9[]  = { "Amiga + i", "Increase number" };
-STRPTR Key10[] = { "Amiga + d", "Decrease number" };
-STRPTR Key11[] = { "Amiga + #", "Hex to decimal" };
-STRPTR Key12[] = { "Amiga + $", "Decimal to hex" };
-STRPTR Key13[] = { "Amiga + Tab", "Filenamecompletion (use shift to cycle back)" };
+const char *Key1[]  = { "Amiga + c", "Copy all or marked text" };
+const char *Key2[]  = { "Amiga + x", "Cut all or marked text" };
+const char *Key3[]  = { "Amiga + v", "Paste" };
+const char *Key4[]  = { "Amiga + z", "Undo last deletion" };
+const char *Key5[]  = { "Amiga + Z", "Redo last deletion" };
+const char *Key6[]  = { "Amiga + q", "Toggle between original and modified buffer" };
+const char *Key7[]  = { "Amiga + g", "Toggle case on char" };
+const char *Key8[]  = { "Amiga + G", "Toggle case on word" };
+const char *Key9[]  = { "Amiga + i", "Increase number" };
+const char *Key10[] = { "Amiga + d", "Decrease number" };
+const char *Key11[] = { "Amiga + #", "Hex to decimal" };
+const char *Key12[] = { "Amiga + $", "Decimal to hex" };
+const char *Key13[] = { "Amiga + Tab", "Filenamecompletion (use shift to cycle back)" };
 
-STRPTR Key14[] = { "Ctrl + crsr",    "Mark" };
-STRPTR Key15[] = { "Ctrl + bs/del",  "Delete to start/end of line" };
-STRPTR Key16[] = { "Shift + crsr",   "Go to start/end of line" };
-STRPTR Key17[] = { "Shift + bs/del", "Delete to start/end of line" };
-STRPTR Key18[] = { "Alt + crsr",     "Go to prev/next word" };
-STRPTR Key19[] = { "Alt + bs/del",   "Delete prev/next word" };
+const char *Key14[] = { "Ctrl + crsr",    "Mark" };
+const char *Key15[] = { "Ctrl + bs/del",  "Delete to start/end of line" };
+const char *Key16[] = { "Shift + crsr",   "Go to start/end of line" };
+const char *Key17[] = { "Shift + bs/del", "Delete to start/end of line" };
+const char *Key18[] = { "Alt + crsr",     "Go to prev/next word" };
+const char *Key19[] = { "Alt + bs/del",   "Delete prev/next word" };
 
-STRPTR *Keyinfo[] = { Key1, Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9, Key10, Key11, Key12, Key13, Key14, Key15, Key16, Key17, Key18, Key19, NULL };
+const char **Keyinfo[] = { Key1, Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9, Key10, Key11, Key12, Key13, Key14, Key15, Key16, Key17, Key18, Key19, NULL };
 
-Object *TxtLabel (STRPTR text)
+Object *TxtLabel(const char *text)
 {
 	return TextObject, ImageButtonFrame,
 		MUIA_FramePhantomHoriz,		TRUE,
@@ -70,7 +70,7 @@ Object *TxtLabel (STRPTR text)
 HOOKPROTONH(DisplayCode, VOID, STRPTR* place, STRPTR *item)
 {
 	*place++ = *item++;
-	*place++ = "=";
+	*place++ = (STRPTR)"=";
 	*place   = *item;
 }
 MakeStaticHook(DisplayHook, DisplayCode);

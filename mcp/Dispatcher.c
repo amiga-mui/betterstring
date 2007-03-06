@@ -30,7 +30,14 @@
 #include "BetterString_mcp.h"
 #include "muiextra.h"
 
-struct PrefsExchangeData { ULONG ObjIndex, Tag, CfgItem, Length; STRPTR DefValue; };
+struct PrefsExchangeData
+{
+  const ULONG ObjIndex;
+  const ULONG Tag;
+  const ULONG CfgItem;
+  const ULONG Length;
+  const char *DefValue;
+};
 
 static struct PrefsExchangeData PrefsInfo[] =
 {
@@ -85,7 +92,7 @@ DISPATCHER(_DispatcherP)
 			
       for(i=0; i < NumberOfObject; i++)
 			{
-				STRPTR cfg_val = (STRPTR)DoMethod(configdata, MUIM_Dataspace_Find, PrefsInfo[i].CfgItem);
+				const char *cfg_val = (const char *)DoMethod(configdata, MUIM_Dataspace_Find, PrefsInfo[i].CfgItem);
 				set(data->Objects[PrefsInfo[i].ObjIndex], PrefsInfo[i].Tag, cfg_val ? cfg_val : PrefsInfo[i].DefValue);
 			}
 		}
