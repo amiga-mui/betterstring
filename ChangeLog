@@ -5,6 +5,8 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.9 RELEASE ############################################################
+
 2007-03-06  Jens Langner <Jens.Langner@light-speed.de>
 
     * misc: fixed several compiler warnings
