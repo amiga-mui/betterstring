@@ -45,7 +45,7 @@
 #define MASTERVERSION 19
 
 #define USEDCLASSESP  used_classesP
-static const STRPTR used_classesP[] = { "BetterString.mcp", NULL };
+static const char *used_classesP[] = { "BetterString.mcp", NULL };
 
 #define ClassInit
 #define ClassExit

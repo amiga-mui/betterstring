@@ -172,7 +172,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 				default:
 				{
-					char *append = NULL;
+					const char *append = NULL;
 					unsigned char key[2];
 
 					key[0] = ConvertKey(msg->imsg);

@@ -32,8 +32,8 @@
 
 #define MSG_Space ((APTR)1)
 
-extern char *GetStr(APTR);
-extern char *GetStripStr(APTR);
+extern const char *GetStr(APTR);
+extern const char *GetStripStr(APTR);
 extern void OpenCat(void);
 extern void CloseCat(void);
 
