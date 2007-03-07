@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-03-07  Jens Langner <Jens.Langner@light-speed.de>
+
+    * mcp/locale/russian.ct: added russian catalog translation kindly provided
+      by Vlad Vinogradov.
+
 #### v11.9 RELEASE ############################################################
 
 2007-03-06  Jens Langner <Jens.Langner@light-speed.de>
