@@ -82,7 +82,7 @@ int main(void)
     GETINTERFACE(IGraphics, GfxBase))
   if((IntuitionBase = (APTR)OpenLibrary("intuition.library", 38)) &&
     GETINTERFACE(IIntuition, IntuitionBase))
-  if((KeymapBase = OpenLibrary("keymap.library", 38)) &&
+  if((KeymapBase = OpenLibrary("keymap.library", 37)) &&
     GETINTERFACE(IKeymap, KeymapBase))
   if((LocaleBase = OpenLibrary("locale.library", 38)) &&
     GETINTERFACE(ILocale, LocaleBase))

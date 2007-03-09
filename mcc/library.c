@@ -67,7 +67,7 @@ BOOL ClassInitFunc(UNUSED struct Library *base)
   if((LocaleBase = OpenLibrary("locale.library", 38)) &&
      GETINTERFACE(ILocale, LocaleBase))
   {
-    if((KeymapBase = OpenLibrary("keymap.library", 38)) &&
+    if((KeymapBase = OpenLibrary("keymap.library", 37)) &&
        GETINTERFACE(IKeymap, KeymapBase))
     {
       if((DiskfontBase = OpenLibrary("diskfont.library", 38)) &&
