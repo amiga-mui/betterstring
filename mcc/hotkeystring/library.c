@@ -55,7 +55,7 @@ struct KeymapIFace *IKeymap = NULL;
 
 BOOL ClassInitFunc(UNUSED struct Library *base)
 {
-  if((KeymapBase = OpenLibrary("keymap.library", 38)) &&
+  if((KeymapBase = OpenLibrary("keymap.library", 37)) &&
      GETINTERFACE(IKeymap, KeymapBase))
   {
     return(TRUE);

@@ -65,7 +65,7 @@ int main(void)
 {
   if((IntuitionBase = (APTR)OpenLibrary("intuition.library", 38)) &&
     GETINTERFACE(IIntuition, IntuitionBase))
-  if((KeymapBase = OpenLibrary("keymap.library", 38)) &&
+  if((KeymapBase = OpenLibrary("keymap.library", 37)) &&
     GETINTERFACE(IKeymap, KeymapBase))
   if((UtilityBase = OpenLibrary("utility.library", 38)) &&
     GETINTERFACE(IUtility, UtilityBase))
