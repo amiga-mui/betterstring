@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-03-11 Thore Böckelmann <tboeckel@gmx.de>
+
+    * #?/Debug.c: disabling a debug flag was not possible due to a check for the
+      '!' at a wrong index.
+
 2007-03-08  Jens Langner <Jens.Langner@light-speed.de>
 
     * misc: fixed bug #1676749 where all BetterString classes did check for
