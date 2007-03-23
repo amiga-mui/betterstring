@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-03-23  Thore Böckelmann <tboeckel@gmx.de>
+
+    * #?/Debug.c: fixed wrong final output of debug classes and flags.
+
 2007-03-11 Thore Böckelmann <tboeckel@gmx.de>
 
     * #?/Debug.c: disabling a debug flag was not possible due to a check for the
