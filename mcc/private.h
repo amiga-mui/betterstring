@@ -37,64 +37,65 @@
 
 struct FNCData
 {
-	struct FNCData *next;
-	struct ExAllData buffer;
+  struct FNCData *next;
+  struct ExAllData buffer;
 };
 
 struct InstData
 {
-	/* Normal stringgadget info */
-	STRPTR	Contents;
-	STRPTR	Original;		/* Amiga-q (toggle) */
-	STRPTR	Undo;				/* Amiga-z (toggle) */
-	STRPTR	Accept;
-	STRPTR	Reject;
-	Object	*ForwardObject;
-	Object	*Popup;			/* ctrl-p popup object */
-	UWORD		DisplayPos;
-	UWORD		BufferPos;
+  /* Normal stringgadget info */
+  STRPTR  Contents;
+  STRPTR  InactiveContents;
+  STRPTR  Original;   /* Amiga-q (toggle) */
+  STRPTR  Undo;       /* Amiga-z (toggle) */
+  STRPTR  Accept;
+  STRPTR  Reject;
+  Object  *ForwardObject;
+  Object  *Popup;     /* ctrl-p popup object */
+  UWORD   DisplayPos;
+  UWORD   BufferPos;
   UWORD   BufferLastPos;
-	UWORD		MaxLength;
-	WORD		Alignment;
-	UWORD		UndoPos;
-	UWORD		Width;
+  UWORD   MaxLength;
+  WORD    Alignment;
+  UWORD   UndoPos;
+  UWORD   Width;
 
-	/* Various system resources and data */
-	struct	MUI_EventHandlerNode		ehnode;
-	struct	RastPort						rport;
-	struct	Locale						*locale;
-	APTR		Pool;
-	ULONG		Flags;
-	Object	*PopupMenu;
+  /* Various system resources and data */
+  struct  MUI_EventHandlerNode    ehnode;
+  struct  RastPort            rport;
+  struct  Locale            *locale;
+  APTR    Pool;
+  ULONG   Flags;
+  Object  *PopupMenu;
 
-	Object	*KeyUpFocus, *KeyDownFocus;
+  Object  *KeyUpFocus, *KeyDownFocus;
 
-	/* Filename completion */
-	struct	FNCData *FNCBuffer;
-	WORD		FileNumber;
-	UWORD		FileEntries;
-	UWORD		FileNameStart;
+  /* Filename completion */
+  struct  FNCData *FNCBuffer;
+  WORD    FileNumber;
+  UWORD   FileEntries;
+  UWORD   FileNameStart;
 
-	/* For marking of text */
-	UWORD		BlockStart;
-	WORD		BlockStop;
+  /* For marking of text */
+  UWORD   BlockStart;
+  WORD    BlockStop;
 
-	/* For double/triple clicking */
-	ULONG		StartSecs, StartMicros;
-	UBYTE		ClickCount;
+  /* For double/triple clicking */
+  ULONG   StartSecs, StartMicros;
+  UBYTE   ClickCount;
 
-	/* The hotkey which activates the stringgadget */
-	UBYTE		CtrlChar;
+  /* The hotkey which activates the stringgadget */
+  UBYTE   CtrlChar;
 
-	/* Config */
-	STRPTR	InactiveBackground;
-	ULONG		InactiveText;
-	STRPTR	ActiveBackground;
-	ULONG		ActiveText;
-	ULONG		CursorColor;
-	ULONG		MarkedColor;
-	ULONG		MarkedTextColor;
-	struct	TextFont *Font;
+  /* Config */
+  STRPTR  InactiveBackground;
+  ULONG   InactiveText;
+  STRPTR  ActiveBackground;
+  ULONG   ActiveText;
+  ULONG   CursorColor;
+  ULONG   MarkedColor;
+  ULONG   MarkedTextColor;
+  struct  TextFont *Font;
 };
 
 #define FLG_Secret        (1L << 0)

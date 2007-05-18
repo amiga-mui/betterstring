@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-05-18  Thore Böckelmann <tboeckel@gmx.de>
+
+    * mcc/misc: added new attribute MUIA_BetterString_InactiveContents. The
+      supplied string will be shown if no other text is available and the object
+      is inactive.
+
 2007-04-16  Jens Langner <Jens.Langner@light-speed.de>
 
     * mcp/locale/dansk.ct: added new danish catalog translation kindly
