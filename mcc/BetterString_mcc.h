@@ -48,6 +48,7 @@ extern "C" {
 #define MUIA_BetterString_StayActive            0xad001003
 #define MUIA_BetterString_KeyUpFocus            0xad001008
 #define MUIA_BetterString_KeyDownFocus          0xad001009
+#define MUIA_BetterString_InactiveContents      0xad00100a
 
 #define MUIM_BetterString_ClearSelected         0xad001004
 #define MUIM_BetterString_FileNameStart         0xad001006

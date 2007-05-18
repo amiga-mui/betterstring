@@ -32,160 +32,178 @@
 
 VOID PrintString(struct IClass *cl, Object *obj)
 {
-	struct InstData			*data			= (struct InstData *)INST_DATA(cl, obj);
-	struct RastPort		*oldrport	= muiRenderInfo(obj)->mri_RastPort;
-	struct RastPort		*rport		= &data->rport;
-	struct MUI_AreaData	*ad			= muiAreaData(obj);
-	struct TextFont		*font			= data->Font ? data->Font : ad->mad_Font;
+  struct InstData     *data     = (struct InstData *)INST_DATA(cl, obj);
+  struct RastPort   *oldrport = muiRenderInfo(obj)->mri_RastPort;
+  struct RastPort   *rport    = &data->rport;
+  struct MUI_AreaData *ad     = muiAreaData(obj);
+  struct TextFont   *font     = data->Font ? data->Font : ad->mad_Font;
   struct TextExtent tExtend;
-	STRPTR contents = data->Contents;
-	WORD x=10, y=0, width, height;
+  STRPTR contents;
+  WORD x=10, y=0, width, height;
   WORD crsr_x=0, crsr_width=0, crsr_color=0;
   WORD dst_x, dst_y, length, offset = 0, StrLength;
-	STRPTR text;
-	BOOL	 BlockEnabled = ((data->Flags & FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
-	UWORD	 Blk_Start=0, Blk_Width=0;
-	STRPTR fake_contents = NULL;
+  STRPTR text;
+  BOOL   BlockEnabled = ((data->Flags & FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
+  UWORD  Blk_Start=0, Blk_Width=0;
+  STRPTR fake_contents = NULL;
+  BOOL showInactiveContents = FALSE;
 
-	dst_x = ad->mad_Box.Left + ad->mad_addleft;
-	dst_y = ad->mad_Box.Top  + ad->mad_addtop;
-	width = ad->mad_Box.Width - ad->mad_subwidth;
-	height = font->tf_YSize;
+  dst_x = ad->mad_Box.Left + ad->mad_addleft;
+  dst_y = ad->mad_Box.Top  + ad->mad_addtop;
+  width = ad->mad_Box.Width - ad->mad_subwidth;
+  height = font->tf_YSize;
 
-	StrLength = strlen(contents);
+  contents = data->Contents;
+  StrLength = strlen(contents);
 
-	if(data->Flags & FLG_Secret && (fake_contents = (STRPTR)MyAllocPooled(data->Pool, StrLength+1)))
-	{
-		WORD strlength = StrLength;
-		contents = fake_contents;
-		contents[strlength] = '\0';
-		while(strlength--)
-			contents[strlength] = '*';
-	}
+  if(data->Flags & FLG_Secret && (fake_contents = (STRPTR)MyAllocPooled(data->Pool, StrLength+1)))
+  {
+    WORD strlength = StrLength;
+
+    contents = fake_contents;
+    contents[strlength] = '\0';
+    while(strlength--)
+      contents[strlength] = '*';
+  }
+
+  if(StrLength == 0 && (data->Flags & FLG_Active) == 0 && data->InactiveContents != NULL)
+  {
+    contents = data->InactiveContents;
+    StrLength = strlen(contents);
+    showInactiveContents = TRUE;
+  }
 
   SetFont(rport, font);
-	crsr_width = (data->Flags & FLG_Active) && !BlockEnabled ? TextLength(rport, (*(contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(contents+data->BufferPos), 1) : 0;
+  crsr_width = (data->Flags & FLG_Active) && !BlockEnabled ? TextLength(rport, (*(contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(contents+data->BufferPos), 1) : 0;
 
-	if(data->DisplayPos > data->BufferPos)
-		data->DisplayPos = data->BufferPos;
+  if(data->DisplayPos > data->BufferPos)
+    data->DisplayPos = data->BufferPos;
 
-	if(StrLength)
-	{
-		UWORD backdistance = TextFit(rport, contents+StrLength-1, StrLength, &tExtend, NULL, -1, width/*-crsr_width*/, font->tf_YSize);
+  if(StrLength)
+  {
+    UWORD backdistance = TextFit(rport, contents+StrLength-1, StrLength, &tExtend, NULL, -1, width/*-crsr_width*/, font->tf_YSize);
 
-		if(backdistance > StrLength-data->DisplayPos)
-			data->DisplayPos = StrLength-backdistance;
-	}
+    if(backdistance > StrLength-data->DisplayPos)
+      data->DisplayPos = StrLength-backdistance;
+  }
 
-	if(data->BufferPos)
-	{
-		UWORD distance = TextFit(rport, contents+data->BufferPos-1, data->BufferPos, &tExtend, NULL, -1, width-crsr_width, font->tf_YSize);
+  if(data->BufferPos)
+  {
+    UWORD distance = TextFit(rport, contents+data->BufferPos-1, data->BufferPos, &tExtend, NULL, -1, width-crsr_width, font->tf_YSize);
 
-		if(distance < data->BufferPos-data->DisplayPos)
-			data->DisplayPos = data->BufferPos - distance;
-	}
+    if(distance < data->BufferPos-data->DisplayPos)
+      data->DisplayPos = data->BufferPos - distance;
+  }
 
-	text = contents+data->DisplayPos;
-	StrLength -= data->DisplayPos;
+  text = contents+data->DisplayPos;
+  StrLength -= data->DisplayPos;
 
-	if(BlockEnabled)
-	{
-		Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
-		Blk_Width = abs(data->BlockStop-data->BlockStart);
+  if(BlockEnabled)
+  {
+    Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
+    Blk_Width = abs(data->BlockStop-data->BlockStart);
 
-		if(Blk_Start < data->DisplayPos)
-		{
-			Blk_Width -= data->DisplayPos-Blk_Start;
-			Blk_Start  = data->DisplayPos;
-		}
-		crsr_x = TextLength(rport, text, Blk_Start-data->DisplayPos);
-		crsr_width = TextLength(rport, contents+Blk_Start, Blk_Width);
-		crsr_color = data->MarkedColor;
-	}
-	else
-	{
-		if(data->Flags & FLG_Active)
-		{
-			crsr_x = TextLength(rport, text, data->BufferPos-data->DisplayPos);
-			crsr_color = data->CursorColor;
-		}
-	}
+    if(Blk_Start < data->DisplayPos)
+    {
+      Blk_Width -= data->DisplayPos-Blk_Start;
+      Blk_Start  = data->DisplayPos;
+    }
+    crsr_x = TextLength(rport, text, Blk_Start-data->DisplayPos);
+    crsr_width = TextLength(rport, contents+Blk_Start, Blk_Width);
+    crsr_color = data->MarkedColor;
+  }
+  else
+  {
+    if(data->Flags & FLG_Active)
+    {
+      crsr_x = TextLength(rport, text, data->BufferPos-data->DisplayPos);
+      crsr_color = data->CursorColor;
+    }
+  }
 
-	muiRenderInfo(obj)->mri_RastPort = rport;
-	DoMethod(obj, MUIM_DrawBackground, x, y, width, height, dst_x, dst_y, 0L);
-	muiRenderInfo(obj)->mri_RastPort = oldrport;
+  muiRenderInfo(obj)->mri_RastPort = rport;
+  DoMethod(obj, MUIM_DrawBackground, x, y, width, height, dst_x, dst_y, 0L);
+  muiRenderInfo(obj)->mri_RastPort = oldrport;
 
-	length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
-	if(data->Alignment != MUIV_String_Format_Left)
-	{
-		UWORD textlength = TextLength(rport, text, length);
+  length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
+  if(data->Alignment != MUIV_String_Format_Left)
+  {
+    UWORD textlength = TextLength(rport, text, length);
 
-		if(crsr_width && !BlockEnabled && data->BufferPos == data->DisplayPos+StrLength)
-		{
-			length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width-crsr_width, font->tf_YSize);
-			textlength += crsr_width;
-		}
+    if(crsr_width && !BlockEnabled && data->BufferPos == data->DisplayPos+StrLength)
+    {
+      length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width-crsr_width, font->tf_YSize);
+      textlength += crsr_width;
+    }
 
-		switch(data->Alignment)
-		{
-			case MUIV_String_Format_Center:
-				offset = (width - textlength)/2;
-				break;
-			case MUIV_String_Format_Right:
-				offset = (width - textlength);
-				break;
-		}
-	}
+    switch(data->Alignment)
+    {
+      case MUIV_String_Format_Center:
+        offset = (width - textlength)/2;
+        break;
+      case MUIV_String_Format_Right:
+        offset = (width - textlength);
+        break;
+    }
+  }
 
-	if(crsr_width && crsr_x < width)
-	{
-		SetAPen(rport, crsr_color);
-		if(crsr_x+crsr_width > width)
-		{
-			crsr_width = width-crsr_x;
-		}
-		RectFill(rport, x+offset+crsr_x, y, x+offset+crsr_x+crsr_width-1, y+font->tf_YSize-1);
-	}
+  if(crsr_width && crsr_x < width)
+  {
+    SetAPen(rport, crsr_color);
+    if(crsr_x+crsr_width > width)
+    {
+      crsr_width = width-crsr_x;
+    }
+    RectFill(rport, x+offset+crsr_x, y, x+offset+crsr_x+crsr_width-1, y+font->tf_YSize-1);
+  }
 
-	if(length)
-	{
-		UWORD newlength;
-		LONG textcolor = (data->Flags & FLG_Active) ? data->ActiveText : data->InactiveText;
+  if(length)
+  {
+    UWORD newlength;
+    LONG textcolor= (data->Flags & FLG_Active) ? data->ActiveText : data->InactiveText;
 
-		Move(rport, x+offset, y+font->tf_Baseline);
+    Move(rport, x+offset, y+font->tf_Baseline);
 
-		if(BlockEnabled && textcolor != (LONG)data->MarkedTextColor)
-		{
-			newlength = Blk_Start-data->DisplayPos;
-			SetAPen(rport, textcolor);
-			Text(rport, text, newlength);
-			text += newlength;
+    if(BlockEnabled && textcolor != (LONG)data->MarkedTextColor)
+    {
+      newlength = Blk_Start-data->DisplayPos;
+      SetAPen(rport, textcolor);
+      Text(rport, text, newlength);
+      text += newlength;
 
-			newlength = (((Blk_Start-data->DisplayPos) + Blk_Width) > length) ? length - (Blk_Start-data->DisplayPos) : Blk_Width;
-			SetAPen(rport, data->MarkedTextColor);
-			Text(rport, text, newlength);
-			text += newlength;
+      newlength = (((Blk_Start-data->DisplayPos) + Blk_Width) > length) ? length - (Blk_Start-data->DisplayPos) : Blk_Width;
+      SetAPen(rport, data->MarkedTextColor);
+      Text(rport, text, newlength);
+      text += newlength;
 
-			length -= newlength + (Blk_Start-data->DisplayPos);
-		}
+      length -= newlength + (Blk_Start-data->DisplayPos);
+    }
 
-		SetAPen(rport, textcolor);
-		Text(rport, text, length);
-	}
+    // switch to italic style if the inactive text is to be displayed
+    if(showInactiveContents == TRUE)
+      SetSoftStyle(rport, FSF_ITALIC, AskSoftStyle(rport));
 
-	if(fake_contents)
-		MyFreePooled(data->Pool, fake_contents);
+    SetAPen(rport, textcolor);
+    Text(rport, text, length);
 
-	BltBitMapRastPort(data->rport.BitMap, x, y, muiRenderInfo(obj)->mri_RastPort, dst_x, dst_y, width, height, 0xc0);
+    // switch back to normal style
+    if(showInactiveContents == TRUE)
+      SetSoftStyle(rport, FS_NORMAL, AskSoftStyle(rport));
+  }
 
-	if(data->Flags & FLG_Ghosted)
-	{
-			UWORD GhostPattern[] = {0x4444, 0x1111};
-			struct RastPort *rport = muiRenderInfo(obj)->mri_RastPort;
+  if(fake_contents)
+    MyFreePooled(data->Pool, fake_contents);
 
-		SetAfPt(rport, GhostPattern, 1);
-		SetAPen(rport, _pens(obj)[MPEN_SHADOW]);
-		RectFill(rport, ad->mad_Box.Left, ad->mad_Box.Top, ad->mad_Box.Left+ad->mad_Box.Width-1, ad->mad_Box.Top+ad->mad_Box.Height-1);
-		SetAfPt(rport, 0, 0);
-	}
+  BltBitMapRastPort(data->rport.BitMap, x, y, muiRenderInfo(obj)->mri_RastPort, dst_x, dst_y, width, height, 0xc0);
+
+  if(data->Flags & FLG_Ghosted)
+  {
+    UWORD GhostPattern[] = {0x4444, 0x1111};
+    struct RastPort *rport = muiRenderInfo(obj)->mri_RastPort;
+
+    SetAfPt(rport, GhostPattern, 1);
+    SetAPen(rport, _pens(obj)[MPEN_SHADOW]);
+    RectFill(rport, ad->mad_Box.Left, ad->mad_Box.Top, ad->mad_Box.Left+ad->mad_Box.Width-1, ad->mad_Box.Top+ad->mad_Box.Height-1);
+    SetAfPt(rport, 0, 0);
+  }
 }
