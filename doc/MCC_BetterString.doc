@@ -2,6 +2,7 @@ TABLE OF CONTENTS
 
 BetterString.mcc/BetterString.mcc
 BetterString.mcc/MUIA_BetterString_Columns
+BetterString.mcc/MUIA_BetterString_InactiveContents
 BetterString.mcc/MUIA_BetterString_NoInput
 BetterString.mcc/MUIA_BetterString_SelectSize
 BetterString.mcc/MUIA_BetterString_StayActive
@@ -42,6 +43,17 @@ For feedback write to: Allan Odgaard
     FUNCTION
         Set the width of the stringgadget (in characters)
         This tag is probably only useful for webbrowsers.
+
+BetterString.mcc/MUIA_BetterString_InactiveContents
+
+    NAME
+        MUIA_BetterString_InactiveContents -- [ISG], STRPTR
+
+    FUNCTION
+        Set the text which will be displayed if no other text is to be displayed
+        and the string gadget is inactive. The text will be shown in an italic
+        style. The supplied text will NOT be copied by BetterString.mcc!! Upon
+        OM_GET the retured pointer is READ-ONLY!!
 
 BetterString.mcc/MUIA_BetterString_NoInput
 
