@@ -181,7 +181,10 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
     // switch to italic style if the inactive text is to be displayed
     if(showInactiveContents == TRUE)
+    {
       SetSoftStyle(rport, FSF_ITALIC, AskSoftStyle(rport));
+      textcolor = _pens(obj)[MPEN_SHADOW];
+    }
 
     SetAPen(rport, textcolor);
     Text(rport, text, length);

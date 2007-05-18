@@ -7,6 +7,8 @@ $URL$
 
 2007-05-18  Thore Böckelmann <tboeckel@gmx.de>
 
+    * mcc/PrintString.c: the inactive text is now displayed with the standard
+      shadow color.
     * mcc/misc: added new attribute MUIA_BetterString_InactiveContents. The
       supplied string will be shown if no other text is available and the object
       is inactive.
