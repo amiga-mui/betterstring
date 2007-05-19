@@ -5,203 +5,208 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-05-19  Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcp/locale/italian.ct: added italian catalog translation kindly provided
+    by Samir Hawamdeh.
+
 2007-05-18  Thore Böckelmann <tboeckel@gmx.de>
 
-    * mcc/PrintString.c: the inactive text is now displayed with the standard
-      shadow color.
-    * mcc/misc: added new attribute MUIA_BetterString_InactiveContents. The
-      supplied string will be shown if no other text is available and the object
-      is inactive.
+  * mcc/PrintString.c: the inactive text is now displayed with the standard
+    shadow color.
+  * mcc/misc: added new attribute MUIA_BetterString_InactiveContents. The
+    supplied string will be shown if no other text is available and the object
+    is inactive.
 
 2007-04-16  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcp/locale/dansk.ct: added new danish catalog translation kindly
-      provided by Niels Bache.
+  * mcp/locale/dansk.ct: added new danish catalog translation kindly
+    provided by Niels Bache.
 
 2007-03-23  Thore Böckelmann <tboeckel@gmx.de>
 
-    * #?/Debug.c: fixed wrong final output of debug classes and flags.
+  * #?/Debug.c: fixed wrong final output of debug classes and flags.
 
 2007-03-11 Thore Böckelmann <tboeckel@gmx.de>
 
-    * #?/Debug.c: disabling a debug flag was not possible due to a check for the
-      '!' at a wrong index.
+  * #?/Debug.c: disabling a debug flag was not possible due to a check for the
+    '!' at a wrong index.
 
 2007-03-08  Jens Langner <Jens.Langner@light-speed.de>
 
-    * misc: fixed bug #1676749 where all BetterString classes did check for
-      a minimum version of keymap.library of v38 whereas the OS 3.0 version
-      is normally v37.2. This prevented the use of BetterString on OS 3.0
-      machines.
+  * misc: fixed bug #1676749 where all BetterString classes did check for
+    a minimum version of keymap.library of v38 whereas the OS 3.0 version
+    is normally v37.2. This prevented the use of BetterString on OS 3.0
+    machines.
 		
 2007-03-07  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcp/locale/russian.ct: added russian catalog translation kindly provided
-      by Vlad Vinogradov.
+  * mcp/locale/russian.ct: added russian catalog translation kindly provided
+    by Vlad Vinogradov.
 
 #### v11.9 RELEASE ############################################################
 
 2007-03-06  Jens Langner <Jens.Langner@light-speed.de>
 
-    * misc: fixed several compiler warnings
-    * misc: replaced all single-target makefiles with general "Makefile"
-      that automatically identifies the build target via uname.
+  * misc: fixed several compiler warnings
+  * misc: replaced all single-target makefiles with general "Makefile"
+    that automatically identifies the build target via uname.
 
 2007-03-04 Thore Böckelmann <tboeckel@gmx.de>
 
-    * all makefiles: all makefiles were still accessing the no longer existing
-      directory "includes" instead of "include".
+  * all makefiles: all makefiles were still accessing the no longer existing
+    directory "includes" instead of "include".
 
 2007-01-02  Jens Langner <Jens.Langner@light-speed.de>
 
-    * misc: updated all copyright notices to 2007.
-    * mcp/locale/french.ct: added french catalog translation kindly provided
-      by Philippe Bovier.
+  * misc: updated all copyright notices to 2007.
+  * mcp/locale/french.ct: added french catalog translation kindly provided
+    by Philippe Bovier.
 
 2006-11-28  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcp/locale/svenska.ct: added swedish catalog translation kindly provided
-      by Pär Boberg.
+  * mcp/locale/svenska.ct: added swedish catalog translation kindly provided
+    by Pär Boberg.
 
 2006-10-06  Jens Langner <Jens.Langner@light-speed.de>
 
-    * includes/SDI_#?, misc: updated to latest versions and updated our sources
-      accordingly.
+  * includes/SDI_#?, misc: updated to latest versions and updated our sources
+    accordingly.
 
 2006-09-30 Thore Böckelmann <tboeckel@gmx.de>
 
-    * mcc/hotkeystring/HandleInput.c: fixed bug #1568031 where a wrong index
-      calculation which shifted all F-keys and cursor keys by one, making all
-      inputs wrong.
-    * mcc/Debug.c, mcp/Debug.c, mcc/hotkeystring/Debug.c: corrected several
-      wrong class names in the debug output.
+  * mcc/hotkeystring/HandleInput.c: fixed bug #1568031 where a wrong index
+    calculation which shifted all F-keys and cursor keys by one, making all
+    inputs wrong.
+  * mcc/Debug.c, mcp/Debug.c, mcc/hotkeystring/Debug.c: corrected several
+    wrong class names in the debug output.
 
 #### v11.8 RELEASE ############################################################
    
 2006-08-20  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcc/HandleInput.c: fixed bug #1218170 where on "MUIA_String_Secret"
-      enabled objects the doubleclicking marking of text should not select
-      single words.
-    * mcc/HandleInput.c: on double-clicked into a betterstring gadget, text
-      passages will only be marked if the user really always clicked on the
-      very same position in the string. Otherwise marking will be removed.
-    * mcc/InitConfig.c: fixed a bug in the font name parsing/loading routines
-      which didn't work as expected and could crash a machine under certain
-      situations.
-    * misc: replaced all bufferoverflow prone functions like sprintf() against
-      safe functions.
-    * mcc/Dispatcher.c: if a BetterString gadget moves into 'Inactive' state,
-      eventually selected content will be automatically unselected as it is done
-      with the default MUI string class.
-    * misc: switched all OS4 builds to compile against newlib.library.
-    * misc: updated 'mccheader.c' include file from latest TextEditor.mcc
-      sources and also applied the new Debug.c,h interface to all our subprojects.
-    * mcc/hotkeystring/HandleInput.c: fixed the OS4 build to use the new media
-      key definitions instead.
+  * mcc/HandleInput.c: fixed bug #1218170 where on "MUIA_String_Secret"
+    enabled objects the doubleclicking marking of text should not select
+    single words.
+  * mcc/HandleInput.c: on double-clicked into a betterstring gadget, text
+    passages will only be marked if the user really always clicked on the
+    very same position in the string. Otherwise marking will be removed.
+  * mcc/InitConfig.c: fixed a bug in the font name parsing/loading routines
+    which didn't work as expected and could crash a machine under certain
+    situations.
+  * misc: replaced all bufferoverflow prone functions like sprintf() against
+    safe functions.
+  * mcc/Dispatcher.c: if a BetterString gadget moves into 'Inactive' state,
+    eventually selected content will be automatically unselected as it is done
+    with the default MUI string class.
+  * misc: switched all OS4 builds to compile against newlib.library.
+  * misc: updated 'mccheader.c' include file from latest TextEditor.mcc
+    sources and also applied the new Debug.c,h interface to all our subprojects.
+  * mcc/hotkeystring/HandleInput.c: fixed the OS4 build to use the new media
+    key definitions instead.
 
 2005-07-30  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcc/hotkeystring/HandleInput.c: changed the rawkey based wheelmouse name to
-      carry a "nm_" prefix so that it refers to newmouse based wheelmouse events
-      and doesn't conflict with the new wheelmouse events in AmigaOS4.
+  * mcc/hotkeystring/HandleInput.c: changed the rawkey based wheelmouse name to
+    carry a "nm_" prefix so that it refers to newmouse based wheelmouse events
+    and doesn't conflict with the new wheelmouse events in AmigaOS4.
 
 #### v11.7 RELEASE ############################################################
 
 2005-07-07  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcc/library.c: added missing USEDCLASSESP define so that MUI knowns
-      which mcp class belongs to the mcc.
+  * mcc/library.c: added missing USEDCLASSESP define so that MUI knowns
+    which mcp class belongs to the mcc.
 
 2005-07-07  Ilkka Lehtoranta <ilkleht@isoveli.org>
 
-    * mcc/hotkeystring/HandleInput.c: changed CONST CONST_STRPTR back to
-      const char *, as requested.
+  * mcc/hotkeystring/HandleInput.c: changed CONST CONST_STRPTR back to
+    const char *, as requested.
 
 2005-07-04  Ilkka Lehtoranta <ilkleht@isoveli.org>
 
-    * mcc/hotkeystring/HandleInput.c: made small changes only to create
-      (possibly) smaller code.
+  * mcc/hotkeystring/HandleInput.c: made small changes only to create
+    (possibly) smaller code.
 
 2005-07-03  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcc/GetSetAttrs.c: fixed a minor bug in the MUIA_String_Integer set
-      method which prevented it from correctly converting the supplied
-      integer into a string and therefore left the method defective.
+  * mcc/GetSetAttrs.c: fixed a minor bug in the MUIA_String_Integer set
+    method which prevented it from correctly converting the supplied
+    integer into a string and therefore left the method defective.
 
 2005-07-02  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcc/hotkeystring/HandleInput.c: added missing <proto/intuition.h>
-      include statements which prevent compilation with OS4 SDK (missing
-      SetAttrs)
+  * mcc/hotkeystring/HandleInput.c: added missing <proto/intuition.h>
+    include statements which prevent compilation with OS4 SDK (missing
+    SetAttrs)
 
 2005-06-30  Gunther Nikl <gni@gecko.de>
 
-    * mcc/HandleInput.c (ConvertKey): fix signedness bug.
-    * mcc/hotkeystring/HandleInput.c (ConvertKey): Likewise.
+  * mcc/HandleInput.c (ConvertKey): fix signedness bug.
+  * mcc/hotkeystring/HandleInput.c (ConvertKey): Likewise.
 
 2005-06-24  Gunther Nikl <gni@gecko.de>
 
-    * mcc/AllocBitMap.c: Free allocated bitmap on failure in non-V39 case.
-      Move version check into USE_OS3 #define.
-      (MUIG_AllocBitMap): Improved friend handling.
-    * mcc/AllocFunctions.c: Minor changes.
+  * mcc/AllocBitMap.c: Free allocated bitmap on failure in non-V39 case.
+    Move version check into USE_OS3 #define.
+    (MUIG_AllocBitMap): Improved friend handling.
+  * mcc/AllocFunctions.c: Minor changes.
 
 2005-06-16  Gunther Nikl <gni@gecko.de>
 
-    * mcc/HandleInput.c: Fix OS3 MySPrintf for GCC 3.4.x or newer (has to
-      use stdarg.h macros!). Small cleanup (eg. STRPTR -> char*).
+  * mcc/HandleInput.c: Fix OS3 MySPrintf for GCC 3.4.x or newer (has to
+    use stdarg.h macros!). Small cleanup (eg. STRPTR -> char*).
 
 2005-06-15  Gunther Nikl <gni@gecko.de>
 
-    * mcc/hotkeystring/Makefile.os3: Added $(CPU) to $LDFLAGS. Added INCDIR=
-      setting and used it where appropriate.
-    * mcc/hotkeystring/HotkeyString-Test.c Added libraries/iffparse.h for
-      MAKE_ID define. Includes cleanup.
-    * mcc/hotkeystring/private.h: Replaced proto/mui.h with libraries/mui.h.
-    * mcc/hotkeystring/HandleInput.c: Replaced STRPTR and friends with char*
-      (thats what standard functions use!). Include and code cleanup.
+  * mcc/hotkeystring/Makefile.os3: Added $(CPU) to $LDFLAGS. Added INCDIR=
+    setting and used it where appropriate.
+  * mcc/hotkeystring/HotkeyString-Test.c Added libraries/iffparse.h for
+    MAKE_ID define. Includes cleanup.
+  * mcc/hotkeystring/private.h: Replaced proto/mui.h with libraries/mui.h.
+  * mcc/hotkeystring/HandleInput.c: Replaced STRPTR and friends with char*
+    (thats what standard functions use!). Include and code cleanup.
 
 2005-06-14  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcc/hotkeystring: replaced the fixed values for the special OS4/MOS keys
-      by a more general set of RAWKEY_ defines already common on both platforms
-    * mcc/hotkeystring: fixed a whole bunch of compiler warnings
-    * mcc: fixed a bunch of compiler warnings
+  * mcc/hotkeystring: replaced the fixed values for the special OS4/MOS keys
+    by a more general set of RAWKEY_ defines already common on both platforms
+  * mcc/hotkeystring: fixed a whole bunch of compiler warnings
+  * mcc: fixed a bunch of compiler warnings
 
 2005-06-13  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcc/TextFunctions.c: replace our own MyTextLength/MyTextFit with the 
-      standard OS TextLength/TextFit functions as they work exactly the same
-      and are hopefully less buggy.
+  * mcc/TextFunctions.c: replace our own MyTextLength/MyTextFit with the 
+    standard OS TextLength/TextFit functions as they work exactly the same
+    and are hopefully less buggy.
 
 2005-05-25  Jens Langner <Jens.Langner@light-speed.de>
 
-    * library.c: added missing USE_UTILITYBASE define which may have caused 
-      problems on OS3 machines.
+  * library.c: added missing USE_UTILITYBASE define which may have caused 
+    problems on OS3 machines.
 
 2005-05-19  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcc/TextFunctions.c: adapted sources to the already fixed function
-      equivalents used in TextEditor.mcc.
+  * mcc/TextFunctions.c: adapted sources to the already fixed function
+    equivalents used in TextEditor.mcc.
 
 2005-05-03  Ilkka Lehtoranta <ilkleht@isoveli.org>
 
-    * mcc/hotkeystring/HandleInput.c: Added missing key codes for MorphOS
-      and AmigaOS4 (may contain wrong codes).
-    * mcc/hotkeystring/HandleInput.c: Added media keys.
-    * mcc/hotkeystring/Dispatcher.c (OM_SET):
-      Added MUIA_HotkeyString_IX tag. Takes struct InputXpression as data
-      and sets a gadget contents accordingly.
-    * misc: Restored spaces to ChangeLog.
+  * mcc/hotkeystring/HandleInput.c: Added missing key codes for MorphOS
+    and AmigaOS4 (may contain wrong codes).
+  * mcc/hotkeystring/HandleInput.c: Added media keys.
+  * mcc/hotkeystring/Dispatcher.c (OM_SET):
+    Added MUIA_HotkeyString_IX tag. Takes struct InputXpression as data
+    and sets a gadget contents accordingly.
+  * misc: Restored spaces to ChangeLog.
 
 2005-05-03  Jens Langner <Jens.Langner@light-speed.de>
 
-    * mcc/HandleInput.c: fixed an uninitialized variable by integrating
-      the proposed patch of bug 1193352 from Georg Steger.
-    * misc: integrated minor patches kindly provided by Gunther Nikl
-      and modified sources to properly compile with gcc versions < 3.
+  * mcc/HandleInput.c: fixed an uninitialized variable by integrating
+    the proposed patch of bug 1193352 from Georg Steger.
+  * misc: integrated minor patches kindly provided by Gunther Nikl
+    and modified sources to properly compile with gcc versions < 3.
 
 2005-04-21  Jens Langner <Jens.Langner@light-speed.de>
 
-    * initial LGPL release published at sf.net
+  * initial LGPL release published at sf.net

@@ -235,7 +235,8 @@ CATALOGS = $(LOCALE)/deutsch.catalog \
            $(LOCALE)/french.catalog \
            $(LOCALE)/svenska.catalog \
            $(LOCALE)/dansk.catalog \
-			  $(LOCALE)/russian.catalog
+           $(LOCALE)/russian.catalog \
+           $(LOCALE)/italian.catalog
 
 #
 
