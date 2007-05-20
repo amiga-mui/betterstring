@@ -5,6 +5,8 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.10 RELEASE ###########################################################
+
 2007-05-19  Jens Langner <Jens.Langner@light-speed.de>
 
   * mcp/locale/italian.ct: added italian catalog translation kindly provided
