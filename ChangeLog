@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-05-29  Thore Böckelmann <tboeckel@gmx.de>
+
+  * include/mccheader.c: reworked the LibOpen() and LibClose() functions to
+    increment/decrement the lib_Open counter before obtaining the semaphore to
+    prevent a possible race condition with LibExpunge().
+
 #### v11.10 RELEASE ###########################################################
 
 2007-05-19  Jens Langner <Jens.Langner@light-speed.de>
@@ -40,7 +46,7 @@ $URL$
     a minimum version of keymap.library of v38 whereas the OS 3.0 version
     is normally v37.2. This prevented the use of BetterString on OS 3.0
     machines.
-		
+
 2007-03-07  Jens Langner <Jens.Langner@light-speed.de>
 
   * mcp/locale/russian.ct: added russian catalog translation kindly provided
@@ -84,7 +90,7 @@ $URL$
     wrong class names in the debug output.
 
 #### v11.8 RELEASE ############################################################
-   
+
 2006-08-20  Jens Langner <Jens.Langner@light-speed.de>
 
   * mcc/HandleInput.c: fixed bug #1218170 where on "MUIA_String_Secret"
@@ -178,13 +184,13 @@ $URL$
 
 2005-06-13  Jens Langner <Jens.Langner@light-speed.de>
 
-  * mcc/TextFunctions.c: replace our own MyTextLength/MyTextFit with the 
+  * mcc/TextFunctions.c: replace our own MyTextLength/MyTextFit with the
     standard OS TextLength/TextFit functions as they work exactly the same
     and are hopefully less buggy.
 
 2005-05-25  Jens Langner <Jens.Langner@light-speed.de>
 
-  * library.c: added missing USE_UTILITYBASE define which may have caused 
+  * library.c: added missing USE_UTILITYBASE define which may have caused
     problems on OS3 machines.
 
 2005-05-19  Jens Langner <Jens.Langner@light-speed.de>
