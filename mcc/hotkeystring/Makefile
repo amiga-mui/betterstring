@@ -264,7 +264,7 @@ $(TESTTARGET): $(TESTOBJS)
 	@$(CC) $(LDFLAGS) -o $@.debug $(TESTOBJS) $(LDLIBS)
 	@$(STRIP) -R .comment -S -o $@ $@.debug
 
-$(OBJDIR)/library.o: library.c ../../include/mccheader.c private.h rev.h
+$(OBJDIR)/library.o: library.c ../../include/mccinit.c private.h rev.h
 
 #
 

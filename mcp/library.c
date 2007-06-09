@@ -41,13 +41,11 @@
 
 #define INSTDATAP     InstData_MCP
 
-#define UserLibID     "$VER: BetterString.mcp " LIB_REV_STRING CPU " (" LIB_DATE ") " LIB_COPYRIGHT
+#define USERLIBID     CLASS " " LIB_REV_STRING CPU " (" LIB_DATE ") " LIB_COPYRIGHT
 #define MASTERVERSION 19
 
-#define ClassInit
-#define ClassExit
-
-#define USE_UTILITYBASE
+#define CLASSINIT
+#define CLASSEXPUNGE
 
 #include "locale.h"
 
@@ -61,7 +59,7 @@ struct LocaleBase *LocaleBase = NULL;
 struct LocaleIFace *ILocale = NULL;
 #endif
 
-BOOL ClassInitFunc(UNUSED struct Library *base)
+static BOOL ClassInit(UNUSED struct Library *base)
 {
   if((LocaleBase = (APTR)OpenLibrary("locale.library", 38)) &&
      GETINTERFACE(ILocale, LocaleBase))
@@ -76,7 +74,7 @@ BOOL ClassInitFunc(UNUSED struct Library *base)
 }
 
 
-VOID ClassExitFunc(UNUSED struct Library *base)
+static VOID ClassExpunge(UNUSED struct Library *base)
 {
   CloseCat();
 
@@ -96,5 +94,4 @@ VOID ClassExitFunc(UNUSED struct Library *base)
 /******************************************************************************/
 
 #include "icon.bh"
-
-#include "mccheader.c"
+#include "mccinit.c"
