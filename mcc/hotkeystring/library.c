@@ -46,6 +46,7 @@
 
 #define CLASSINIT
 #define CLASSEXPUNGE
+#define MIN_STACKSIZE 8192
 
 struct Library *KeymapBase = NULL;
 

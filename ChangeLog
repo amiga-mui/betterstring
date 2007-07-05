@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-07-05 Jens Langner <Jens.Langner@light-speed.de>
+
+  * include/mccinit.c: updated to latest 1.4 version and adapted all our
+    library.c files to make use out of the new stack enforcing mechanisms.
+
 2007-06-13  Thore Böckelmann <tboeckel@gmx.de>
 
   * #?/Debug.c: unified the _DPRINTF() functions for all platforms.
