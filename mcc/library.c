@@ -49,6 +49,7 @@ static const char *used_classesP[] = { "BetterString.mcp", NULL };
 
 #define CLASSINIT
 #define CLASSEXPUNGE
+#define MIN_STACKSIZE 8192
 
 struct Library *DiskfontBase = NULL;
 struct Library *KeymapBase = NULL;
