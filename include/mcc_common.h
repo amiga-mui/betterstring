@@ -1,8 +1,8 @@
 /***************************************************************************
 
- BetterString.mcc - A better String gadget MUI Custom Class
+ TextEditor.mcc - Textediting MUI Custom Class
  Copyright (C) 1997-2000 Allan Odgaard
- Copyright (C) 2005 by BetterString.mcc Open Source Team
+ Copyright (C) 2005 by TextEditor Open Source Team
 
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  Lesser General Public License for more details.
 
- BetterString class Support Site:  http://www.sf.net/projects/bstring-mcc/
+ TextEditor class Support Site:  http://www.sf.net/projects/texteditor_mcc
 
  $Id$
 
@@ -26,6 +26,9 @@
 #include "SDI_stdarg.h"
 
 #ifdef __amigaos4__
+
+#include <proto/intuition.h>
+
 /* redefine some defines to allow complexer macro use later on */
 #define DoMethod				IDoMethod
 #define DoMethodA 			IDoMethodA
@@ -51,8 +54,9 @@
 
 #else
 
+#include <clib/alib_protos.h>
+
 #define GETINTERFACE(iface, base)	TRUE
 #define DROPINTERFACE(iface)
 
-#endif /* __amigaos4__ */
-
+#endif /* ! __amigaos4__ */

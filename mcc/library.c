@@ -61,16 +61,29 @@ struct KeymapIFace *IKeymap = NULL;
 struct LocaleIFace *ILocale = NULL;
 #endif
 
+/******************************************************************************/
+/* define the functions used by the startup code ahead of including mccinit.c */
+/******************************************************************************/
+
+static BOOL ClassInit(UNUSED struct Library *base);
+static VOID ClassExpunge(UNUSED struct Library *base);
+
+/******************************************************************************/
+/* include the lib startup code for the mcc/mcp  (and muimaster inlines)      */
+/******************************************************************************/
+
+#include "mccinit.c"
+
 static BOOL ClassInit(UNUSED struct Library *base)
 {
   if((LocaleBase = OpenLibrary("locale.library", 38)) &&
-     GETINTERFACE(ILocale, LocaleBase))
+     GETINTERFACE(ILocale, struct LocaleIFace *, LocaleBase))
   {
     if((KeymapBase = OpenLibrary("keymap.library", 37)) &&
-       GETINTERFACE(IKeymap, KeymapBase))
+       GETINTERFACE(IKeymap, struct KeymapIFace *, KeymapBase))
     {
       if((DiskfontBase = OpenLibrary("diskfont.library", 38)) &&
-         GETINTERFACE(IDiskfont, DiskfontBase))
+         GETINTERFACE(IDiskfont, struct DiskfontIFace *, DiskfontBase))
       {
         return(TRUE);
       }
@@ -113,10 +126,3 @@ static VOID ClassExpunge(UNUSED struct Library *base)
   }
 }
 
-/******************************************************************************/
-/*                                                                            */
-/* include the lib startup code for the mcc/mcp  (and muimaster inlines)      */
-/*                                                                            */
-/******************************************************************************/
-
-#include "mccinit.c"
