@@ -60,10 +60,24 @@ struct LocaleBase *LocaleBase = NULL;
 struct LocaleIFace *ILocale = NULL;
 #endif
 
+/******************************************************************************/
+/* define the functions used by the startup code ahead of including mccinit.c */
+/******************************************************************************/
+
+static BOOL ClassInit(UNUSED struct Library *base);
+static VOID ClassExpunge(UNUSED struct Library *base);
+
+/******************************************************************************/
+/* include the lib startup code for the mcc/mcp  (and muimaster inlines)      */
+/******************************************************************************/
+
+#include "icon.bh"
+#include "mccinit.c"
+
 static BOOL ClassInit(UNUSED struct Library *base)
 {
   if((LocaleBase = (APTR)OpenLibrary("locale.library", 38)) &&
-     GETINTERFACE(ILocale, LocaleBase))
+     GETINTERFACE(ILocale, struct LocaleIFace *, LocaleBase))
   {
     // open the TextEditor.mcp catalog
     OpenCat();
@@ -87,12 +101,3 @@ static VOID ClassExpunge(UNUSED struct Library *base)
   }
 }
 
-
-/******************************************************************************/
-/*                                                                            */
-/* include the lib startup code for the mcc/mcp  (and muimaster inlines)      */
-/*                                                                            */
-/******************************************************************************/
-
-#include "icon.bh"
-#include "mccinit.c"
