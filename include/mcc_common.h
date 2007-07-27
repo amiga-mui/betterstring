@@ -1,8 +1,8 @@
 /***************************************************************************
 
- TextEditor.mcc - Textediting MUI Custom Class
+ BetterString.mcc - A better String gadget MUI Custom Class
  Copyright (C) 1997-2000 Allan Odgaard
- Copyright (C) 2005 by TextEditor Open Source Team
+ Copyright (C) 2005-2007 by BetterString.mcc Open Source Team
 
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -14,7 +14,7 @@
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  Lesser General Public License for more details.
 
- TextEditor class Support Site:  http://www.sf.net/projects/texteditor_mcc
+ BetterString class Support Site:  http://www.sf.net/projects/bstring-mcc/
 
  $Id$
 
