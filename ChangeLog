@@ -5,6 +5,8 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.11 RELEASE ###########################################################
+
 2007-07-25  Thore Böckelmann <tboeckel@gmx.de>
 
   * #?/library.c: now really uses the 3 parameter version of GETINTERFACE()
