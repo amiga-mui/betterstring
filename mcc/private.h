@@ -112,6 +112,7 @@ struct InstData
 #define FLG_OwnBackground (1L << 11)
 #define FLG_NoInput       (1L << 12)
 #define FLG_DragOutside   (1L << 13)
+#define FLG_NoShortcuts   (1L << 14)
 
 // our prototypes
 VOID PrintString(struct IClass *, Object *);
@@ -121,6 +122,7 @@ VOID DeleteBlock(struct InstData *);
 
 ULONG Get(struct IClass *, Object *, struct opGet *);
 ULONG Set(struct IClass *, Object *, struct opSet *);
+ULONG mDoAction(struct IClass *, Object *, struct MUIP_BetterString_DoAction *);
 
 APTR MyAllocPooled(APTR, ULONG);
 VOID MyFreePooled(APTR, APTR);

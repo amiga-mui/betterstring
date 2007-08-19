@@ -5,6 +5,17 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-08-18 Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcc: added new MUIM_BetterString_DoAction method which allows to manually
+    perform certain actions like Copy/Cut/Paste,... which are normally just
+    executed with the default shortcuts. This way the gadget can completly
+    controlled remotely.
+  * mcc: added new MUIA_BetterString_NoShortcuts attribute that allows to
+    disable the default shortcuts like Amiga+C, Amiga+V, etc. for applications
+    interested in performing those operations manually.
+  * include/mccinit.c: updated to latest 1.10 version
+
 #### v11.11 RELEASE ###########################################################
 
 2007-07-25  Thore Böckelmann <tboeckel@gmx.de>

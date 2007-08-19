@@ -262,28 +262,47 @@ ULONG mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
 
 DISPATCHER(_Dispatcher)
 {
-  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 	ULONG	result = TRUE;
+
+  ENTER();
 
 	switch(msg->MethodID)
 	{
 		case OM_NEW:
-			return(New(cl, obj, (struct opSet *)msg));
+			result = New(cl, obj, (struct opSet *)msg);
+    break;
+
 		case MUIM_Setup:
-			return(Setup(cl, obj, (struct MUI_RenderInfo *)msg));
+			result = Setup(cl, obj, (struct MUI_RenderInfo *)msg);
+    break;
+
 		case MUIM_Show:
-			return(Show(cl, obj, msg));
+			result = Show(cl, obj, msg);
+    break;
+
 		case MUIM_AskMinMax:
-			return(AskMinMax(cl, obj, (struct MUIP_AskMinMax *)msg));
+			result = AskMinMax(cl, obj, (struct MUIP_AskMinMax *)msg);
+    break;
+
 		case MUIM_Draw:
-			return(mDraw(cl, obj, (struct MUIP_Draw *)msg));
+			result = mDraw(cl, obj, (struct MUIP_Draw *)msg);
+    break;
+
 		case OM_GET:
-			return(Get(cl, obj, (struct opGet *)msg));
+			result = Get(cl, obj, (struct opGet *)msg);
+    break;
+
 		case OM_SET:
+    {
 			Set(cl, obj, (struct opSet *)msg);
-			return(DoSuperMethodA(cl, obj, msg));
+			result = DoSuperMethodA(cl, obj, msg);
+    }
+    break;
+
 		case MUIM_HandleEvent:
 		{
+      struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
 			if(data->Flags & FLG_Ghosted || !(data->Flags & FLG_Shown))
 			{
 				result = 0;
@@ -332,6 +351,8 @@ DISPATCHER(_Dispatcher)
 
 		case MUIM_GoActive:
 		{
+      struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
 			data->Flags |= FLG_Active;
 /*			DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
 			data->ehnode.ehn_Events |= IDCMP_RAWKEY;
@@ -351,7 +372,7 @@ DISPATCHER(_Dispatcher)
 
 		case MUIM_GoInactive:
 		{
-//			kprintf("0x%lx: GoInactive\n", obj);
+      struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
       // clean an eventually marked block and the
       // active state flag of the gadget
@@ -369,16 +390,22 @@ DISPATCHER(_Dispatcher)
 		break;
 
 		case MUIM_Hide:
-			return(Hide(cl, obj, msg));
+			result = Hide(cl, obj, msg);
+    break;
+
 		case MUIM_Cleanup:
-			return(Cleanup(cl, obj, msg));
+			result = Cleanup(cl, obj, msg);
+    break;
+
 		case OM_DISPOSE:
-			return(Dispose(cl, obj, msg));
+			result = Dispose(cl, obj, msg);
+    break;
 
 		case MUIM_Export:
 		{
-				ULONG id;
-				struct MUIP_Export *exp_msg = (struct MUIP_Export *)msg;
+      struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+			struct MUIP_Export *exp_msg = (struct MUIP_Export *)msg;
+  		ULONG id;
 
 			if((id = (muiNotifyData(obj)->mnd_ObjectID)))
 				DoMethod(exp_msg->dataspace, MUIM_Dataspace_Add, data->Contents, strlen(data->Contents)+1, id);
@@ -389,8 +416,8 @@ DISPATCHER(_Dispatcher)
 
 		case MUIM_Import:
 		{
-				ULONG id;
-				struct MUIP_Import *imp_msg = (struct MUIP_Import *)msg;
+			struct MUIP_Import *imp_msg = (struct MUIP_Import *)msg;
+  		ULONG id;
 
 			if((id = (muiNotifyData(obj)->mnd_ObjectID)))
 			{
@@ -405,6 +432,7 @@ DISPATCHER(_Dispatcher)
 
 		case MUIM_BetterString_ClearSelected:
 		{
+      struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 			DeleteBlock(data);
 			data->Flags &= ~FLG_BlockEnabled;
 		}
@@ -412,8 +440,9 @@ DISPATCHER(_Dispatcher)
 
 		case MUIM_BetterString_Insert:
 		{
-				UWORD pos;
-				struct MUIP_BetterString_Insert *ins_msg = (struct MUIP_BetterString_Insert *)msg;
+      struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+			struct MUIP_BetterString_Insert *ins_msg = (struct MUIP_BetterString_Insert *)msg;
+			UWORD pos;
 
 			switch(ins_msg->pos)
 			{
@@ -438,6 +467,12 @@ DISPATCHER(_Dispatcher)
 			MUI_Redraw(obj, MADF_DRAWUPDATE);
 		}
 		break;
+
+    case MUIM_BetterString_DoAction:
+    	result = mDoAction(cl, obj, (struct MUIP_BetterString_DoAction *)msg);
+    break;
+
+
 /*
 		case MUIM_Backfill:
 		{
@@ -449,13 +484,14 @@ DISPATCHER(_Dispatcher)
 		}
 */
 		case MUIM_BetterString_FileNameStart:
-		{
 			result = FileNameStart((struct MUIP_BetterString_FileNameStart *)msg);
-		}
 		break;
 
 		default:
-			return(DoSuperMethodA(cl, obj, msg));
+			result = DoSuperMethodA(cl, obj, msg);
+    break;
 	}
+
+  RETURN(result);
 	return(result);
 }

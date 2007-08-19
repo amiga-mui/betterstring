@@ -110,6 +110,10 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
       ti_Data = (ULONG)data->InactiveContents;
     break;
 
+    case MUIA_BetterString_NoShortcuts:
+      ti_Data = (data->Flags & FLG_NoShortcuts) ? TRUE : FALSE;
+    break;
+
     case MUIA_Version:
       ti_Data = LIB_VERSION;
     break;
@@ -140,6 +144,7 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
     { MUIA_String_Secret,             FLG_Secret      },
     { MUIA_BetterString_StayActive,   FLG_StayActive  },
     { MUIA_BetterString_NoInput,      FLG_NoInput     },
+    { MUIA_BetterString_NoShortcuts,  FLG_NoShortcuts },
     { TAG_DONE,                       0               }
   };
 
@@ -243,7 +248,6 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
       case MUIA_String_MaxLen:
         data->MaxLength = (UWORD)ti_Data;
-//        kprintf("MaxLen: %ld\n", ti_Data);
       break;
 
       case MUIA_String_Reject:
@@ -281,11 +285,9 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
         data->Popup = (Object *)ti_Data;
       break;
 
-/*      default:
-        printf("Object: 0x%lx, tag: 0x%lx, Unknown attr: 0x%lx\n", obj, tag->ti_Tag, ti_Data);
-      break;
-*/    }
+    }
   }
+
   if(data->BufferPos > strlen(data->Contents))
     data->BufferPos = strlen(data->Contents);
 
