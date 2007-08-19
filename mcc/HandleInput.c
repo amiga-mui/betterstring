@@ -71,7 +71,7 @@ static int STDARGS MySPrintf(const char *buf, const char *fmt, ...)
 }
 #endif
 
-VOID AddToUndo (struct InstData *data)
+static void AddToUndo(struct InstData *data)
 {
 	if(data->Undo)
 		MyFreePooled(data->Pool, data->Undo);
@@ -84,7 +84,7 @@ VOID AddToUndo (struct InstData *data)
 	}
 }
 
-WORD AlignOffset (Object *obj, struct InstData *data)
+static WORD AlignOffset(Object *obj, struct InstData *data)
 {
 	struct MUI_AreaData	*ad	= muiAreaData(obj);
 	struct TextFont	*font	= data->Font ? data->Font : ad->mad_Font;
@@ -121,7 +121,7 @@ WORD AlignOffset (Object *obj, struct InstData *data)
 	return(offset);
 }
 
-BOOL Reject (UBYTE code, STRPTR reject)
+static BOOL Reject(UBYTE code, STRPTR reject)
 {
 	if(reject)
 	{
@@ -134,12 +134,12 @@ BOOL Reject (UBYTE code, STRPTR reject)
 	return(TRUE);
 }
 
-BOOL Accept (UBYTE code, STRPTR accept)
+static BOOL Accept(UBYTE code, STRPTR accept)
 {
 	return(accept ? !Reject(code, accept) : TRUE);
 }
 
-UWORD DecimalValue (UBYTE code)
+static UWORD DecimalValue(UBYTE code)
 {
 	if(code >= '0' && code <= '9')
 		return(code - '0');
@@ -151,7 +151,7 @@ UWORD DecimalValue (UBYTE code)
 	return(0);
 }
 
-BOOL IsHex (UBYTE code)
+static BOOL IsHex(UBYTE code)
 {
 	return(
 		(code >= '0' && code <= '9') ||
@@ -159,7 +159,7 @@ BOOL IsHex (UBYTE code)
 		(code >= 'A' && code <= 'F') ? TRUE : FALSE);
 }
 
-LONG FindDigit (struct InstData *data)
+static LONG FindDigit(struct InstData *data)
 {
 		WORD	pos = data->BufferPos;
 
@@ -191,7 +191,7 @@ LONG FindDigit (struct InstData *data)
 	return(pos);
 }
 
-UWORD NextWord (STRPTR text, UWORD x, struct Locale *locale)
+static UWORD NextWord(STRPTR text, UWORD x, struct Locale *locale)
 {
 	while(IsAlNum(locale, (UBYTE)text[x]))
 		x++;
@@ -202,7 +202,7 @@ UWORD NextWord (STRPTR text, UWORD x, struct Locale *locale)
 	return(x);
 }
 
-UWORD PrevWord (STRPTR text, UWORD x, struct Locale *locale)
+static UWORD PrevWord(STRPTR text, UWORD x, struct Locale *locale)
 {
 	if(x)
 		x--;
@@ -216,7 +216,7 @@ UWORD PrevWord (STRPTR text, UWORD x, struct Locale *locale)
 	return(x);
 }
 
-VOID strcpyback (STRPTR dest, STRPTR src)
+void strcpyback(STRPTR dest, STRPTR src)
 {
   UWORD	length;
 
@@ -231,7 +231,7 @@ VOID strcpyback (STRPTR dest, STRPTR src)
 	}
 }
 
-VOID DeleteBlock (struct InstData *data)
+void DeleteBlock(struct InstData *data)
 {
 	AddToUndo(data);
 	if(BlockEnabled(data))
@@ -244,7 +244,7 @@ VOID DeleteBlock (struct InstData *data)
 	}
 }
 
-VOID CopyBlock (struct InstData *data)
+static void CopyBlock(struct InstData *data)
 {
 		struct MsgPort		*port;
 		struct IOClipReq	*iorequest;
@@ -299,10 +299,33 @@ VOID CopyBlock (struct InstData *data)
 	}
 }
 
-VOID Paste (struct InstData *data)
+static void CutBlock(struct InstData *data)
+{
+  ENTER();
+
+	AddToUndo(data);
+	if(BlockEnabled(data))
+	{
+		CopyBlock(data);
+		DeleteBlock(data);
+  	data->Flags &= ~FLG_BlockEnabled;
+	}
+	else
+	{
+		*data->Contents = '\0';
+		data->BufferPos = 0;
+	}
+
+  LEAVE();
+}
+
+static void Paste(struct InstData *data)
 {
 	struct MsgPort		*port;
 	struct IOClipReq	*iorequest;
+
+  // clear the selection
+  DeleteBlock(data);
 
 	if((port = CreateMsgPort()))
 	{
@@ -379,7 +402,198 @@ VOID Paste (struct InstData *data)
 	}
 }
 
-ULONG ConvertKey (struct IntuiMessage *imsg)
+static void UndoRedo(struct InstData *data)
+{
+  STRPTR oldcontents = data->Contents;
+  UWORD oldpos = data->BufferPos;
+
+  ENTER();
+
+  data->Contents = data->Undo;
+	data->Undo = oldcontents;
+	data->Flags ^= FLG_RedoAvailable;
+	data->Flags &= ~FLG_BlockEnabled;
+	data->BufferPos = data->UndoPos;
+	data->UndoPos = oldpos;
+
+  LEAVE();
+}
+
+static void RevertToOriginal(struct InstData *data)
+{
+  STRPTR oldcontents = data->Contents;
+
+  ENTER();
+
+  data->Contents = data->Original;
+  data->Original = oldcontents;
+  data->Flags |= FLG_Original;
+  data->Flags &= ~FLG_BlockEnabled;
+  data->BufferPos = strlen(data->Contents);
+
+  LEAVE();
+}
+
+static BOOL ToggleCaseChar(struct InstData *data)
+{
+  UBYTE key = *(data->Contents+data->BufferPos);
+  BOOL result = FALSE;
+
+  ENTER();
+
+  if(data->BufferPos < strlen(data->Contents))
+  {
+    *(data->Contents+data->BufferPos) = IsLower(data->locale, key) ? ConvToUpper(data->locale, key) : ConvToLower(data->locale, key);
+  	data->BufferPos++;
+  	result = TRUE;
+  }
+
+  RETURN(result);
+  return result;
+}
+
+static BOOL ToggleCaseWord(struct InstData *data)
+{
+  UWORD Stop = NextWord(data->Contents, data->BufferPos, data->locale);
+  BOOL result = FALSE;
+
+  ENTER();
+
+  while(data->BufferPos < Stop)
+  {
+    UBYTE key = *(data->Contents+data->BufferPos);
+
+  	*(data->Contents+data->BufferPos) = IsLower(data->locale, key) ? ConvToUpper(data->locale, key) : ConvToLower(data->locale, key);
+  	data->BufferPos++;
+  	result = TRUE;
+  }
+
+  RETURN(result);
+  return result;
+}
+
+static BOOL IncreaseNearNumber(struct InstData *data)
+{
+  LONG pos;
+  BOOL result = FALSE;
+
+  ENTER();
+
+  if((pos = FindDigit(data)) >= 0)
+  {
+    LONG	cut;
+  	ULONG	res;
+
+  	if((cut = StrToLong(data->Contents+pos, (LONG *)&res)))
+  	{
+  		char string[12];
+  		char format[12];
+
+  		res++;
+  		MySPrintf(format, "%%0%ldlu", cut);
+  		MySPrintf(string, format, res);
+  		Overwrite(string, pos, cut, data);
+  		result = TRUE;
+  	}
+  }
+
+  RETURN(result);
+  return result;
+}
+
+static BOOL DecreaseNearNumber(struct InstData *data)
+{
+  LONG pos;
+  BOOL result = FALSE;
+
+  ENTER();
+
+  if((pos = FindDigit(data)) >= 0)
+  {
+    LONG cut;
+    ULONG	res;
+
+  	if((cut = StrToLong(data->Contents+pos, (LONG *)&res)))
+  	{
+  		if(res)
+  		{
+  			const char *format = "%lx";
+  			char string[12];
+  			char format2[12];
+
+  		  format = &format2[0];
+  			MySPrintf(format, "%%0%ldlu", cut);
+  			res--;
+  			MySPrintf(string, format, res);
+  			Overwrite(string, pos, cut, data);
+  			result = TRUE;
+  		}
+  	}
+  }
+
+  RETURN(result);
+  return result;
+}
+
+static BOOL HexToDec(struct InstData *data)
+{
+  LONG	cut = 0;
+  UWORD pos = data->BufferPos;
+  ULONG	res = 0;
+  BOOL result = FALSE;
+
+  ENTER();
+
+  while(pos && IsHex(*(data->Contents+pos-1)))
+  	pos--;
+
+  while(IsHex(*(data->Contents+pos+cut)))
+  {
+  	res = (result << 4) + DecimalValue(*(data->Contents+pos+cut));
+  	cut++;
+  }
+
+  if(cut)
+  {
+  	char string[12];
+
+  	MySPrintf(string, "%lu", res);
+  	Overwrite(string, pos, cut, data);
+  	result = TRUE;
+  }
+
+  RETURN(result);
+  return result;
+}
+
+static BOOL DecToHex(struct InstData *data)
+{
+  LONG pos;
+  BOOL result = FALSE;
+
+  ENTER();
+
+  if((pos = FindDigit(data)) >= 0)
+  {
+    LONG cut;
+    ULONG	res;
+
+  	if((cut = StrToLong(data->Contents+pos, (LONG *)&res)))
+    {
+  	  const char *format = "%lx";
+    	char string[12];
+
+  		MySPrintf(string, format, res);
+			Overwrite(string, pos, cut, data);
+			result  = TRUE;
+  	}
+  }
+
+  RETURN(result);
+  return result;
+}
+
+ULONG ConvertKey(struct IntuiMessage *imsg)
 {
 	struct InputEvent  event;
 	unsigned char code = 0;
@@ -395,6 +609,135 @@ ULONG ConvertKey (struct IntuiMessage *imsg)
 	return(code);
 }
 
+ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction *msg)
+{
+	struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  ULONG result = FALSE;
+  BOOL edited = FALSE;
+
+  ENTER();
+
+  switch(msg->action)
+  {
+    case MUIV_BetterString_DoAction_Cut:
+      CutBlock(data);
+      edited = TRUE;
+      result = TRUE;
+    break;
+
+    case MUIV_BetterString_DoAction_Copy:
+      CopyBlock(data);
+      result = TRUE;
+    break;
+
+    case MUIV_BetterString_DoAction_Paste:
+      Paste(data);
+      edited = TRUE;
+      result = TRUE;
+    break;
+
+    case MUIV_BetterString_DoAction_SelectAll:
+    {
+      data->BlockStart = 0;
+      data->BlockStop = strlen(data->Contents);
+      data->Flags |= FLG_BlockEnabled;
+      result = TRUE;
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_SelectNone:
+      data->Flags &= ~FLG_BlockEnabled;
+      result = TRUE;
+    break;
+
+    case MUIV_BetterString_DoAction_Undo:
+    case MUIV_BetterString_DoAction_Redo:
+    {
+  		if(data->Undo &&
+         (((msg->action == MUIV_BetterString_DoAction_Redo) && (data->Flags & FLG_RedoAvailable)) ||
+          ((msg->action == MUIV_BetterString_DoAction_Undo) && !(data->Flags & FLG_RedoAvailable))))
+  		{
+        UndoRedo(data);
+  			edited = TRUE;
+        result = TRUE;
+  		}
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_Revert:
+    {
+      RevertToOriginal(data);
+      edited = TRUE;
+      result = TRUE;
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_ToggleCase:
+    {
+      edited = result = ToggleCaseChar(data);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_ToggleCaseWord:
+    {
+      edited = result = ToggleCaseWord(data);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_IncreaseNum:
+    {
+      edited = result = IncreaseNearNumber(data);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_DecreaseNum:
+    {
+      edited = result = DecreaseNearNumber(data);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_HexToDec:
+    {
+      edited = result = HexToDec(data);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_DecToHex:
+    {
+      edited = result = DecToHex(data);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_NextFileComp:
+    {
+		  edited = result = FileNameComplete(obj, FALSE, data);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_PrevFileComp:
+    {
+		  edited = result = FileNameComplete(obj, TRUE, data);
+    }
+    break;
+  }
+
+	if(edited)
+	{
+		struct TagItem tags[] =
+		{
+			{ MUIA_String_Contents, (ULONG)data->Contents },
+			{ TAG_DONE,             0                     }
+		};
+
+		DoSuperMethod(cl, obj, OM_SET, tags, NULL);
+	}
+
+	MUI_Redraw(obj, MADF_DRAWUPDATE);
+
+  RETURN(result);
+  return result;
+}
+
 ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
 	struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
@@ -402,7 +745,6 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 	struct TextFont *Font = data->Font ? data->Font : ad->mad_Font;
 	ULONG	result = 0;
 	BOOL	movement = FALSE;
-	BOOL	deletion = FALSE;
 	BOOL	edited = FALSE;
 	BOOL	FNC = FALSE;
 	Object *focus = NULL;
@@ -446,14 +788,18 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 				if(input) switch(msg->imsg->Code)
 				{
-					case 66:		/* Tab */
-						if(!(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND))
-							return(0);
+      		// Tab
+					case 66:
+          {
+  					if(data->Flags & FLG_NoShortcuts || !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND))
+	  					return(0);
 
 						if(!(edited = FileNameComplete(obj, (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT)) ? TRUE : FALSE, data)))
 							DisplayBeep(NULL);
+
 						FNC = TRUE;
-						break;
+				  }
+          break;
 
 					case 78:		/* Right */
 						if(data->BufferPos < StringLength)
@@ -539,7 +885,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 								}
 							}
 						}
-						deletion = TRUE;
+						edited = TRUE;
 						break;
 
 					case 70:		/* Delete */
@@ -570,7 +916,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 								}
 							}
 						}
-						deletion = TRUE;
+						edited = TRUE;
 						break;
 
 					default:
@@ -619,194 +965,109 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 									}
 								}
 
-								switch(code)
-								{
-									case '\r':
-										if(!(data->Flags & FLG_StayActive))
-											set(_win(obj), MUIA_Window_ActiveObject, (data->Flags & FLG_AdvanceOnCr) ? (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT) ?  MUIV_Window_ActiveObject_Prev : MUIV_Window_ActiveObject_Next) : MUIV_Window_ActiveObject_None);
-										set(obj, MUIA_String_Acknowledge, data->Contents);
-										return(MUI_EventHandlerRC_Eat);
-										/* Skip the "un-block" code */
+                // check if the user pressed return and if he has activated AdvanceOnCr or not
+                if(code == '\r')
+                {
+  						    if(!(data->Flags & FLG_StayActive))
+  								  set(_win(obj), MUIA_Window_ActiveObject, (data->Flags & FLG_AdvanceOnCr) ? (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT) ?  MUIV_Window_ActiveObject_Prev : MUIV_Window_ActiveObject_Next) : MUIV_Window_ActiveObject_None);
+  								
+                  set(obj, MUIA_String_Acknowledge, data->Contents);
+  								
+                  return(MUI_EventHandlerRC_Eat);
+                }
 
-									case 'g':
-									{
-											UBYTE key = *(data->Contents+data->BufferPos);
+                // see if we should skip the default shorcuts or not
+                if(!(data->Flags & FLG_NoShortcuts))
+                {
+  								// depending on the pressed key code
+                  // we perform different actions.
+                  switch(code)
+  								{
+  									case 'g':
+  									{
+                      edited = ToggleCaseChar(data);
+  									}
+  									break;
 
-										if(data->BufferPos < StringLength)
-										{
-											*(data->Contents+data->BufferPos) = IsLower(data->locale, key) ? ConvToUpper(data->locale, key) : ConvToLower(data->locale, key);
-											data->BufferPos++;
-											edited = TRUE;
-										}
-									}
-									break;
+  									case 'G':
+  									{
+                      edited = ToggleCaseWord(data);
+  									}
+  									break;
 
-									case 'G':
-									{
-											UWORD Stop = NextWord(data->Contents, data->BufferPos, data->locale);
+  									case 'c':
+  										CopyBlock(data);
+  									break;
 
-										while(data->BufferPos < Stop)
-										{
-												UBYTE key = *(data->Contents+data->BufferPos);
+  									case 'x':
+                      CutBlock(data);
+                      edited = TRUE;
+                    break;
 
-											*(data->Contents+data->BufferPos) = IsLower(data->locale, key) ? ConvToUpper(data->locale, key) : ConvToLower(data->locale, key);
-											data->BufferPos++;
-											edited = TRUE;
-										}
-									}
-									break;
+  									case 'v':
+  										Paste(data);
+  										edited = TRUE;
+  									break;
 
-									case 'c':
-										CopyBlock(data);
+  									case 'i':
+  									{
+  										if((edited = IncreaseNearNumber(data)) == FALSE)
+  											DisplayBeep(NULL);
+  									}
 										break;
 
-									case 'x':
-										AddToUndo(data);
-										if(BlockEnabled(data))
-										{
-											CopyBlock(data);
-											DeleteBlock(data);
-										}
-										else
-										{
-											*data->Contents = '\0';
-											data->BufferPos = 0;
-										}
-										deletion = TRUE;
+  									case 'd':
+  									{
+  										if((edited = DecreaseNearNumber(data)) == FALSE)
+  											DisplayBeep(NULL);
+  									}
 										break;
 
-									case 'v':
-										DeleteBlock(data);
-										Paste(data);
-										edited = TRUE;
+  									case '#':
+  									{
+  										if((edited = HexToDec(data)) == FALSE)
+  											DisplayBeep(NULL);
+  									}
 										break;
 
-									case 'i':
-									{
-									  LONG pos;
+  									case '$':
+  									{
+  										if((edited = DecToHex(data)) == FALSE)
+  											DisplayBeep(NULL);
+  									}
+                    break;
 
-										if((pos = FindDigit(data)) >= 0)
-										{
-  									  LONG	cut;
-	  									ULONG	result;
-
-											if((cut = StrToLong(data->Contents+pos, (LONG *)&result)))
-											{
-												char string[12];
-												char format[12];
-
-												result++;
-												MySPrintf(format, "%%0%ldlu", cut);
-												MySPrintf(string, format, result);
-												Overwrite(string, pos, cut, data);
-												edited = TRUE;
-											}
-										}
-										if(!edited)
-											DisplayBeep(NULL);
+  									case 'q':
+  									{
+                      RevertToOriginal(data);
+  										edited = TRUE;
+  									}
 										break;
-									}
 
-									case 'd':
-									case '$':
-									{
-											LONG	pos, cut;
-											ULONG	result;
+  									case 'z':
+  									case 'Z':
+  									{
+  										if(data->Undo && (((code == 'Z') && (data->Flags & FLG_RedoAvailable)) ||
+                                        ((code == 'z') && !(data->Flags & FLG_RedoAvailable))))
+  										{
+                        UndoRedo(data);
+  											edited = TRUE;
+  										}
+  										else
+  											DisplayBeep(NULL);
+  									}
+                    break;
 
-										if((pos = FindDigit(data)) >= 0)
-										{
-											if((cut = StrToLong(data->Contents+pos, (LONG *)&result)))
-											{
-												if(result || code == '$')
-												{
-													const char *format = "%lx";
-													char string[12];
-													char format2[12];
-
-													if(code == 'd')
-													{
-														format = &format2[0];
-														MySPrintf(format, "%%0%ldlu", cut);
-														result--;
-													}
-													MySPrintf(string, format, result);
-													Overwrite(string, pos, cut, data);
-													edited = TRUE;
-												}
-											}
-										}
-										if(!edited)
-											DisplayBeep(NULL);
-										break;
-									}
-
-									case '#':
-									{
-										LONG	cut = 0;
-										UWORD pos = data->BufferPos;
-										ULONG	result = 0;
-
-										while(pos && IsHex(*(data->Contents+pos-1)))
-											pos--;
-
-										while(IsHex(*(data->Contents+pos+cut)))
-										{
-											result = (result << 4) + DecimalValue(*(data->Contents+pos+cut));
-											cut++;
-										}
-
-										if(cut)
-										{
-											char string[12];
-
-											MySPrintf(string, "%lu", result);
-											Overwrite(string, pos, cut, data);
-											edited = TRUE;
-										}
-										if(!edited)
-											DisplayBeep(NULL);
-										break;
-									}
-
-									case 'q':
-									{
-										STRPTR oldcontents = data->Contents;
-										data->Contents = data->Original;
-										data->Original = oldcontents;
-										data->Flags |= FLG_Original;
-										data->Flags &= ~FLG_BlockEnabled;
-										data->BufferPos = strlen(data->Contents);
-										edited = TRUE;
-										break;
-									}
-
-									case 'z':
-									case 'Z':
-									{
-										if(data->Undo && (((code == 'Z') && (data->Flags & FLG_RedoAvailable)) || ((code == 'z') && !(data->Flags & FLG_RedoAvailable))))
-										{
-												STRPTR	oldcontents = data->Contents;
-												UWORD		oldpos = data->BufferPos;
-
-											data->Contents = data->Undo;
-											data->Undo = oldcontents;
-											data->Flags ^= FLG_RedoAvailable;
-											data->Flags &= ~FLG_BlockEnabled;
-											data->BufferPos = data->UndoPos;
-											data->UndoPos = oldpos;
-											edited = TRUE;
-										}
-										else
-										{
-											DisplayBeep(NULL);
-										}
-										break;
-									}
-
-									default:
-										msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
-										return(0);
-								}
+  									default:
+  										msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
+  										return(0);
+  								}
+                }
+                else
+                {
+  								msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
+	  							return(0);
+                }
 							}
 						}
 					}
@@ -815,7 +1076,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
 				if(data->FNCBuffer && !FNC)
 				{
-						struct FNCData *fncbuffer = data->FNCBuffer, *fncframe;
+  				struct FNCData *fncbuffer = data->FNCBuffer, *fncframe;
 
 					while(fncbuffer)
 					{
@@ -835,15 +1096,15 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 					data->BlockStop = data->BufferPos;
 				}
 
-				if(deletion || edited)
+				if(edited)
 				{
 					struct TagItem tags[] =
 					{
 						{ MUIA_String_Contents, (ULONG)data->Contents },
 						{ TAG_DONE,             0                     }
 					};
+
 					DoSuperMethod(cl, obj, OM_SET, tags, NULL);
-//					set(obj, MUIA_String_Contents, data->Contents);
 				}
 
 				MUI_Redraw(obj, MADF_DRAWUPDATE);
