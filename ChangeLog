@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-08-26 Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcc/BetterString_mcc.h: converted all MUIV_BetterString_DoAction_#? values
+    to a named enum rather than simple defines.
+
 2007-08-18 Jens Langner <Jens.Langner@light-speed.de>
 
   * mcc: added new MUIM_BetterString_DoAction method which allows to manually
