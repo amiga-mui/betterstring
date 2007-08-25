@@ -89,8 +89,6 @@ VOID Set (struct IClass *cl, Object *obj, struct opSet *msg)
 	}
 }
 
-extern char _VERSION, _REVISION;
-
 ULONG Get (struct IClass *cl, Object *obj, struct opGet *msg)
 {
 	ULONG ti_Data;
