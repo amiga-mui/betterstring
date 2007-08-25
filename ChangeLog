@@ -7,6 +7,8 @@ $URL$
 
 2007-08-26 Jens Langner <Jens.Langner@light-speed.de>
 
+  * mcc/hotkeystring: adapted documentation and minor tweaks to the sources of
+    HotkeyString.mcc.
   * mcc/BetterString_mcc.h: converted all MUIV_BetterString_DoAction_#? values
     to a named enum rather than simple defines.
 
