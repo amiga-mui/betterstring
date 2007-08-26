@@ -5,6 +5,8 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.12 RELEASE ###########################################################
+
 2007-08-26 Jens Langner <Jens.Langner@light-speed.de>
 
   * mcc/hotkeystring: adapted documentation and minor tweaks to the sources of

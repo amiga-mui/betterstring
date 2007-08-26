@@ -241,8 +241,19 @@ CATALOGS = $(LOCALE)/deutsch.catalog \
            $(LOCALE)/italian.catalog
 
 #
-
 all: $(BINDIR) $(OBJDIR) locale.c $(MCPTARGET) $(PREFTARGET)
+
+# for making a release we compile ALL target with no debug
+release:
+	@printf '\033[33mCompling for AmigaOS4...\033[1m$@\033[0m\n'
+	make OS=os4 clean
+	make OS=os4 DEBUG=
+	@printf '\033[33mCompling for AmigaOS3...\033[1m$@\033[0m\n'
+	make OS=os3 clean
+	make OS=os3 DEBUG=
+	@printf '\033[33mCompling for MorphOS...\033[1m$@\033[0m\n'
+	make OS=mos clean
+	make OS=mos DEBUG=
 
 # make the object directories
 $(OBJDIR):
