@@ -2,11 +2,10 @@ Short:        BetterString custom class for MUI
 Author:       BetterString.mcc Open Source Team
 Uploader:     Jens Langner <Jens.Langner@light-speed de>
 Type:         dev/mui
-Version:      11.11
-Replaces:     dev/mui/mcc_betterstring-11.10.lha
+Version:      11.12
+Replaces:     dev/mui/mcc_betterstring-11.11.lha
 Requires:     AmigaOS 3.0+ or MorphOS, MUI 3.8+, 68020+/PPC604e+
 Architecture: ppc-amigaos >= 4.0.0; m68k-amigaos >= 3.0; ppc-morphos >= 1.4.2
-Distribution: Aminet
 
 BetterString is a stringgadget replacement. It is created for MUI, so using it
 should eliminate the problems with the original BOOPSI stringclass.
