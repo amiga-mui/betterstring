@@ -7,6 +7,8 @@ Replaces:     dev/mui/mcc_betterstring-11.11.lha
 Requires:     AmigaOS 3.0+ or MorphOS, MUI 3.8+, 68020+/PPC604e+
 Architecture: ppc-amigaos >= 4.0.0; m68k-amigaos >= 3.0; ppc-morphos >= 1.4.2
 
+Introduction
+~~~~~~~~~~~~
 BetterString is a stringgadget replacement. It is created for MUI, so using it
 should eliminate the problems with the original BOOPSI stringclass.
 The class offers the user to do number arithmetic, like increase, decrease and
@@ -40,3 +42,35 @@ use the Bug/Feature Trackers there to report anything to the authors!
 Have phun,
 
 Your BetterString.mcc Open Source Team
+
+Manual Installation
+~~~~~~~~~~~~~~~~~~~
+1) Extract the archive to a temporary directory.
+
+   > cd RAM:
+   > lha x MCC_BetterString.lha
+
+2) Go to the "MCC_BetterString/Libs/MUI/<OS>" directory where <OS> is the directory
+   matching the operating system you want to install BetterString.mcc for:
+
+   > cd MCC_BetterString/Libs/MUI/AmigaOS4
+
+3) copy all #?.mcc and #?.mcp files found in that <OS> directory to the
+   global "MUI:libs/mui/" directory on your system partition:
+
+   > copy #?.mcc MUI:Libs/mui/
+   > copy #?.mcp MUI:Libs/mui/
+
+4) reboot and enjoy the new version ;)
+
+History
+~~~~~~~
+The detailed change log can be found in the ChangeLog file.
+
+         __
+        / /
+   __  / /   Only Amiga makes it possible...
+   \ \/ /
+    \__/
+
+Amiga is a trademark of Amiga, Inc.
