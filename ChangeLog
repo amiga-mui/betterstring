@@ -7,6 +7,8 @@ $URL$
 
 2007-08-29  Thore Böckelmann <tboeckel@gmx.de>
 
+  * mcp/locale/deutsch.ct: updated german translations according to the lastest
+    changes.
   * mcp/CreatePrefsGroup.c, mcp/locale/BetterString_mcp.cd: all the help strings
     are now translatable.
 
