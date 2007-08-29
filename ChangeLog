@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-08-29  Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcp/CreatePrefsGroup.c, mcp/locale/BetterString_mcp.cd: all the help strings
+    are now translatable.
+
 #### v11.12 RELEASE ###########################################################
 
 2007-08-26 Jens Langner <Jens.Langner@light-speed.de>
