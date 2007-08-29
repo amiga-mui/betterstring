@@ -33,9 +33,6 @@
 #include "muiextra.h"
 #include "rev.h"
 
-const char *Key1[]  = { "Amiga + c", "Copy all or marked text" };
-const char *Key2[]  = { "Amiga + x", "Cut all or marked text" };
-const char *Key3[]  = { "Amiga + v", "Paste" };
 const char *Key4[]  = { "Amiga + z", "Undo last deletion" };
 const char *Key5[]  = { "Amiga + Z", "Redo last deletion" };
 const char *Key6[]  = { "Amiga + q", "Toggle between original and modified buffer" };
@@ -53,8 +50,6 @@ const char *Key16[] = { "Shift + crsr",   "Go to start/end of line" };
 const char *Key17[] = { "Shift + bs/del", "Delete to start/end of line" };
 const char *Key18[] = { "Alt + crsr",     "Go to prev/next word" };
 const char *Key19[] = { "Alt + bs/del",   "Delete prev/next word" };
-
-const char **Keyinfo[] = { Key1, Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9, Key10, Key11, Key12, Key13, Key14, Key15, Key16, Key17, Key18, Key19, NULL };
 
 Object *TxtLabel(const char *text)
 {
@@ -78,7 +73,53 @@ MakeStaticHook(DisplayHook, DisplayCode);
 Object *CreatePrefsGroup(struct InstData_MCP *data)
 {
 	Object **objs = data->Objects;
-	Object *group = VGroup,
+	Object *group;
+	static const char *key01[2];
+    static const char *key02[2];
+    static const char *key03[2];
+    static const char *key04[2];
+    static const char *key05[2];
+    static const char *key06[2];
+    static const char *key07[2];
+    static const char *key08[2];
+    static const char *key09[2];
+    static const char *key10[2];
+    static const char *key11[2];
+    static const char *key12[2];
+    static const char *key13[2];
+    static const char *key14[2];
+    static const char *key15[2];
+    static const char *key16[2];
+    static const char *key17[2];
+    static const char *key18[2];
+	static const char **keyinfo[] =
+	{
+	  key01, key02, key03, key04, key05, key06, key07, key08, key09, key10,
+	  key11, key12, key13, key14, key15, key16, key17, key18,
+	  NULL
+    };
+
+    key01[0] = GetStr(MSG_Help_Copy_Shortcut);                   key01[1] = GetStr(MSG_Help_Copy);
+    key02[0] = GetStr(MSG_Help_Cut_Shortcut);                    key02[1] = GetStr(MSG_Help_Cut);
+    key03[0] = GetStr(MSG_Help_Paste_Shortcut);                  key03[1] = GetStr(MSG_Help_Paste);
+    key04[0] = GetStr(MSG_Help_Undo_Shortcut);                   key04[1] = GetStr(MSG_Help_Undo);
+    key05[0] = GetStr(MSG_Help_Redo_Shortcut);                   key05[1] = GetStr(MSG_Help_Redo);
+    key06[0] = GetStr(MSG_Help_ToggleBuffer_Shortcut);           key06[1] = GetStr(MSG_Help_ToggleBuffer);
+    key07[0] = GetStr(MSG_Help_ToggleCaseChar_Shortcut);         key07[1] = GetStr(MSG_Help_ToggleCaseChar);
+    key08[0] = GetStr(MSG_Help_ToggleCaseWord_Shortcut);         key08[1] = GetStr(MSG_Help_ToggleCaseWord);
+    key09[0] = GetStr(MSG_Help_IncreaseNumber_Shortcut);         key09[1] = GetStr(MSG_Help_IncreaseNumber);
+    key10[0] = GetStr(MSG_Help_DecreaseNumber_Shortcut);         key10[1] = GetStr(MSG_Help_DecreaseNumber);
+    key11[0] = GetStr(MSG_Help_HexToDecimal_Shortcut);           key11[1] = GetStr(MSG_Help_HexToDecimal);
+    key12[0] = GetStr(MSG_Help_DecimalToHex_Shortcut);           key12[1] = GetStr(MSG_Help_DecimalToHex);
+    key13[0] = GetStr(MSG_Help_FilenameCompletition_Shortcut);   key13[1] = GetStr(MSG_Help_FilenameCompletition);
+    key14[0] = GetStr(MSG_Help_Mark_Shortcut);                   key14[1] = GetStr(MSG_Help_Mark);
+    key15[0] = GetStr(MSG_Help_GotoToStartEndOfLine_Shortcut);   key15[1] = GetStr(MSG_Help_GotoToStartEndOfLine);
+    key16[0] = GetStr(MSG_Help_DeleteToStartEndOfLine_Shortcut); key16[1] = GetStr(MSG_Help_DeleteToStartEndOfLine);
+    key17[0] = GetStr(MSG_Help_GotoToPrevNextWord_Shortcut);     key17[1] = GetStr(MSG_Help_GotoToPrevNextWord);
+    key18[0] = GetStr(MSG_Help_DeleteToPrevNextWord_Shortcut);   key18[1] = GetStr(MSG_Help_DeleteToPrevNextWord);
+
+
+	group = VGroup,
 
 		Child, PopobjectObject,
 			MUIA_Popstring_String,  BetterStringObject, StringFrame,
@@ -92,7 +133,7 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
 				MUIA_Listview_List,		ListObject, ReadListFrame,
 					MUIA_List_DisplayHook,		&DisplayHook,
 					MUIA_List_Format,				",,",
-					MUIA_List_SourceArray,		Keyinfo,
+					MUIA_List_SourceArray,		keyinfo,
 					End,
 				End,
 			End,
