@@ -304,6 +304,7 @@ static void CutBlock(struct InstData *data)
   ENTER();
 
 	AddToUndo(data);
+
 	if(BlockEnabled(data))
 	{
 		CopyBlock(data);
@@ -627,11 +628,13 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
 
     case MUIV_BetterString_DoAction_Copy:
       CopyBlock(data);
+      data->Flags &= ~FLG_BlockEnabled;
       result = TRUE;
     break;
 
     case MUIV_BetterString_DoAction_Paste:
       Paste(data);
+      data->Flags &= ~FLG_BlockEnabled;
       edited = TRUE;
       result = TRUE;
     break;
@@ -658,6 +661,7 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
           ((msg->action == MUIV_BetterString_DoAction_Undo) && !(data->Flags & FLG_RedoAvailable))))
   		{
         UndoRedo(data);
+        data->Flags &= ~FLG_BlockEnabled;
   			edited = TRUE;
         result = TRUE;
   		}
@@ -667,6 +671,7 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     case MUIV_BetterString_DoAction_Revert:
     {
       RevertToOriginal(data);
+      data->Flags &= ~FLG_BlockEnabled;
       edited = TRUE;
       result = TRUE;
     }
@@ -675,48 +680,56 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     case MUIV_BetterString_DoAction_ToggleCase:
     {
       edited = result = ToggleCaseChar(data);
+      data->Flags &= ~FLG_BlockEnabled;
     }
     break;
 
     case MUIV_BetterString_DoAction_ToggleCaseWord:
     {
       edited = result = ToggleCaseWord(data);
+      data->Flags &= ~FLG_BlockEnabled;
     }
     break;
 
     case MUIV_BetterString_DoAction_IncreaseNum:
     {
       edited = result = IncreaseNearNumber(data);
+      data->Flags &= ~FLG_BlockEnabled;
     }
     break;
 
     case MUIV_BetterString_DoAction_DecreaseNum:
     {
       edited = result = DecreaseNearNumber(data);
+      data->Flags &= ~FLG_BlockEnabled;
     }
     break;
 
     case MUIV_BetterString_DoAction_HexToDec:
     {
       edited = result = HexToDec(data);
+      data->Flags &= ~FLG_BlockEnabled;
     }
     break;
 
     case MUIV_BetterString_DoAction_DecToHex:
     {
       edited = result = DecToHex(data);
+      data->Flags &= ~FLG_BlockEnabled;
     }
     break;
 
     case MUIV_BetterString_DoAction_NextFileComp:
     {
 		  edited = result = FileNameComplete(obj, FALSE, data);
+      data->Flags &= ~FLG_BlockEnabled;
     }
     break;
 
     case MUIV_BetterString_DoAction_PrevFileComp:
     {
 		  edited = result = FileNameComplete(obj, TRUE, data);
+      data->Flags &= ~FLG_BlockEnabled;
     }
     break;
   }
