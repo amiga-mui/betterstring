@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-08-31 Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcp/locale/italian.ct: updated italian translation kindly provided by
+    Samir Hawamdeh.
+
 2007-08-30 Jens Langner <Jens.Langner@light-speed.de>
 
   * mcc/HandleInput.c: fixed bug where upon some copy&paste operations via
