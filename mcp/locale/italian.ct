@@ -1,5 +1,5 @@
 ## chunk AUTH Samir Hawamdeh (http://www.betatesting.it/backforthefuture)
-## version $VER: Betterstring_mcp.ct 2.0 (31.8.2007)
+## version $VER: Betterstring_mcp.ct 2.0 (1.9.2007)
 ## language italiano
 ## codeset 0
 ;
@@ -93,7 +93,7 @@ Amiga + q
 ; Amiga + q
 ;
 MSG_Help_ToggleCaseChar
-Alterna miniscole sui caratteri
+Alterna minuscole sui caratteri
 ; Toggle case on character
 ;
 MSG_Help_ToggleCaseChar_Shortcut
@@ -101,7 +101,7 @@ Amiga + g
 ; Amiga + g
 ;
 MSG_Help_ToggleCaseWord
-Alterna miscuscole sulle parole
+Alterna minuscole sulle parole
 ; Toggle case on word
 ;
 MSG_Help_ToggleCaseWord_Shortcut
