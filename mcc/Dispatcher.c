@@ -432,9 +432,9 @@ DISPATCHER(_Dispatcher)
 
 		case MUIM_BetterString_ClearSelected:
 		{
-      struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-			DeleteBlock(data);
-			data->Flags &= ~FLG_BlockEnabled;
+      // forward the clear request to our new DoAction method
+      // which in fact will do the very same, but a bit more clever
+      DoMethod(obj, MUIM_BetterString_DoAction, MUIV_BetterString_DoAction_Delete);
 		}
 		break;
 

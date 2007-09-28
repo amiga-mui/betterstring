@@ -84,7 +84,8 @@ enum MUIV_BetterString_DoActions
   MUIV_BetterString_DoAction_HexToDec       = 13,
   MUIV_BetterString_DoAction_DecToHex       = 14,
   MUIV_BetterString_DoAction_NextFileComp   = 15,
-  MUIV_BetterString_DoAction_PrevFileComp   = 16
+  MUIV_BetterString_DoAction_PrevFileComp   = 16,
+  MUIV_BetterString_DoAction_Delete         = 17
 };
 
 // parameter structures for methods
