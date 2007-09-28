@@ -5,6 +5,13 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-09-28 Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcc/HandleInput.c: introduced new MUIV_BetterString_DoAction_Delete action
+    and changed the ClearSelected method to use that new action instead of
+    calling DeleteBlock() itself. This in fact should also fix issues where upon
+    a ClearSelected call the display of the gadget wasn't properly refreshed.
+
 2007-09-01  Pär Boberg <pbobbenb@spray.se>
 
   * mcp/locale/svenska.ct: updated according to changes.

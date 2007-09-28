@@ -621,22 +621,37 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
   switch(msg->action)
   {
     case MUIV_BetterString_DoAction_Cut:
+    {
       CutBlock(data);
       edited = TRUE;
       result = TRUE;
+    }
     break;
 
     case MUIV_BetterString_DoAction_Copy:
+    {
       CopyBlock(data);
       data->Flags &= ~FLG_BlockEnabled;
       result = TRUE;
+    }
     break;
 
     case MUIV_BetterString_DoAction_Paste:
+    {
       Paste(data);
       data->Flags &= ~FLG_BlockEnabled;
       edited = TRUE;
       result = TRUE;
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_Delete:
+    {
+      DeleteBlock(data);
+      data->Flags &= ~FLG_BlockEnabled;
+      edited = TRUE;
+      result = TRUE;
+    }
     break;
 
     case MUIV_BetterString_DoAction_SelectAll:
@@ -649,8 +664,10 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     break;
 
     case MUIV_BetterString_DoAction_SelectNone:
+    {
       data->Flags &= ~FLG_BlockEnabled;
       result = TRUE;
+    }
     break;
 
     case MUIV_BetterString_DoAction_Undo:
