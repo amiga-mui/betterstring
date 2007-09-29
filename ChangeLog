@@ -5,6 +5,8 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.13 RELEASE ###########################################################
+
 2007-09-28 Jens Langner <Jens.Langner@light-speed.de>
 
   * mcc/HandleInput.c: introduced new MUIV_BetterString_DoAction_Delete action
