@@ -5,6 +5,15 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-11-02 Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcc/HandleInput.c: the HOME and END key on PC keyboards will now be
+    processed and move the cursor to the start/end of the string. This should
+    fulfill feature request #1822105.
+  * mcp/CreatePrefsGroup.c: the Crawling object will now always carry a grey
+    background which should not interfere with any scrolling operation
+    anymore.
+
 #### v11.13 RELEASE ###########################################################
 
 2007-09-28 Jens Langner <Jens.Langner@light-speed.de>

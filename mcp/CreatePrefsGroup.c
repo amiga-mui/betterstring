@@ -33,7 +33,7 @@
 #include "muiextra.h"
 #include "rev.h"
 
-const char *Key4[]  = { "Amiga + z", "Undo last deletion" };
+const char *Key4[]  = { "Amiga + z", "Undo ralast deletion" };
 const char *Key5[]  = { "Amiga + Z", "Redo last deletion" };
 const char *Key6[]  = { "Amiga + q", "Toggle between original and modified buffer" };
 const char *Key7[]  = { "Amiga + g", "Toggle case on char" };
@@ -233,7 +233,7 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
 			End,
 
 		Child, CrawlingObject, TextFrame,
-			MUIA_Background,			MUII_TextBack,
+			MUIA_Background,			"m1",
 			MUIA_Virtgroup_Input,	FALSE,
 			MUIA_FixHeightTxt,		"\n\n",
 			Child, TextObject,
