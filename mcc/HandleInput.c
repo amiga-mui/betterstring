@@ -808,300 +808,335 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 				{
 					switch(msg->imsg->Code)
 					{
-						case 66:		/* Tab */
-						case 65:		/* Backspace */
-						case 70:		/* Delete */
+						case RAWKEY_TAB:
+						case RAWKEY_BACKSPACE:
+						case RAWKEY_DEL:
 							input = FALSE;
 						break;
 					}
 				}
 
-				if(input) switch(msg->imsg->Code)
+				if(input == TRUE)
 				{
-      		// Tab
-					case 66:
+          switch(msg->imsg->Code)
           {
-  					if(data->Flags & FLG_NoShortcuts || !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND))
-	  					return(0);
+        		// Tab
+  					case RAWKEY_TAB:
+            {
+    					if(data->Flags & FLG_NoShortcuts || !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND))
+  	  					return(0);
 
-						if(!(edited = FileNameComplete(obj, (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT)) ? TRUE : FALSE, data)))
-							DisplayBeep(NULL);
+  						if(!(edited = FileNameComplete(obj, (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT)) ? TRUE : FALSE, data)))
+  							DisplayBeep(NULL);
 
-						FNC = TRUE;
-				  }
-          break;
+  						FNC = TRUE;
+  				  }
+            break;
 
-					case 78:		/* Right */
-						if(data->BufferPos < StringLength)
-						{
-							if(msg->imsg->Qualifier & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
-							{
-								data->BufferPos = StringLength;
-							}
-							else
-							{
-								if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
-								{
-									data->BufferPos = NextWord(data->Contents, data->BufferPos, data->locale);
-								}
-								else
-								{
-									if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
-									  data->BufferPos = MAX(data->BlockStart, data->BlockStop);
-									else
-									  data->BufferPos++;
-								}
-							}
-						}
-						movement = TRUE;
-						break;
-
-					case 79:		/* Left */
-						if(data->BufferPos)
-						{
-							if(msg->imsg->Qualifier & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
-							{
-								data->BufferPos = 0;
-							}
-							else
-							{
-								if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
-								{
-									data->BufferPos = PrevWord(data->Contents, data->BufferPos, data->locale);
-								}
-								else
-								{
-									if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
-										data->BufferPos = MIN(data->BlockStart, data->BlockStop);
-
-									if(data->BufferPos)
-										data->BufferPos--;
-								}
-							}
-						}
-						movement = TRUE;
-						break;
-
-					case 65:		/* Backspace */
-						if(BlockEnabled(data))
-						{
-							DeleteBlock(data);
-						}
-						else
-						{
-							if(data->BufferPos)
-							{
-								if(msg->imsg->Qualifier & (IEQUALIFIER_CONTROL | IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
-								{
-									AddToUndo(data);
-									strcpy(data->Contents, data->Contents+data->BufferPos);
-									data->BufferPos = 0;
-								}
-								else
-								{
-									if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
-									{
-											UWORD NewPos = PrevWord(data->Contents, data->BufferPos, data->locale);
-
-										AddToUndo(data);
-										strcpy(data->Contents+NewPos, data->Contents+data->BufferPos);
-										data->BufferPos = NewPos;
-									}
-									else
-									{
-										strcpy(data->Contents+data->BufferPos-1, data->Contents+data->BufferPos);
-										data->BufferPos--;
-									}
-								}
-							}
-						}
-						edited = TRUE;
-						break;
-
-					case 70:		/* Delete */
-						if(BlockEnabled(data))
-						{
-							DeleteBlock(data);
-						}
-						else
-						{
-							if(data->BufferPos < StringLength)
-							{
-								if(msg->imsg->Qualifier & (IEQUALIFIER_CONTROL | IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
-								{
-									AddToUndo(data);
-									*(data->Contents+data->BufferPos) = '\0';
-								}
-								else
-								{
-									if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
-									{
-										AddToUndo(data);
-										strcpy(data->Contents+data->BufferPos, data->Contents+NextWord(data->Contents, data->BufferPos, data->locale));
-									}
-									else
-									{
-										strcpy(data->Contents+data->BufferPos, data->Contents+data->BufferPos+1);
-									}
-								}
-							}
-						}
-						edited = TRUE;
-						break;
-
-					default:
-					{
-						if(data->Popup && msg->muikey == MUIKEY_POPUP)
-						{
-							DoMethod(data->Popup, MUIM_Popstring_Open);
-						}
-						else
-						{
-							UBYTE	code = ConvertKey(msg->imsg);
-							if((((code >= 32 && code <= 126) || code >= 160) && !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND)) || (code && msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
-							{
-								if(!(data->Flags & FLG_NoInput))
-								{
-									DeleteBlock(data);
-									
-									if((data->MaxLength == 0 || (ULONG)data->MaxLength-1 > strlen(data->Contents)) &&
-									   Accept(code, data->Accept) && Reject(code, data->Reject))
-									{
-										data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, 1);
-										strcpyback(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos);
-										*(data->Contents+data->BufferPos) = code;
-										data->BufferPos++;
-										edited = TRUE;
-									}
-									else
-									{
-										DisplayBeep(NULL);
-									}
-								}
-							}
-							else
-							{
-								if(data->Flags & FLG_NoInput)
-								{
-									switch(code)
-									{
-										case '\r':
-										case 'c':
-										break;
-
-										default:
-											return(MUI_EventHandlerRC_Eat);
-										break;
-									}
-								}
-
-                // check if the user pressed return and if he has activated AdvanceOnCr or not
-                if(code == '\r')
-                {
-  						    if(!(data->Flags & FLG_StayActive))
-  								  set(_win(obj), MUIA_Window_ActiveObject, (data->Flags & FLG_AdvanceOnCr) ? (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT) ?  MUIV_Window_ActiveObject_Prev : MUIV_Window_ActiveObject_Next) : MUIV_Window_ActiveObject_None);
-  								
-                  set(obj, MUIA_String_Acknowledge, data->Contents);
-  								
-                  return(MUI_EventHandlerRC_Eat);
-                }
-
-                // see if we should skip the default shorcuts or not
-                if(!(data->Flags & FLG_NoShortcuts))
-                {
-  								// depending on the pressed key code
-                  // we perform different actions.
-                  switch(code)
+            // Right
+  					case RAWKEY_CRSRRIGHT:
+            {
+  						if(data->BufferPos < StringLength)
+  						{
+  							if(msg->imsg->Qualifier & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+  							{
+  								data->BufferPos = StringLength;
+  							}
+  							else
+  							{
+  								if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
   								{
-  									case 'g':
-  									{
-                      edited = ToggleCaseChar(data);
-  									}
-  									break;
-
-  									case 'G':
-  									{
-                      edited = ToggleCaseWord(data);
-  									}
-  									break;
-
-  									case 'c':
-  										CopyBlock(data);
-  									break;
-
-  									case 'x':
-                      CutBlock(data);
-                      edited = TRUE;
-                    break;
-
-  									case 'v':
-  										Paste(data);
-  										edited = TRUE;
-  									break;
-
-  									case 'i':
-  									{
-  										if((edited = IncreaseNearNumber(data)) == FALSE)
-  											DisplayBeep(NULL);
-  									}
-										break;
-
-  									case 'd':
-  									{
-  										if((edited = DecreaseNearNumber(data)) == FALSE)
-  											DisplayBeep(NULL);
-  									}
-										break;
-
-  									case '#':
-  									{
-  										if((edited = HexToDec(data)) == FALSE)
-  											DisplayBeep(NULL);
-  									}
-										break;
-
-  									case '$':
-  									{
-  										if((edited = DecToHex(data)) == FALSE)
-  											DisplayBeep(NULL);
-  									}
-                    break;
-
-  									case 'q':
-  									{
-                      RevertToOriginal(data);
-  										edited = TRUE;
-  									}
-										break;
-
-  									case 'z':
-  									case 'Z':
-  									{
-  										if(data->Undo && (((code == 'Z') && (data->Flags & FLG_RedoAvailable)) ||
-                                        ((code == 'z') && !(data->Flags & FLG_RedoAvailable))))
-  										{
-                        UndoRedo(data);
-  											edited = TRUE;
-  										}
-  										else
-  											DisplayBeep(NULL);
-  									}
-                    break;
-
-  									default:
-  										msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
-  										return(0);
+  									data->BufferPos = NextWord(data->Contents, data->BufferPos, data->locale);
   								}
-                }
-                else
-                {
-  								msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
-	  							return(0);
-                }
-							}
-						}
-					}
-					break;
+  								else
+  								{
+  									if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+  									  data->BufferPos = MAX(data->BlockStart, data->BlockStop);
+  									else
+  									  data->BufferPos++;
+  								}
+  							}
+  						}
+  						movement = TRUE;
+            }
+  					break;
+
+        		// Left
+  					case RAWKEY_CRSRLEFT:
+            {
+  						if(data->BufferPos)
+  						{
+  							if(msg->imsg->Qualifier & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+  							{
+  								data->BufferPos = 0;
+  							}
+  							else
+  							{
+  								if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+  								{
+  									data->BufferPos = PrevWord(data->Contents, data->BufferPos, data->locale);
+  								}
+  								else
+  								{
+  									if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+  										data->BufferPos = MIN(data->BlockStart, data->BlockStop);
+
+  									if(data->BufferPos)
+  										data->BufferPos--;
+  								}
+  							}
+  						}
+  						movement = TRUE;
+            }
+  					break;
+
+        		// Backspace
+  					case RAWKEY_BACKSPACE:
+            {
+  						if(BlockEnabled(data))
+  						{
+  							DeleteBlock(data);
+  						}
+  						else
+  						{
+  							if(data->BufferPos)
+  							{
+  								if(msg->imsg->Qualifier & (IEQUALIFIER_CONTROL | IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+  								{
+  									AddToUndo(data);
+  									strcpy(data->Contents, data->Contents+data->BufferPos);
+  									data->BufferPos = 0;
+  								}
+  								else
+  								{
+  									if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+  									{
+  											UWORD NewPos = PrevWord(data->Contents, data->BufferPos, data->locale);
+
+  										AddToUndo(data);
+  										strcpy(data->Contents+NewPos, data->Contents+data->BufferPos);
+  										data->BufferPos = NewPos;
+  									}
+  									else
+  									{
+  										strcpy(data->Contents+data->BufferPos-1, data->Contents+data->BufferPos);
+  										data->BufferPos--;
+  									}
+  								}
+  							}
+  						}
+  						edited = TRUE;
+  					}
+            break;
+
+            // Delete
+  					case RAWKEY_DEL:
+            {
+  						if(BlockEnabled(data))
+  						{
+  							DeleteBlock(data);
+  						}
+  						else
+  						{
+  							if(data->BufferPos < StringLength)
+  							{
+  								if(msg->imsg->Qualifier & (IEQUALIFIER_CONTROL | IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+  								{
+  									AddToUndo(data);
+  									*(data->Contents+data->BufferPos) = '\0';
+  								}
+  								else
+  								{
+  									if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+  									{
+  										AddToUndo(data);
+  										strcpy(data->Contents+data->BufferPos, data->Contents+NextWord(data->Contents, data->BufferPos, data->locale));
+  									}
+  									else
+  									{
+  										strcpy(data->Contents+data->BufferPos, data->Contents+data->BufferPos+1);
+  									}
+  								}
+  							}
+  						}
+  						edited = TRUE;
+  					}
+            break;
+
+            // Home
+            case RAWKEY_HOME:
+            {
+  						if(data->BufferPos)
+    						data->BufferPos = 0;
+
+              movement = TRUE;
+            }
+            break;
+
+            // End
+            case RAWKEY_END:
+            {
+  						if(data->BufferPos < StringLength)
+    						data->BufferPos = StringLength;
+
+              movement = TRUE;
+            }
+            break;
+
+  					default:
+  					{
+  						if(data->Popup && msg->muikey == MUIKEY_POPUP)
+  						{
+  							DoMethod(data->Popup, MUIM_Popstring_Open);
+  						}
+  						else
+  						{
+  							UBYTE	code = ConvertKey(msg->imsg);
+  							if((((code >= 32 && code <= 126) || code >= 160) && !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND)) || (code && msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+  							{
+  								if(!(data->Flags & FLG_NoInput))
+  								{
+  									DeleteBlock(data);
+  									
+  									if((data->MaxLength == 0 || (ULONG)data->MaxLength-1 > strlen(data->Contents)) &&
+  									   Accept(code, data->Accept) && Reject(code, data->Reject))
+  									{
+  										data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, 1);
+  										strcpyback(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos);
+  										*(data->Contents+data->BufferPos) = code;
+  										data->BufferPos++;
+  										edited = TRUE;
+  									}
+  									else
+  									{
+  										DisplayBeep(NULL);
+  									}
+  								}
+  							}
+  							else
+  							{
+  								if(data->Flags & FLG_NoInput)
+  								{
+  									switch(code)
+  									{
+  										case '\r':
+  										case 'c':
+  										break;
+
+  										default:
+  											return(MUI_EventHandlerRC_Eat);
+  										break;
+  									}
+  								}
+
+                  // check if the user pressed return and if he has activated AdvanceOnCr or not
+                  if(code == '\r')
+                  {
+    						    if(!(data->Flags & FLG_StayActive))
+    								  set(_win(obj), MUIA_Window_ActiveObject, (data->Flags & FLG_AdvanceOnCr) ? (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT) ?  MUIV_Window_ActiveObject_Prev : MUIV_Window_ActiveObject_Next) : MUIV_Window_ActiveObject_None);
+    								
+                    set(obj, MUIA_String_Acknowledge, data->Contents);
+    								
+                    return(MUI_EventHandlerRC_Eat);
+                  }
+
+                  // see if we should skip the default shorcuts or not
+                  if(!(data->Flags & FLG_NoShortcuts))
+                  {
+    								// depending on the pressed key code
+                    // we perform different actions.
+                    switch(code)
+    								{
+    									case 'g':
+    									{
+                        edited = ToggleCaseChar(data);
+    									}
+    									break;
+
+    									case 'G':
+    									{
+                        edited = ToggleCaseWord(data);
+    									}
+    									break;
+
+    									case 'c':
+    										CopyBlock(data);
+    									break;
+
+    									case 'x':
+                        CutBlock(data);
+                        edited = TRUE;
+                      break;
+
+    									case 'v':
+    										Paste(data);
+    										edited = TRUE;
+    									break;
+
+    									case 'i':
+    									{
+    										if((edited = IncreaseNearNumber(data)) == FALSE)
+    											DisplayBeep(NULL);
+    									}
+  										break;
+
+    									case 'd':
+    									{
+    										if((edited = DecreaseNearNumber(data)) == FALSE)
+    											DisplayBeep(NULL);
+    									}
+  										break;
+
+    									case '#':
+    									{
+    										if((edited = HexToDec(data)) == FALSE)
+    											DisplayBeep(NULL);
+    									}
+  										break;
+
+    									case '$':
+    									{
+    										if((edited = DecToHex(data)) == FALSE)
+    											DisplayBeep(NULL);
+    									}
+                      break;
+
+    									case 'q':
+    									{
+                        RevertToOriginal(data);
+    										edited = TRUE;
+    									}
+  										break;
+
+    									case 'z':
+    									case 'Z':
+    									{
+    										if(data->Undo && (((code == 'Z') && (data->Flags & FLG_RedoAvailable)) ||
+                                          ((code == 'z') && !(data->Flags & FLG_RedoAvailable))))
+    										{
+                          UndoRedo(data);
+    											edited = TRUE;
+    										}
+    										else
+    											DisplayBeep(NULL);
+    									}
+                      break;
+
+    									default:
+    										msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
+    										return(0);
+    								}
+                  }
+                  else
+                  {
+    								msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
+  	  							return(0);
+                  }
+  							}
+  						}
+  					}
+  					break;
+          }
 				}
 
 				if(data->FNCBuffer && !FNC)
