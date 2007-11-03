@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-11-03 Jens Langner <Jens.Langner@light-speed.de>
+
+   * mcp/CreatePrefsGroup.c: added a copyright crawling object to the bottom
+     of the mcp to match the Look&Feel to our other classes.
+
 2007-11-02 Jens Langner <Jens.Langner@light-speed.de>
 
   * mcc/HandleInput.c: the HOME and END key on PC keyboards will now be
