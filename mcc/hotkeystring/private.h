@@ -70,6 +70,9 @@ struct InstData
 
 #else
 
+#define RAWKEY_BACKSPACE 0x41
+#define RAWKEY_TAB       0x42
+#define RAWKEY_DEL       0x46
 #define RAWKEY_INSERT    0x47 /* Not on classic keyboards */
 #define RAWKEY_PAGEUP    0x48 /* Not on classic keyboards */
 #define RAWKEY_PAGEDOWN  0x49 /* Not on classic keyboards */
