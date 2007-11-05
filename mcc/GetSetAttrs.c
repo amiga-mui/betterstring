@@ -38,7 +38,7 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   ULONG ti_Data;
-  
+
   switch(msg->opg_AttrID)
   {
     case MUIA_Font:
@@ -84,6 +84,10 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
 
     case MUIA_String_Secret:
       ti_Data = (data->Flags & FLG_Secret) ? TRUE : FALSE;
+    break;
+
+    case MUIA_String_EditHook:
+      ti_Data = (ULONG)data->EditHook;
     break;
 
     case MUIA_BetterString_KeyUpFocus:
@@ -254,6 +258,10 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
         data->Reject = (STRPTR)ti_Data;
       break;
 
+      case MUIA_String_EditHook:
+        data->EditHook = (struct Hook *)ti_Data;
+      break;
+
       case MUIA_BetterString_KeyUpFocus:
         data->KeyUpFocus = (Object *)ti_Data;
       break;
@@ -272,10 +280,10 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
         data->Flags |= FLG_BlockEnabled;
 
         data->BlockStop = data->BufferPos+ti_Data;
-        
+
         if(data->BlockStop < 0)
           data->BlockStop = 0;
-        
+
         if((ULONG)data->BlockStop > strlen(data->Contents))
           data->BlockStop = strlen(data->Contents);
       }

@@ -40,7 +40,7 @@
 
 static BOOL BlockEnabled(struct InstData *data)
 {
-	return((data->Flags & FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
+  return((data->Flags & FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
 }
 
 #if defined(__amigaos4__) || defined(__MORPHOS__)
@@ -57,350 +57,350 @@ static int VARARGS68K MySPrintf(const char *buf, const char *fmt, ...)
 #else
 static int STDARGS MySPrintf(const char *buf, const char *fmt, ...)
 {
-	static const UWORD PutCharProc[2] = {0x16C0,0x4E75};
-	/* dirty hack to avoid assembler part :-)
-	   16C0: move.b d0,(a3)+
-	   4E75: rts */
-	va_list args;
+  static const UWORD PutCharProc[2] = {0x16C0,0x4E75};
+  /* dirty hack to avoid assembler part :-)
+     16C0: move.b d0,(a3)+
+     4E75: rts */
+  va_list args;
 
-	va_start(args, fmt);
-	RawDoFmt(fmt, args, (void (*)(void))PutCharProc, (STRPTR)buf);
-	va_end(args);
+  va_start(args, fmt);
+  RawDoFmt(fmt, args, (void (*)(void))PutCharProc, (STRPTR)buf);
+  va_end(args);
 
-	return(strlen(buf));
+  return(strlen(buf));
 }
 #endif
 
 static void AddToUndo(struct InstData *data)
 {
-	if(data->Undo)
-		MyFreePooled(data->Pool, data->Undo);
-	
-	if((data->Undo = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)))
-	{
-		strlcpy(data->Undo, data->Contents, strlen(data->Contents)+1);
-		data->UndoPos = data->BufferPos;
-		data->Flags &= ~FLG_RedoAvailable;
-	}
+  if(data->Undo)
+    MyFreePooled(data->Pool, data->Undo);
+
+  if((data->Undo = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)))
+  {
+    strlcpy(data->Undo, data->Contents, strlen(data->Contents)+1);
+    data->UndoPos = data->BufferPos;
+    data->Flags &= ~FLG_RedoAvailable;
+  }
 }
 
 static WORD AlignOffset(Object *obj, struct InstData *data)
 {
-	struct MUI_AreaData	*ad	= muiAreaData(obj);
-	struct TextFont	*font	= data->Font ? data->Font : ad->mad_Font;
-	WORD	 width = ad->mad_Box.Width - ad->mad_subwidth;
-	WORD	 offset = 0;
+  struct MUI_AreaData  *ad  = muiAreaData(obj);
+  struct TextFont  *font  = data->Font ? data->Font : ad->mad_Font;
+  WORD   width = ad->mad_Box.Width - ad->mad_subwidth;
+  WORD   offset = 0;
 
-	if(data->Alignment != MUIV_String_Format_Left)
-	{
-		STRPTR text = data->Contents+data->DisplayPos;
-		UWORD	StrLength = strlen(text);
-		UWORD	length, textlength, crsr_width;
-		struct TextExtent tExtend;
+  if(data->Alignment != MUIV_String_Format_Left)
+  {
+    STRPTR text = data->Contents+data->DisplayPos;
+    UWORD  StrLength = strlen(text);
+    UWORD  length, textlength, crsr_width;
+    struct TextExtent tExtend;
 
-		SetFont(&data->rport, font);
-		length = TextFit(&data->rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
-		textlength = TextLength(&data->rport, text, length);
+    SetFont(&data->rport, font);
+    length = TextFit(&data->rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
+    textlength = TextLength(&data->rport, text, length);
 
-		crsr_width = (data->Flags & FLG_Active) ? TextLength(&data->rport, (*(data->Contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(data->Contents+data->BufferPos), 1) : 0;
-		if(crsr_width && !BlockEnabled(data) && data->BufferPos == data->DisplayPos+StrLength)
-		{
-			textlength += crsr_width;
-		}
+    crsr_width = (data->Flags & FLG_Active) ? TextLength(&data->rport, (*(data->Contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(data->Contents+data->BufferPos), 1) : 0;
+    if(crsr_width && !BlockEnabled(data) && data->BufferPos == data->DisplayPos+StrLength)
+    {
+      textlength += crsr_width;
+    }
 
-		switch(data->Alignment)
-		{
-			case MUIV_String_Format_Center:
-				offset = (width - textlength)/2;
-				break;
-			case MUIV_String_Format_Right:
-				offset = (width - textlength);
-				break;
-		}
-	}
-	return(offset);
+    switch(data->Alignment)
+    {
+      case MUIV_String_Format_Center:
+        offset = (width - textlength)/2;
+        break;
+      case MUIV_String_Format_Right:
+        offset = (width - textlength);
+        break;
+    }
+  }
+  return(offset);
 }
 
 static BOOL Reject(UBYTE code, STRPTR reject)
 {
-	if(reject)
-	{
-		while(*reject)
-		{
-			if(code == *reject++)
-				return(FALSE);
-		}
-	}
-	return(TRUE);
+  if(reject)
+  {
+    while(*reject)
+    {
+      if(code == *reject++)
+        return(FALSE);
+    }
+  }
+  return(TRUE);
 }
 
 static BOOL Accept(UBYTE code, STRPTR accept)
 {
-	return(accept ? !Reject(code, accept) : TRUE);
+  return(accept ? !Reject(code, accept) : TRUE);
 }
 
 static UWORD DecimalValue(UBYTE code)
 {
-	if(code >= '0' && code <= '9')
-		return(code - '0');
-	if(code >= 'a' && code <= 'f')
-		return(code - 'a' + 10);
-	if(code >= 'A' && code <= 'F')
-		return(code - 'A' + 10);
+  if(code >= '0' && code <= '9')
+    return(code - '0');
+  if(code >= 'a' && code <= 'f')
+    return(code - 'a' + 10);
+  if(code >= 'A' && code <= 'F')
+    return(code - 'A' + 10);
 
-	return(0);
+  return(0);
 }
 
 static BOOL IsHex(UBYTE code)
 {
-	return(
-		(code >= '0' && code <= '9') ||
-		(code >= 'a' && code <= 'f') ||
-		(code >= 'A' && code <= 'F') ? TRUE : FALSE);
+  return(
+    (code >= '0' && code <= '9') ||
+    (code >= 'a' && code <= 'f') ||
+    (code >= 'A' && code <= 'F') ? TRUE : FALSE);
 }
 
 static LONG FindDigit(struct InstData *data)
 {
-		WORD	pos = data->BufferPos;
+    WORD  pos = data->BufferPos;
 
-	if(IsDigit(data->locale, *(data->Contents+pos)))
-	{
-		while(pos > 0 && IsDigit(data->locale, *(data->Contents+pos-1)))
-			pos--;
-	}
-	else
-	{
-		while(*(data->Contents+pos) != '\0' && !IsDigit(data->locale, *(data->Contents+pos)))
-			pos++;
-	}
+  if(IsDigit(data->locale, *(data->Contents+pos)))
+  {
+    while(pos > 0 && IsDigit(data->locale, *(data->Contents+pos-1)))
+      pos--;
+  }
+  else
+  {
+    while(*(data->Contents+pos) != '\0' && !IsDigit(data->locale, *(data->Contents+pos)))
+      pos++;
+  }
 
-	if(*(data->Contents+pos) == '\0')
-	{
-		pos = data->BufferPos;
-		while(pos && !IsDigit(data->locale, *(data->Contents+pos)))
-			pos--;
+  if(*(data->Contents+pos) == '\0')
+  {
+    pos = data->BufferPos;
+    while(pos && !IsDigit(data->locale, *(data->Contents+pos)))
+      pos--;
 
-		while(pos > 0 && IsDigit(data->locale, *(data->Contents+pos-1)))
-			pos--;
+    while(pos > 0 && IsDigit(data->locale, *(data->Contents+pos-1)))
+      pos--;
 
-		if(!pos && !IsDigit(data->locale, *data->Contents))
-		{
-			pos = -1;
-		}
-	}
-	return(pos);
+    if(!pos && !IsDigit(data->locale, *data->Contents))
+    {
+      pos = -1;
+    }
+  }
+  return(pos);
 }
 
 static UWORD NextWord(STRPTR text, UWORD x, struct Locale *locale)
 {
-	while(IsAlNum(locale, (UBYTE)text[x]))
-		x++;
+  while(IsAlNum(locale, (UBYTE)text[x]))
+    x++;
 
-	while(text[x] != '\0' && !IsAlNum(locale, (UBYTE)text[x]))
-		x++;
+  while(text[x] != '\0' && !IsAlNum(locale, (UBYTE)text[x]))
+    x++;
 
-	return(x);
+  return(x);
 }
 
 static UWORD PrevWord(STRPTR text, UWORD x, struct Locale *locale)
 {
-	if(x)
-		x--;
+  if(x)
+    x--;
 
-	while(x && !IsAlNum(locale, (UBYTE)text[x]))
-		x--;
+  while(x && !IsAlNum(locale, (UBYTE)text[x]))
+    x--;
 
-	while(x > 0 && IsAlNum(locale, (UBYTE)text[x-1]))
-		x--;
+  while(x > 0 && IsAlNum(locale, (UBYTE)text[x-1]))
+    x--;
 
-	return(x);
+  return(x);
 }
 
 void strcpyback(STRPTR dest, STRPTR src)
 {
-  UWORD	length;
+  UWORD  length;
 
-	length = strlen(src)+1;
-	dest = dest + length;
-	src = src + length;
+  length = strlen(src)+1;
+  dest = dest + length;
+  src = src + length;
 
-	length++;
-	while(--length)
-	{
-		*--dest = *--src;
-	}
+  length++;
+  while(--length)
+  {
+    *--dest = *--src;
+  }
 }
 
 void DeleteBlock(struct InstData *data)
 {
-	AddToUndo(data);
-	if(BlockEnabled(data))
-	{
-		UWORD Blk_Start, Blk_Width;
-		Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
-		Blk_Width = abs(data->BlockStop-data->BlockStart);
-		strcpy(data->Contents+Blk_Start, data->Contents+Blk_Start+Blk_Width);
-		data->BufferPos = Blk_Start;
-	}
+  AddToUndo(data);
+  if(BlockEnabled(data))
+  {
+    UWORD Blk_Start, Blk_Width;
+    Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
+    Blk_Width = abs(data->BlockStop-data->BlockStart);
+    strcpy(data->Contents+Blk_Start, data->Contents+Blk_Start+Blk_Width);
+    data->BufferPos = Blk_Start;
+  }
 }
 
 static void CopyBlock(struct InstData *data)
 {
-		struct MsgPort		*port;
-		struct IOClipReq	*iorequest;
-		UWORD Blk_Start, Blk_Width;
+    struct MsgPort    *port;
+    struct IOClipReq  *iorequest;
+    UWORD Blk_Start, Blk_Width;
 
-	if(data->Flags & FLG_Secret)
-		return;
+  if(data->Flags & FLG_Secret)
+    return;
 
-	if(BlockEnabled(data))
-	{
-		Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
-		Blk_Width = abs(data->BlockStop-data->BlockStart);
-	}
-	else
-	{
-		Blk_Start = 0;
-		Blk_Width = strlen(data->Contents);
-	}
+  if(BlockEnabled(data))
+  {
+    Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
+    Blk_Width = abs(data->BlockStop-data->BlockStart);
+  }
+  else
+  {
+    Blk_Start = 0;
+    Blk_Width = strlen(data->Contents);
+  }
 
-	if((port = CreateMsgPort()))
-	{
-		if((iorequest = (struct IOClipReq *)CreateIORequest(port, sizeof(struct IOClipReq))))
-		{
-			if(!OpenDevice("clipboard.device", 0, (struct IORequest *)iorequest, 0))
-			{
-				ULONG IFF_Head[] = { MAKE_ID('F','O','R','M'),
+  if((port = CreateMsgPort()))
+  {
+    if((iorequest = (struct IOClipReq *)CreateIORequest(port, sizeof(struct IOClipReq))))
+    {
+      if(!OpenDevice("clipboard.device", 0, (struct IORequest *)iorequest, 0))
+      {
+        ULONG IFF_Head[] = { MAKE_ID('F','O','R','M'),
                              12 + ((Blk_Width + 1) & ~1),
                              MAKE_ID('F','T','X','T'),
                              MAKE_ID('C','H','R','S'),
                              Blk_Width
                            };
 
-				iorequest->io_ClipID		= 0;
-				iorequest->io_Offset		= 0;
-				iorequest->io_Data		= (STRPTR)IFF_Head;
-				iorequest->io_Length		= sizeof(IFF_Head);
-				iorequest->io_Command	= CMD_WRITE;
-				DoIO((struct IORequest *)iorequest);
+        iorequest->io_ClipID    = 0;
+        iorequest->io_Offset    = 0;
+        iorequest->io_Data    = (STRPTR)IFF_Head;
+        iorequest->io_Length    = sizeof(IFF_Head);
+        iorequest->io_Command  = CMD_WRITE;
+        DoIO((struct IORequest *)iorequest);
 
-				iorequest->io_Data		= data->Contents+Blk_Start;
-				iorequest->io_Length		= Blk_Width;
-				DoIO((struct IORequest *)iorequest);
+        iorequest->io_Data    = data->Contents+Blk_Start;
+        iorequest->io_Length    = Blk_Width;
+        DoIO((struct IORequest *)iorequest);
 
-				iorequest->io_Command	= CMD_UPDATE;
-				DoIO((struct IORequest *)iorequest);
+        iorequest->io_Command  = CMD_UPDATE;
+        DoIO((struct IORequest *)iorequest);
 
-				CloseDevice((struct IORequest *)iorequest);
-			}
-			DeleteIORequest((struct IORequest *)iorequest);
-		}
-		DeleteMsgPort(port);
-	}
+        CloseDevice((struct IORequest *)iorequest);
+      }
+      DeleteIORequest((struct IORequest *)iorequest);
+    }
+    DeleteMsgPort(port);
+  }
 }
 
 static void CutBlock(struct InstData *data)
 {
   ENTER();
 
-	AddToUndo(data);
+  AddToUndo(data);
 
-	if(BlockEnabled(data))
-	{
-		CopyBlock(data);
-		DeleteBlock(data);
-  	data->Flags &= ~FLG_BlockEnabled;
-	}
-	else
-	{
-		*data->Contents = '\0';
-		data->BufferPos = 0;
-	}
+  if(BlockEnabled(data))
+  {
+    CopyBlock(data);
+    DeleteBlock(data);
+    data->Flags &= ~FLG_BlockEnabled;
+  }
+  else
+  {
+    *data->Contents = '\0';
+    data->BufferPos = 0;
+  }
 
   LEAVE();
 }
 
 static void Paste(struct InstData *data)
 {
-	struct MsgPort		*port;
-	struct IOClipReq	*iorequest;
+  struct MsgPort    *port;
+  struct IOClipReq  *iorequest;
 
   // clear the selection
   DeleteBlock(data);
 
-	if((port = CreateMsgPort()))
-	{
-		if((iorequest = (struct IOClipReq *)CreateIORequest(port, sizeof(struct IOClipReq))))
-		{
-			if(!OpenDevice("clipboard.device", 0, (struct IORequest *)iorequest, 0))
-			{
-				ULONG IFF_Head[3];
-				LONG	length;
+  if((port = CreateMsgPort()))
+  {
+    if((iorequest = (struct IOClipReq *)CreateIORequest(port, sizeof(struct IOClipReq))))
+    {
+      if(!OpenDevice("clipboard.device", 0, (struct IORequest *)iorequest, 0))
+      {
+        ULONG IFF_Head[3];
+        LONG  length;
 
-				iorequest->io_ClipID		= 0;
-				iorequest->io_Offset		= 0;
-				iorequest->io_Data		= (STRPTR)IFF_Head;
-				iorequest->io_Length		= sizeof(IFF_Head);
-				iorequest->io_Command	= CMD_READ;
-				DoIO((struct IORequest *)iorequest);
-				length = IFF_Head[1]-4;
+        iorequest->io_ClipID    = 0;
+        iorequest->io_Offset    = 0;
+        iorequest->io_Data    = (STRPTR)IFF_Head;
+        iorequest->io_Length    = sizeof(IFF_Head);
+        iorequest->io_Command  = CMD_READ;
+        DoIO((struct IORequest *)iorequest);
+        length = IFF_Head[1]-4;
 
-				if(iorequest->io_Actual == sizeof(IFF_Head) && *IFF_Head == MAKE_ID('F','O','R','M') && IFF_Head[2] == MAKE_ID('F','T','X','T') && length > 8)
-				{
-					iorequest->io_Length = 8;
-					DoIO((struct IORequest *)iorequest);
-					length -= 8;
+        if(iorequest->io_Actual == sizeof(IFF_Head) && *IFF_Head == MAKE_ID('F','O','R','M') && IFF_Head[2] == MAKE_ID('F','T','X','T') && length > 8)
+        {
+          iorequest->io_Length = 8;
+          DoIO((struct IORequest *)iorequest);
+          length -= 8;
 
-					while(length > 0 && *IFF_Head != MAKE_ID('C','H','R','S'))
-					{
-						iorequest->io_Offset += IFF_Head[1];
-						length -= IFF_Head[1]+8;
-						DoIO((struct IORequest *)iorequest);
-					}
+          while(length > 0 && *IFF_Head != MAKE_ID('C','H','R','S'))
+          {
+            iorequest->io_Offset += IFF_Head[1];
+            length -= IFF_Head[1]+8;
+            DoIO((struct IORequest *)iorequest);
+          }
 
-					if(*IFF_Head == MAKE_ID('C','H','R','S'))
-					{
-						ULONG pastelength = IFF_Head[1];
+          if(*IFF_Head == MAKE_ID('C','H','R','S'))
+          {
+            ULONG pastelength = IFF_Head[1];
 
-						if(data->MaxLength && strlen(data->Contents)+pastelength > (ULONG)(data->MaxLength-1))
-						{
-							DisplayBeep(NULL);
-							pastelength = (data->MaxLength-1)-strlen(data->Contents);
-						}
+            if(data->MaxLength && strlen(data->Contents)+pastelength > (ULONG)(data->MaxLength-1))
+            {
+              DisplayBeep(NULL);
+              pastelength = (data->MaxLength-1)-strlen(data->Contents);
+            }
 
-						data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, pastelength);
-						strcpyback(data->Contents+data->BufferPos+pastelength, data->Contents+data->BufferPos);
-						iorequest->io_Length	= pastelength;
-						iorequest->io_Data	= data->Contents+data->BufferPos;
-						DoIO((struct IORequest *)iorequest);
+            data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, pastelength);
+            strcpyback(data->Contents+data->BufferPos+pastelength, data->Contents+data->BufferPos);
+            iorequest->io_Length  = pastelength;
+            iorequest->io_Data  = data->Contents+data->BufferPos;
+            DoIO((struct IORequest *)iorequest);
 
-						while(pastelength--)
-						{
-							if(data->Contents[data->BufferPos] == '\0')
-								data->Contents[data->BufferPos] = '?';
-							data->BufferPos++;
-						}
-					}
-					else
-					{
-						DisplayBeep(NULL);
-					}
-				}
-				else
-				{
-					DisplayBeep(NULL);
-				}
+            while(pastelength--)
+            {
+              if(data->Contents[data->BufferPos] == '\0')
+                data->Contents[data->BufferPos] = '?';
+              data->BufferPos++;
+            }
+          }
+          else
+          {
+            DisplayBeep(NULL);
+          }
+        }
+        else
+        {
+          DisplayBeep(NULL);
+        }
 
-				iorequest->io_Offset		= 0xfffffff;
-				iorequest->io_Data		= NULL;
-				DoIO((struct IORequest *)iorequest);
+        iorequest->io_Offset    = 0xfffffff;
+        iorequest->io_Data    = NULL;
+        DoIO((struct IORequest *)iorequest);
 
-				CloseDevice((struct IORequest *)iorequest);
-			}
-			DeleteIORequest((struct IORequest *)iorequest);
-		}
-		DeleteMsgPort(port);
-	}
+        CloseDevice((struct IORequest *)iorequest);
+      }
+      DeleteIORequest((struct IORequest *)iorequest);
+    }
+    DeleteMsgPort(port);
+  }
 }
 
 static void UndoRedo(struct InstData *data)
@@ -411,11 +411,11 @@ static void UndoRedo(struct InstData *data)
   ENTER();
 
   data->Contents = data->Undo;
-	data->Undo = oldcontents;
-	data->Flags ^= FLG_RedoAvailable;
-	data->Flags &= ~FLG_BlockEnabled;
-	data->BufferPos = data->UndoPos;
-	data->UndoPos = oldpos;
+  data->Undo = oldcontents;
+  data->Flags ^= FLG_RedoAvailable;
+  data->Flags &= ~FLG_BlockEnabled;
+  data->BufferPos = data->UndoPos;
+  data->UndoPos = oldpos;
 
   LEAVE();
 }
@@ -445,8 +445,8 @@ static BOOL ToggleCaseChar(struct InstData *data)
   if(data->BufferPos < strlen(data->Contents))
   {
     *(data->Contents+data->BufferPos) = IsLower(data->locale, key) ? ConvToUpper(data->locale, key) : ConvToLower(data->locale, key);
-  	data->BufferPos++;
-  	result = TRUE;
+    data->BufferPos++;
+    result = TRUE;
   }
 
   RETURN(result);
@@ -464,9 +464,9 @@ static BOOL ToggleCaseWord(struct InstData *data)
   {
     UBYTE key = *(data->Contents+data->BufferPos);
 
-  	*(data->Contents+data->BufferPos) = IsLower(data->locale, key) ? ConvToUpper(data->locale, key) : ConvToLower(data->locale, key);
-  	data->BufferPos++;
-  	result = TRUE;
+    *(data->Contents+data->BufferPos) = IsLower(data->locale, key) ? ConvToUpper(data->locale, key) : ConvToLower(data->locale, key);
+    data->BufferPos++;
+    result = TRUE;
   }
 
   RETURN(result);
@@ -482,20 +482,20 @@ static BOOL IncreaseNearNumber(struct InstData *data)
 
   if((pos = FindDigit(data)) >= 0)
   {
-    LONG	cut;
-  	ULONG	res;
+    LONG  cut;
+    ULONG  res;
 
-  	if((cut = StrToLong(data->Contents+pos, (LONG *)&res)))
-  	{
-  		char string[12];
-  		char format[12];
+    if((cut = StrToLong(data->Contents+pos, (LONG *)&res)))
+    {
+      char string[12];
+      char format[12];
 
-  		res++;
-  		MySPrintf(format, "%%0%ldlu", cut);
-  		MySPrintf(string, format, res);
-  		Overwrite(string, pos, cut, data);
-  		result = TRUE;
-  	}
+      res++;
+      MySPrintf(format, "%%0%ldlu", cut);
+      MySPrintf(string, format, res);
+      Overwrite(string, pos, cut, data);
+      result = TRUE;
+    }
   }
 
   RETURN(result);
@@ -512,24 +512,24 @@ static BOOL DecreaseNearNumber(struct InstData *data)
   if((pos = FindDigit(data)) >= 0)
   {
     LONG cut;
-    ULONG	res;
+    ULONG  res;
 
-  	if((cut = StrToLong(data->Contents+pos, (LONG *)&res)))
-  	{
-  		if(res)
-  		{
-  			const char *format = "%lx";
-  			char string[12];
-  			char format2[12];
+    if((cut = StrToLong(data->Contents+pos, (LONG *)&res)))
+    {
+      if(res)
+      {
+        const char *format = "%lx";
+        char string[12];
+        char format2[12];
 
-  		  format = &format2[0];
-  			MySPrintf(format, "%%0%ldlu", cut);
-  			res--;
-  			MySPrintf(string, format, res);
-  			Overwrite(string, pos, cut, data);
-  			result = TRUE;
-  		}
-  	}
+        format = &format2[0];
+        MySPrintf(format, "%%0%ldlu", cut);
+        res--;
+        MySPrintf(string, format, res);
+        Overwrite(string, pos, cut, data);
+        result = TRUE;
+      }
+    }
   }
 
   RETURN(result);
@@ -538,29 +538,29 @@ static BOOL DecreaseNearNumber(struct InstData *data)
 
 static BOOL HexToDec(struct InstData *data)
 {
-  LONG	cut = 0;
+  LONG  cut = 0;
   UWORD pos = data->BufferPos;
-  ULONG	res = 0;
+  ULONG  res = 0;
   BOOL result = FALSE;
 
   ENTER();
 
   while(pos && IsHex(*(data->Contents+pos-1)))
-  	pos--;
+    pos--;
 
   while(IsHex(*(data->Contents+pos+cut)))
   {
-  	res = (result << 4) + DecimalValue(*(data->Contents+pos+cut));
-  	cut++;
+    res = (result << 4) + DecimalValue(*(data->Contents+pos+cut));
+    cut++;
   }
 
   if(cut)
   {
-  	char string[12];
+    char string[12];
 
-  	MySPrintf(string, "%lu", res);
-  	Overwrite(string, pos, cut, data);
-  	result = TRUE;
+    MySPrintf(string, "%lu", res);
+    Overwrite(string, pos, cut, data);
+    result = TRUE;
   }
 
   RETURN(result);
@@ -577,17 +577,17 @@ static BOOL DecToHex(struct InstData *data)
   if((pos = FindDigit(data)) >= 0)
   {
     LONG cut;
-    ULONG	res;
+    ULONG  res;
 
-  	if((cut = StrToLong(data->Contents+pos, (LONG *)&res)))
+    if((cut = StrToLong(data->Contents+pos, (LONG *)&res)))
     {
-  	  const char *format = "%lx";
-    	char string[12];
+      const char *format = "%lx";
+      char string[12];
 
-  		MySPrintf(string, format, res);
-			Overwrite(string, pos, cut, data);
-			result  = TRUE;
-  	}
+      MySPrintf(string, format, res);
+      Overwrite(string, pos, cut, data);
+      result  = TRUE;
+    }
   }
 
   RETURN(result);
@@ -596,23 +596,23 @@ static BOOL DecToHex(struct InstData *data)
 
 ULONG ConvertKey(struct IntuiMessage *imsg)
 {
-	struct InputEvent  event;
-	unsigned char code = 0;
+  struct InputEvent  event;
+  unsigned char code = 0;
 
-	event.ie_NextEvent      = NULL;
-	event.ie_Class          = IECLASS_RAWKEY;
-	event.ie_SubClass       = 0;
-	event.ie_Code           = imsg->Code;
-	event.ie_Qualifier      = imsg->Qualifier;
-	event.ie_EventAddress   = (APTR *) *((ULONG *)imsg->IAddress);
+  event.ie_NextEvent      = NULL;
+  event.ie_Class          = IECLASS_RAWKEY;
+  event.ie_SubClass       = 0;
+  event.ie_Code           = imsg->Code;
+  event.ie_Qualifier      = imsg->Qualifier;
+  event.ie_EventAddress   = (APTR *) *((ULONG *)imsg->IAddress);
 
-	MapRawKey(&event, (STRPTR)&code, 1, NULL);
-	return(code);
+  MapRawKey(&event, (STRPTR)&code, 1, NULL);
+  return(code);
 }
 
 ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction *msg)
 {
-	struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   ULONG result = FALSE;
   BOOL edited = FALSE;
 
@@ -673,15 +673,15 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     case MUIV_BetterString_DoAction_Undo:
     case MUIV_BetterString_DoAction_Redo:
     {
-  		if(data->Undo &&
+      if(data->Undo &&
          (((msg->action == MUIV_BetterString_DoAction_Redo) && (data->Flags & FLG_RedoAvailable)) ||
           ((msg->action == MUIV_BetterString_DoAction_Undo) && !(data->Flags & FLG_RedoAvailable))))
-  		{
+      {
         UndoRedo(data);
         data->Flags &= ~FLG_BlockEnabled;
-  			edited = TRUE;
+        edited = TRUE;
         result = TRUE;
-  		}
+      }
     }
     break;
 
@@ -738,31 +738,31 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
 
     case MUIV_BetterString_DoAction_NextFileComp:
     {
-		  edited = result = FileNameComplete(obj, FALSE, data);
+      edited = result = FileNameComplete(obj, FALSE, data);
       data->Flags &= ~FLG_BlockEnabled;
     }
     break;
 
     case MUIV_BetterString_DoAction_PrevFileComp:
     {
-		  edited = result = FileNameComplete(obj, TRUE, data);
+      edited = result = FileNameComplete(obj, TRUE, data);
       data->Flags &= ~FLG_BlockEnabled;
     }
     break;
   }
 
-	if(edited)
-	{
-		struct TagItem tags[] =
-		{
-			{ MUIA_String_Contents, (ULONG)data->Contents },
-			{ TAG_DONE,             0                     }
-		};
+  if(edited)
+  {
+    struct TagItem tags[] =
+    {
+      { MUIA_String_Contents, (ULONG)data->Contents },
+      { TAG_DONE,             0                     }
+    };
 
-		DoSuperMethod(cl, obj, OM_SET, tags, NULL);
-	}
+    DoSuperMethod(cl, obj, OM_SET, tags, NULL);
+  }
 
-	MUI_Redraw(obj, MADF_DRAWUPDATE);
+  MUI_Redraw(obj, MADF_DRAWUPDATE);
 
   RETURN(result);
   return result;
@@ -770,204 +770,204 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
 
 ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
-	struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-	struct MUI_AreaData *ad = muiAreaData(obj);
-	struct TextFont *Font = data->Font ? data->Font : ad->mad_Font;
-	ULONG	result = 0;
-	BOOL	movement = FALSE;
-	BOOL	edited = FALSE;
-	BOOL	FNC = FALSE;
-	Object *focus = NULL;
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  struct MUI_AreaData *ad = muiAreaData(obj);
+  struct TextFont *Font = data->Font ? data->Font : ad->mad_Font;
+  ULONG  result = 0;
+  BOOL  movement = FALSE;
+  BOOL  edited = FALSE;
+  BOOL  FNC = FALSE;
+  Object *focus = NULL;
 
-	if(msg->muikey == MUIKEY_UP)
-		focus = data->KeyUpFocus;
-	else if(msg->muikey == MUIKEY_DOWN)
-		focus = data->KeyDownFocus;
+  if(msg->muikey == MUIKEY_UP)
+    focus = data->KeyUpFocus;
+  else if(msg->muikey == MUIKEY_DOWN)
+    focus = data->KeyDownFocus;
 
-	if(focus && _win(obj))
-	{
-		set(_win(obj), MUIA_Window_ActiveObject, focus);
-		result = MUI_EventHandlerRC_Eat;
-	}
-	else if(msg->imsg)
-	{
-		WORD StringLength = strlen(data->Contents);
+  if(focus && _win(obj))
+  {
+    set(_win(obj), MUIA_Window_ActiveObject, focus);
+    result = MUI_EventHandlerRC_Eat;
+  }
+  else if(msg->imsg)
+  {
+    WORD StringLength = strlen(data->Contents);
 
-		if(msg->imsg->Class == IDCMP_RAWKEY &&
-//		   msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
-		   msg->imsg->Code <= IECODE_KEY_CODE_LAST)
-		{
-			if(data->Flags & FLG_Active)
-			{
-				BOOL input = TRUE;
-            
-				if(!(data->Flags & FLG_BlockEnabled))
-					data->BlockStart = data->BufferPos;
+    if(msg->imsg->Class == IDCMP_RAWKEY &&
+//       msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
+       msg->imsg->Code <= IECODE_KEY_CODE_LAST)
+    {
+      if(data->Flags & FLG_Active)
+      {
+        BOOL input = TRUE;
 
-				if(data->Flags & FLG_NoInput)
-				{
-					switch(msg->imsg->Code)
-					{
-						case RAWKEY_TAB:
-						case RAWKEY_BACKSPACE:
-						case RAWKEY_DEL:
-							input = FALSE;
-						break;
-					}
-				}
+        if(!(data->Flags & FLG_BlockEnabled))
+          data->BlockStart = data->BufferPos;
 
-				if(input == TRUE)
-				{
+        if(data->Flags & FLG_NoInput)
+        {
           switch(msg->imsg->Code)
           {
-        		// Tab
-  					case RAWKEY_TAB:
+            case RAWKEY_TAB:
+            case RAWKEY_BACKSPACE:
+            case RAWKEY_DEL:
+              input = FALSE;
+            break;
+          }
+        }
+
+        if(input == TRUE)
+        {
+          switch(msg->imsg->Code)
+          {
+            // Tab
+            case RAWKEY_TAB:
             {
-    					if(data->Flags & FLG_NoShortcuts || !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND))
-  	  					return(0);
+              if(data->Flags & FLG_NoShortcuts || !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND))
+                return(0);
 
-  						if(!(edited = FileNameComplete(obj, (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT)) ? TRUE : FALSE, data)))
-  							DisplayBeep(NULL);
+              if(!(edited = FileNameComplete(obj, (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT)) ? TRUE : FALSE, data)))
+                DisplayBeep(NULL);
 
-  						FNC = TRUE;
-  				  }
+              FNC = TRUE;
+            }
             break;
 
             // Right
-  					case RAWKEY_CRSRRIGHT:
+            case RAWKEY_CRSRRIGHT:
             {
-  						if(data->BufferPos < StringLength)
-  						{
-  							if(msg->imsg->Qualifier & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
-  							{
-  								data->BufferPos = StringLength;
-  							}
-  							else
-  							{
-  								if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
-  								{
-  									data->BufferPos = NextWord(data->Contents, data->BufferPos, data->locale);
-  								}
-  								else
-  								{
-  									if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
-  									  data->BufferPos = MAX(data->BlockStart, data->BlockStop);
-  									else
-  									  data->BufferPos++;
-  								}
-  							}
-  						}
-  						movement = TRUE;
+              if(data->BufferPos < StringLength)
+              {
+                if(msg->imsg->Qualifier & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+                {
+                  data->BufferPos = StringLength;
+                }
+                else
+                {
+                  if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+                  {
+                    data->BufferPos = NextWord(data->Contents, data->BufferPos, data->locale);
+                  }
+                  else
+                  {
+                    if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+                      data->BufferPos = MAX(data->BlockStart, data->BlockStop);
+                    else
+                      data->BufferPos++;
+                  }
+                }
+              }
+              movement = TRUE;
             }
-  					break;
+            break;
 
-        		// Left
-  					case RAWKEY_CRSRLEFT:
+            // Left
+            case RAWKEY_CRSRLEFT:
             {
-  						if(data->BufferPos)
-  						{
-  							if(msg->imsg->Qualifier & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
-  							{
-  								data->BufferPos = 0;
-  							}
-  							else
-  							{
-  								if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
-  								{
-  									data->BufferPos = PrevWord(data->Contents, data->BufferPos, data->locale);
-  								}
-  								else
-  								{
-  									if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
-  										data->BufferPos = MIN(data->BlockStart, data->BlockStop);
+              if(data->BufferPos)
+              {
+                if(msg->imsg->Qualifier & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+                {
+                  data->BufferPos = 0;
+                }
+                else
+                {
+                  if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+                  {
+                    data->BufferPos = PrevWord(data->Contents, data->BufferPos, data->locale);
+                  }
+                  else
+                  {
+                    if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+                      data->BufferPos = MIN(data->BlockStart, data->BlockStop);
 
-  									if(data->BufferPos)
-  										data->BufferPos--;
-  								}
-  							}
-  						}
-  						movement = TRUE;
+                    if(data->BufferPos)
+                      data->BufferPos--;
+                  }
+                }
+              }
+              movement = TRUE;
             }
-  					break;
+            break;
 
-        		// Backspace
-  					case RAWKEY_BACKSPACE:
+            // Backspace
+            case RAWKEY_BACKSPACE:
             {
-  						if(BlockEnabled(data))
-  						{
-  							DeleteBlock(data);
-  						}
-  						else
-  						{
-  							if(data->BufferPos)
-  							{
-  								if(msg->imsg->Qualifier & (IEQUALIFIER_CONTROL | IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
-  								{
-  									AddToUndo(data);
-  									strcpy(data->Contents, data->Contents+data->BufferPos);
-  									data->BufferPos = 0;
-  								}
-  								else
-  								{
-  									if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
-  									{
-  											UWORD NewPos = PrevWord(data->Contents, data->BufferPos, data->locale);
+              if(BlockEnabled(data))
+              {
+                DeleteBlock(data);
+              }
+              else
+              {
+                if(data->BufferPos)
+                {
+                  if(msg->imsg->Qualifier & (IEQUALIFIER_CONTROL | IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+                  {
+                    AddToUndo(data);
+                    strcpy(data->Contents, data->Contents+data->BufferPos);
+                    data->BufferPos = 0;
+                  }
+                  else
+                  {
+                    if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+                    {
+                        UWORD NewPos = PrevWord(data->Contents, data->BufferPos, data->locale);
 
-  										AddToUndo(data);
-  										strcpy(data->Contents+NewPos, data->Contents+data->BufferPos);
-  										data->BufferPos = NewPos;
-  									}
-  									else
-  									{
-  										strcpy(data->Contents+data->BufferPos-1, data->Contents+data->BufferPos);
-  										data->BufferPos--;
-  									}
-  								}
-  							}
-  						}
-  						edited = TRUE;
-  					}
+                      AddToUndo(data);
+                      strcpy(data->Contents+NewPos, data->Contents+data->BufferPos);
+                      data->BufferPos = NewPos;
+                    }
+                    else
+                    {
+                      strcpy(data->Contents+data->BufferPos-1, data->Contents+data->BufferPos);
+                      data->BufferPos--;
+                    }
+                  }
+                }
+              }
+              edited = TRUE;
+            }
             break;
 
             // Delete
-  					case RAWKEY_DEL:
+            case RAWKEY_DEL:
             {
-  						if(BlockEnabled(data))
-  						{
-  							DeleteBlock(data);
-  						}
-  						else
-  						{
-  							if(data->BufferPos < StringLength)
-  							{
-  								if(msg->imsg->Qualifier & (IEQUALIFIER_CONTROL | IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
-  								{
-  									AddToUndo(data);
-  									*(data->Contents+data->BufferPos) = '\0';
-  								}
-  								else
-  								{
-  									if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
-  									{
-  										AddToUndo(data);
-  										strcpy(data->Contents+data->BufferPos, data->Contents+NextWord(data->Contents, data->BufferPos, data->locale));
-  									}
-  									else
-  									{
-  										strcpy(data->Contents+data->BufferPos, data->Contents+data->BufferPos+1);
-  									}
-  								}
-  							}
-  						}
-  						edited = TRUE;
-  					}
+              if(BlockEnabled(data))
+              {
+                DeleteBlock(data);
+              }
+              else
+              {
+                if(data->BufferPos < StringLength)
+                {
+                  if(msg->imsg->Qualifier & (IEQUALIFIER_CONTROL | IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+                  {
+                    AddToUndo(data);
+                    *(data->Contents+data->BufferPos) = '\0';
+                  }
+                  else
+                  {
+                    if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+                    {
+                      AddToUndo(data);
+                      strcpy(data->Contents+data->BufferPos, data->Contents+NextWord(data->Contents, data->BufferPos, data->locale));
+                    }
+                    else
+                    {
+                      strcpy(data->Contents+data->BufferPos, data->Contents+data->BufferPos+1);
+                    }
+                  }
+                }
+              }
+              edited = TRUE;
+            }
             break;
 
             // Home
             case RAWKEY_HOME:
             {
-  						if(data->BufferPos)
-    						data->BufferPos = 0;
+              if(data->BufferPos)
+                data->BufferPos = 0;
 
               movement = TRUE;
             }
@@ -976,266 +976,266 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             // End
             case RAWKEY_END:
             {
-  						if(data->BufferPos < StringLength)
-    						data->BufferPos = StringLength;
+              if(data->BufferPos < StringLength)
+                data->BufferPos = StringLength;
 
               movement = TRUE;
             }
             break;
 
-  					default:
-  					{
-  						if(data->Popup && msg->muikey == MUIKEY_POPUP)
-  						{
-  							DoMethod(data->Popup, MUIM_Popstring_Open);
-  						}
-  						else
-  						{
-  							UBYTE	code = ConvertKey(msg->imsg);
-  							if((((code >= 32 && code <= 126) || code >= 160) && !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND)) || (code && msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
-  							{
-  								if(!(data->Flags & FLG_NoInput))
-  								{
-  									DeleteBlock(data);
-  									
-  									if((data->MaxLength == 0 || (ULONG)data->MaxLength-1 > strlen(data->Contents)) &&
-  									   Accept(code, data->Accept) && Reject(code, data->Reject))
-  									{
-  										data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, 1);
-  										strcpyback(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos);
-  										*(data->Contents+data->BufferPos) = code;
-  										data->BufferPos++;
-  										edited = TRUE;
-  									}
-  									else
-  									{
-  										DisplayBeep(NULL);
-  									}
-  								}
-  							}
-  							else
-  							{
-  								if(data->Flags & FLG_NoInput)
-  								{
-  									switch(code)
-  									{
-  										case '\r':
-  										case 'c':
-  										break;
+            default:
+            {
+              if(data->Popup && msg->muikey == MUIKEY_POPUP)
+              {
+                DoMethod(data->Popup, MUIM_Popstring_Open);
+              }
+              else
+              {
+                UBYTE  code = ConvertKey(msg->imsg);
+                if((((code >= 32 && code <= 126) || code >= 160) && !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND)) || (code && msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+                {
+                  if(!(data->Flags & FLG_NoInput))
+                  {
+                    DeleteBlock(data);
 
-  										default:
-  											return(MUI_EventHandlerRC_Eat);
-  										break;
-  									}
-  								}
+                    if((data->MaxLength == 0 || (ULONG)data->MaxLength-1 > strlen(data->Contents)) &&
+                       Accept(code, data->Accept) && Reject(code, data->Reject))
+                    {
+                      data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, 1);
+                      strcpyback(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos);
+                      *(data->Contents+data->BufferPos) = code;
+                      data->BufferPos++;
+                      edited = TRUE;
+                    }
+                    else
+                    {
+                      DisplayBeep(NULL);
+                    }
+                  }
+                }
+                else
+                {
+                  if(data->Flags & FLG_NoInput)
+                  {
+                    switch(code)
+                    {
+                      case '\r':
+                      case 'c':
+                      break;
+
+                      default:
+                        return(MUI_EventHandlerRC_Eat);
+                      break;
+                    }
+                  }
 
                   // check if the user pressed return and if he has activated AdvanceOnCr or not
                   if(code == '\r')
                   {
-    						    if(!(data->Flags & FLG_StayActive))
-    								  set(_win(obj), MUIA_Window_ActiveObject, (data->Flags & FLG_AdvanceOnCr) ? (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT) ?  MUIV_Window_ActiveObject_Prev : MUIV_Window_ActiveObject_Next) : MUIV_Window_ActiveObject_None);
-    								
+                    if(!(data->Flags & FLG_StayActive))
+                      set(_win(obj), MUIA_Window_ActiveObject, (data->Flags & FLG_AdvanceOnCr) ? (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT) ?  MUIV_Window_ActiveObject_Prev : MUIV_Window_ActiveObject_Next) : MUIV_Window_ActiveObject_None);
+
                     set(obj, MUIA_String_Acknowledge, data->Contents);
-    								
+
                     return(MUI_EventHandlerRC_Eat);
                   }
 
                   // see if we should skip the default shorcuts or not
                   if(!(data->Flags & FLG_NoShortcuts))
                   {
-    								// depending on the pressed key code
+                    // depending on the pressed key code
                     // we perform different actions.
                     switch(code)
-    								{
-    									case 'g':
-    									{
+                    {
+                      case 'g':
+                      {
                         edited = ToggleCaseChar(data);
-    									}
-    									break;
+                      }
+                      break;
 
-    									case 'G':
-    									{
+                      case 'G':
+                      {
                         edited = ToggleCaseWord(data);
-    									}
-    									break;
+                      }
+                      break;
 
-    									case 'c':
-    										CopyBlock(data);
-    									break;
+                      case 'c':
+                        CopyBlock(data);
+                      break;
 
-    									case 'x':
+                      case 'x':
                         CutBlock(data);
                         edited = TRUE;
                       break;
 
-    									case 'v':
-    										Paste(data);
-    										edited = TRUE;
-    									break;
-
-    									case 'i':
-    									{
-    										if((edited = IncreaseNearNumber(data)) == FALSE)
-    											DisplayBeep(NULL);
-    									}
-  										break;
-
-    									case 'd':
-    									{
-    										if((edited = DecreaseNearNumber(data)) == FALSE)
-    											DisplayBeep(NULL);
-    									}
-  										break;
-
-    									case '#':
-    									{
-    										if((edited = HexToDec(data)) == FALSE)
-    											DisplayBeep(NULL);
-    									}
-  										break;
-
-    									case '$':
-    									{
-    										if((edited = DecToHex(data)) == FALSE)
-    											DisplayBeep(NULL);
-    									}
+                      case 'v':
+                        Paste(data);
+                        edited = TRUE;
                       break;
 
-    									case 'q':
-    									{
+                      case 'i':
+                      {
+                        if((edited = IncreaseNearNumber(data)) == FALSE)
+                          DisplayBeep(NULL);
+                      }
+                      break;
+
+                      case 'd':
+                      {
+                        if((edited = DecreaseNearNumber(data)) == FALSE)
+                          DisplayBeep(NULL);
+                      }
+                      break;
+
+                      case '#':
+                      {
+                        if((edited = HexToDec(data)) == FALSE)
+                          DisplayBeep(NULL);
+                      }
+                      break;
+
+                      case '$':
+                      {
+                        if((edited = DecToHex(data)) == FALSE)
+                          DisplayBeep(NULL);
+                      }
+                      break;
+
+                      case 'q':
+                      {
                         RevertToOriginal(data);
-    										edited = TRUE;
-    									}
-  										break;
-
-    									case 'z':
-    									case 'Z':
-    									{
-    										if(data->Undo && (((code == 'Z') && (data->Flags & FLG_RedoAvailable)) ||
-                                          ((code == 'z') && !(data->Flags & FLG_RedoAvailable))))
-    										{
-                          UndoRedo(data);
-    											edited = TRUE;
-    										}
-    										else
-    											DisplayBeep(NULL);
-    									}
+                        edited = TRUE;
+                      }
                       break;
 
-    									default:
-    										msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
-    										return(0);
-    								}
+                      case 'z':
+                      case 'Z':
+                      {
+                        if(data->Undo && (((code == 'Z') && (data->Flags & FLG_RedoAvailable)) ||
+                                          ((code == 'z') && !(data->Flags & FLG_RedoAvailable))))
+                        {
+                          UndoRedo(data);
+                          edited = TRUE;
+                        }
+                        else
+                          DisplayBeep(NULL);
+                      }
+                      break;
+
+                      default:
+                        msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
+                        return(0);
+                    }
                   }
                   else
                   {
-    								msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
-  	  							return(0);
+                    msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
+                    return(0);
                   }
-  							}
-  						}
-  					}
-  					break;
+                }
+              }
+            }
+            break;
           }
-				}
+        }
 
-				if(data->FNCBuffer && !FNC)
-				{
-  				struct FNCData *fncbuffer = data->FNCBuffer, *fncframe;
+        if(data->FNCBuffer && !FNC)
+        {
+          struct FNCData *fncbuffer = data->FNCBuffer, *fncframe;
 
-					while(fncbuffer)
-					{
-						fncframe = fncbuffer;
-						fncbuffer = fncbuffer->next;
-						MyFreePooled(data->Pool, fncframe);
-					}
-					data->FNCBuffer = NULL;
-				}
+          while(fncbuffer)
+          {
+            fncframe = fncbuffer;
+            fncbuffer = fncbuffer->next;
+            MyFreePooled(data->Pool, fncframe);
+          }
+          data->FNCBuffer = NULL;
+        }
 
-				if(movement && msg->imsg->Qualifier & IEQUALIFIER_CONTROL)
-						data->Flags |=  FLG_BlockEnabled;
-				else	data->Flags &= ~FLG_BlockEnabled;
+        if(movement && msg->imsg->Qualifier & IEQUALIFIER_CONTROL)
+            data->Flags |=  FLG_BlockEnabled;
+        else  data->Flags &= ~FLG_BlockEnabled;
 
-				if(data->Flags & FLG_BlockEnabled)
-				{
-					data->BlockStop = data->BufferPos;
-				}
+        if(data->Flags & FLG_BlockEnabled)
+        {
+          data->BlockStop = data->BufferPos;
+        }
 
-				if(edited)
-				{
-					struct TagItem tags[] =
-					{
-						{ MUIA_String_Contents, (ULONG)data->Contents },
-						{ TAG_DONE,             0                     }
-					};
+        if(edited)
+        {
+          struct TagItem tags[] =
+          {
+            { MUIA_String_Contents, (ULONG)data->Contents },
+            { TAG_DONE,             0                     }
+          };
 
-					DoSuperMethod(cl, obj, OM_SET, tags, NULL);
-				}
+          DoSuperMethod(cl, obj, OM_SET, tags, NULL);
+        }
 
-				MUI_Redraw(obj, MADF_DRAWUPDATE);
-				result = MUI_EventHandlerRC_Eat;
-			}
-			else
-			{
-				if(data->CtrlChar && ConvertKey(msg->imsg) == data->CtrlChar)
-				{
-					set(_win(obj), MUIA_Window_ActiveObject, obj);
-					result = MUI_EventHandlerRC_Eat;
-				}
-			}
-		}
-		else
-		{
-			if(msg->imsg->Class == IDCMP_MOUSEBUTTONS)
-			{
-				if(msg->imsg->Code == (IECODE_LBUTTON | IECODE_UP_PREFIX))
-				{
-					if(data->ehnode.ehn_Events & (IDCMP_MOUSEMOVE | IDCMP_INTUITICKS))
-					{
-						DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-						data->ehnode.ehn_Events &= ~(IDCMP_MOUSEMOVE | IDCMP_INTUITICKS);
-						DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
-					}
+        MUI_Redraw(obj, MADF_DRAWUPDATE);
+        result = MUI_EventHandlerRC_Eat;
+      }
+      else
+      {
+        if(data->CtrlChar && ConvertKey(msg->imsg) == data->CtrlChar)
+        {
+          set(_win(obj), MUIA_Window_ActiveObject, obj);
+          result = MUI_EventHandlerRC_Eat;
+        }
+      }
+    }
+    else
+    {
+      if(msg->imsg->Class == IDCMP_MOUSEBUTTONS)
+      {
+        if(msg->imsg->Code == (IECODE_LBUTTON | IECODE_UP_PREFIX))
+        {
+          if(data->ehnode.ehn_Events & (IDCMP_MOUSEMOVE | IDCMP_INTUITICKS))
+          {
+            DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
+            data->ehnode.ehn_Events &= ~(IDCMP_MOUSEMOVE | IDCMP_INTUITICKS);
+            DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
+          }
 
 #ifdef ALLOW_OUTSIDE_MARKING
-					if((data->Flags & (FLG_Active|FLG_DragOutside)) == (FLG_Active|FLG_DragOutside))
-					{
-						Object *active;
-						get(_win(obj), MUIA_Window_ActiveObject, &active);
-						if(obj != active)
-							E(DBF_STARTUP, "MUI error: %lx, %lx", active, obj);
+          if((data->Flags & (FLG_Active|FLG_DragOutside)) == (FLG_Active|FLG_DragOutside))
+          {
+            Object *active;
+            get(_win(obj), MUIA_Window_ActiveObject, &active);
+            if(obj != active)
+              E(DBF_STARTUP, "MUI error: %lx, %lx", active, obj);
 
-						WORD x = ad->mad_Box.Left + ad->mad_addleft;
-						WORD y = ad->mad_Box.Top  + ad->mad_addtop;
-						WORD width = ad->mad_Box.Width - ad->mad_subwidth;
-						WORD height = Font->tf_YSize;
+            WORD x = ad->mad_Box.Left + ad->mad_addleft;
+            WORD y = ad->mad_Box.Top  + ad->mad_addtop;
+            WORD width = ad->mad_Box.Width - ad->mad_subwidth;
+            WORD height = Font->tf_YSize;
 
-						if(!(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height))
-						{
-							D(DBF_STARTUP, "Detected LMB+up outside (drag: %ld)", data->Flags & FLG_DragOutside ? 1:0);
-							set(_win(obj), MUIA_Window_ActiveObject, MUIV_Window_ActiveObject_None);
-						}
-					}
+            if(!(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height))
+            {
+              D(DBF_STARTUP, "Detected LMB+up outside (drag: %ld)", data->Flags & FLG_DragOutside ? 1:0);
+              set(_win(obj), MUIA_Window_ActiveObject, MUIV_Window_ActiveObject_None);
+            }
+          }
 #endif
-				}
-				else if(msg->imsg->Code == IECODE_LBUTTON)
-				{
-					WORD x = ad->mad_Box.Left + ad->mad_addleft;
-					WORD y = ad->mad_Box.Top  + ad->mad_addtop;
-					WORD width = ad->mad_Box.Width - ad->mad_subwidth;
-					WORD height = Font->tf_YSize;
+        }
+        else if(msg->imsg->Code == IECODE_LBUTTON)
+        {
+          WORD x = ad->mad_Box.Left + ad->mad_addleft;
+          WORD y = ad->mad_Box.Top  + ad->mad_addtop;
+          WORD width = ad->mad_Box.Width - ad->mad_subwidth;
+          WORD height = Font->tf_YSize;
 
-					if(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height)
-					{
-						WORD offset = msg->imsg->MouseX - x;
-						struct TextExtent tExtend;
+          if(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height)
+          {
+            WORD offset = msg->imsg->MouseX - x;
+            struct TextExtent tExtend;
 
-						offset -= AlignOffset(obj, data);
-		
-						SetFont(&data->rport, Font);
-						data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
+            offset -= AlignOffset(obj, data);
 
-						if(data->BufferPos == data->BufferLastPos &&
+            SetFont(&data->rport, Font);
+            data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
+
+            if(data->BufferPos == data->BufferLastPos &&
                DoubleClick(data->StartSecs, data->StartMicros, msg->imsg->Seconds, msg->imsg->Micros))
             {
               // on a secret gadget we skip clickcount step 1 as
@@ -1243,191 +1243,191 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               if((data->Flags & FLG_Secret) && data->ClickCount == 0)
                 data->ClickCount++;
 
-					    data->ClickCount++;
+              data->ClickCount++;
             }
-						else
+            else
               data->ClickCount = 0;
 
-						// lets save the current bufferpos to the lastpos variable
+            // lets save the current bufferpos to the lastpos variable
             data->BufferLastPos = data->BufferPos;
 
-            data->StartSecs	= msg->imsg->Seconds;
-						data->StartMicros	= msg->imsg->Micros;
+            data->StartSecs  = msg->imsg->Seconds;
+            data->StartMicros  = msg->imsg->Micros;
 
-						switch(data->ClickCount)
-						{
-							case 0:
+            switch(data->ClickCount)
+            {
+              case 0:
               {
-								if(!(data->Flags & FLG_BlockEnabled && msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
-									data->BlockStart = data->BufferPos;
-							}
+                if(!(data->Flags & FLG_BlockEnabled && msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+                  data->BlockStart = data->BufferPos;
+              }
               break;
 
-							case 1:
+              case 1:
               {
-    						if(*(data->Contents+data->BufferPos) != '\0')
-	    					{
+                if(*(data->Contents+data->BufferPos) != '\0')
+                {
                   UWORD start = data->BufferPos;
-	  		    			UWORD	stop  = data->BufferPos;
-  	  		    		BOOL alpha = IsAlNum(data->locale, (UBYTE)*(data->Contents+data->BufferPos));
+                  UWORD  stop  = data->BufferPos;
+                  BOOL alpha = IsAlNum(data->locale, (UBYTE)*(data->Contents+data->BufferPos));
 
-			  		  		while(start > 0 && alpha == IsAlNum(data->locale, (UBYTE)*(data->Contents+start-1)))
-				  		    	start--;
+                  while(start > 0 && alpha == IsAlNum(data->locale, (UBYTE)*(data->Contents+start-1)))
+                    start--;
 
-					  		  while(alpha == IsAlNum(data->locale, (UBYTE)*(data->Contents+stop)) && *(data->Contents+stop) != '\0')
-						  		  stop++;
+                  while(alpha == IsAlNum(data->locale, (UBYTE)*(data->Contents+stop)) && *(data->Contents+stop) != '\0')
+                    stop++;
 
-								  data->BlockStart = start;
-  								data->BufferPos = stop;
-	  					  }
+                  data->BlockStart = start;
+                  data->BufferPos = stop;
+                }
               }
-							break;
+              break;
 
-							case 2:
+              case 2:
               {
-								data->BlockStart = 0;
-								data->BufferPos = strlen(data->Contents);
+                data->BlockStart = 0;
+                data->BufferPos = strlen(data->Contents);
               }
-							break;
+              break;
 
-							case 3:
+              case 3:
               {
-								data->BlockStart = data->BufferPos;
-								data->ClickCount = 0;
+                data->BlockStart = data->BufferPos;
+                data->ClickCount = 0;
               }
-							break;
-						}
-						data->BlockStop = data->BufferPos;
-						data->Flags |= FLG_BlockEnabled;
+              break;
+            }
+            data->BlockStop = data->BufferPos;
+            data->Flags |= FLG_BlockEnabled;
 
-						DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-						data->ehnode.ehn_Events |= (IDCMP_MOUSEMOVE | IDCMP_INTUITICKS);
-						DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
+            DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
+            data->ehnode.ehn_Events |= (IDCMP_MOUSEMOVE | IDCMP_INTUITICKS);
+            DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 
-						if(data->Flags & FLG_Active)
-  						MUI_Redraw(obj, MADF_DRAWUPDATE);
-						else
+            if(data->Flags & FLG_Active)
+              MUI_Redraw(obj, MADF_DRAWUPDATE);
+            else
               set(_win(obj), MUIA_Window_ActiveObject, obj);
-						
+
             result = MUI_EventHandlerRC_Eat;
-					}
-					else
-					{
-						data->ClickCount = 0;
-						if(data->Flags & FLG_Active && !(data->Flags & FLG_StayActive))
-						{
+          }
+          else
+          {
+            data->ClickCount = 0;
+            if(data->Flags & FLG_Active && !(data->Flags & FLG_StayActive))
+            {
 #ifdef ALLOW_OUTSIDE_MARKING
-							D(DBF_STARTUP, "Clicked outside gadget");
-							data->Flags |= FLG_DragOutside;
+              D(DBF_STARTUP, "Clicked outside gadget");
+              data->Flags |= FLG_DragOutside;
 
-							DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-							data->ehnode.ehn_Events |= IDCMP_MOUSEMOVE;
-							DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
+              DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
+              data->ehnode.ehn_Events |= IDCMP_MOUSEMOVE;
+              DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 #else
-							set(_win(obj), MUIA_Window_ActiveObject, MUIV_Window_ActiveObject_None);
+              set(_win(obj), MUIA_Window_ActiveObject, MUIV_Window_ActiveObject_None);
 #endif
-						}
-					}
-				}
-			}
-			else
-			{
+            }
+          }
+        }
+      }
+      else
+      {
 #ifdef ALLOW_OUTSIDE_MARKING
-				if(msg->imsg->Class == IDCMP_MOUSEMOVE)
-				{
-					data->Flags &= ~FLG_DragOutside;
-					D(DBF_STARTUP, "Detected drag");
-				}
+        if(msg->imsg->Class == IDCMP_MOUSEMOVE)
+        {
+          data->Flags &= ~FLG_DragOutside;
+          D(DBF_STARTUP, "Detected drag");
+        }
 #endif
-				if((msg->imsg->Class == IDCMP_MOUSEMOVE || msg->imsg->Class == IDCMP_INTUITICKS) && data->Flags & FLG_Active)
-				{
-					WORD x, width, mousex;
-					struct TextExtent tExtend;
+        if((msg->imsg->Class == IDCMP_MOUSEMOVE || msg->imsg->Class == IDCMP_INTUITICKS) && data->Flags & FLG_Active)
+        {
+          WORD x, width, mousex;
+          struct TextExtent tExtend;
 
-					x = ad->mad_Box.Left + ad->mad_addleft;
-					mousex = msg->imsg->MouseX - AlignOffset(obj, data);
-					width = ad->mad_Box.Width - ad->mad_subwidth;
+          x = ad->mad_Box.Left + ad->mad_addleft;
+          mousex = msg->imsg->MouseX - AlignOffset(obj, data);
+          width = ad->mad_Box.Width - ad->mad_subwidth;
 
-					SetFont(&data->rport, Font);
+          SetFont(&data->rport, Font);
 
-					switch(data->ClickCount)
-					{
-						case 0:
-						{
-							if(mousex < x)
-							{
-								if(data->DisplayPos)
-									data->DisplayPos--;
-								data->BufferPos = data->DisplayPos;
-							}
-							else
-							{
-								if(mousex >= x+width)
-								{
-									if(data->DisplayPos < StringLength)
-									{
-										data->DisplayPos++;
-										data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, ad->mad_Box.Width - ad->mad_subwidth, Font->tf_YSize);
-									}
-									else
-									{
-										data->BufferPos = StringLength;
-									}
-								}
-								else
-								{
-										WORD offset = mousex - x;
+          switch(data->ClickCount)
+          {
+            case 0:
+            {
+              if(mousex < x)
+              {
+                if(data->DisplayPos)
+                  data->DisplayPos--;
+                data->BufferPos = data->DisplayPos;
+              }
+              else
+              {
+                if(mousex >= x+width)
+                {
+                  if(data->DisplayPos < StringLength)
+                  {
+                    data->DisplayPos++;
+                    data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, ad->mad_Box.Width - ad->mad_subwidth, Font->tf_YSize);
+                  }
+                  else
+                  {
+                    data->BufferPos = StringLength;
+                  }
+                }
+                else
+                {
+                    WORD offset = mousex - x;
 
-/*									if(offset < 0)
-										data->BufferPos = 0;
-									else
-*/									data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
-								}
-							}
-							data->BlockStop = data->BufferPos;
-							MUI_Redraw(obj, MADF_DRAWUPDATE);
-						}
-						break;
+/*                  if(offset < 0)
+                    data->BufferPos = 0;
+                  else
+*/                  data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
+                }
+              }
+              data->BlockStop = data->BufferPos;
+              MUI_Redraw(obj, MADF_DRAWUPDATE);
+            }
+            break;
 
-						case 1:
-						{
-							WORD offset = mousex - x;
-							WORD newpos = 0;
+            case 1:
+            {
+              WORD offset = mousex - x;
+              WORD newpos = 0;
 
-							if(mousex < x && data->DisplayPos)
-							{
-								data->DisplayPos--;
-								newpos = data->DisplayPos;
-							}
-							else
-							{
-//								offset -= AlignOffset(obj, data);
-								if(offset > 0)
-									newpos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
-							}
+              if(mousex < x && data->DisplayPos)
+              {
+                data->DisplayPos--;
+                newpos = data->DisplayPos;
+              }
+              else
+              {
+//                offset -= AlignOffset(obj, data);
+                if(offset > 0)
+                  newpos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
+              }
 
-							if(newpos >= data->BlockStart)
-							{
-								while(IsAlNum(data->locale, (UBYTE)*(data->Contents+newpos)))
-									newpos++;
-							}
-							else
-							{
-								while(newpos > 0 && IsAlNum(data->locale, (UBYTE)*(data->Contents+newpos-1)))
-									newpos--;
-							}
+              if(newpos >= data->BlockStart)
+              {
+                while(IsAlNum(data->locale, (UBYTE)*(data->Contents+newpos)))
+                  newpos++;
+              }
+              else
+              {
+                while(newpos > 0 && IsAlNum(data->locale, (UBYTE)*(data->Contents+newpos-1)))
+                  newpos--;
+              }
 
-							if(data->BufferPos != newpos)
-							{
-								data->BlockStop = data->BufferPos = newpos;
-								MUI_Redraw(obj, MADF_DRAWUPDATE);
-							}
-						}
-						break;
-					}
-				}
-			}
-		}
-	}
-	return(result);
+              if(data->BufferPos != newpos)
+              {
+                data->BlockStop = data->BufferPos = newpos;
+                MUI_Redraw(obj, MADF_DRAWUPDATE);
+              }
+            }
+            break;
+          }
+        }
+      }
+    }
+  }
+  return(result);
 }

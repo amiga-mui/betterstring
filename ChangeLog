@@ -9,6 +9,7 @@ $URL$
 
    * mcc/private.h, mcc/hotkeystring/private.h: added missing rawkey definitions
      for OS3.
+   * misc: changed all TABs back to two spaces.
 
 2007-11-03 Jens Langner <Jens.Langner@light-speed.de>
 
