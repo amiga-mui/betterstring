@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-11-05  Thore Böckelmann <tboeckel@gmx.de>
+
+   * mcc/private.h, mcc/hotkeystring/private.h: added missing rawkey definitions
+     for OS3.
+
 2007-11-03 Jens Langner <Jens.Langner@light-speed.de>
 
    * mcp/CreatePrefsGroup.c: added a copyright crawling object to the bottom
