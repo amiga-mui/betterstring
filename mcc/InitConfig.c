@@ -34,76 +34,76 @@
 
 ULONG GetCol (Object *obj, ULONG item, struct MUI_PenSpec *defaultcol, UNUSED struct InstData *data)
 {
-	ULONG res;
-	struct MUI_PenSpec *spec;
+  ULONG res;
+  struct MUI_PenSpec *spec;
 
-	if(DoMethod(obj, MUIM_GetConfigItem, item, &spec))
-			res = MUI_ObtainPen(muiRenderInfo(obj), spec, 0L);
-	else	res = MUI_ObtainPen(muiRenderInfo(obj), defaultcol, 0L);
+  if(DoMethod(obj, MUIM_GetConfigItem, item, &spec))
+      res = MUI_ObtainPen(muiRenderInfo(obj), spec, 0L);
+  else  res = MUI_ObtainPen(muiRenderInfo(obj), defaultcol, 0L);
 
-	return res;
+  return res;
 }
 
 void InitConfig (Object *obj, struct InstData *data)
 {
-		LONG  setting;
+    LONG  setting;
 
-	if((data->Flags & FLG_SetFrame) && MUIMasterBase->lib_Version >= 20)
-		set(obj, MUIA_Frame, DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Frame, &setting) ? (STRPTR)setting : (STRPTR)"302211");
-	data->InactiveText = GetCol(obj, MUICFG_BetterString_InactiveText, (struct MUI_PenSpec *)"m5", data);
-	data->ActiveText = GetCol(obj, MUICFG_BetterString_ActiveText, (struct MUI_PenSpec *)"m5", data);
-	data->CursorColor = GetCol(obj, MUICFG_BetterString_Cursor, (struct MUI_PenSpec *)"m0", data);
-	data->MarkedColor = GetCol(obj, MUICFG_BetterString_MarkedBack, (struct MUI_PenSpec *)"m6", data);
-	data->MarkedTextColor = GetCol(obj, MUICFG_BetterString_MarkedText, (struct MUI_PenSpec *)"m5", data);
+  if((data->Flags & FLG_SetFrame) && MUIMasterBase->lib_Version >= 20)
+    set(obj, MUIA_Frame, DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Frame, &setting) ? (STRPTR)setting : (STRPTR)"302211");
+  data->InactiveText = GetCol(obj, MUICFG_BetterString_InactiveText, (struct MUI_PenSpec *)"m5", data);
+  data->ActiveText = GetCol(obj, MUICFG_BetterString_ActiveText, (struct MUI_PenSpec *)"m5", data);
+  data->CursorColor = GetCol(obj, MUICFG_BetterString_Cursor, (struct MUI_PenSpec *)"m0", data);
+  data->MarkedColor = GetCol(obj, MUICFG_BetterString_MarkedBack, (struct MUI_PenSpec *)"m6", data);
+  data->MarkedTextColor = GetCol(obj, MUICFG_BetterString_MarkedText, (struct MUI_PenSpec *)"m5", data);
 
-	if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_InactiveBack, &setting))
-			data->InactiveBackground = (STRPTR)setting;
-	else	data->InactiveBackground = (STRPTR)MUII_BACKGROUND;
+  if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_InactiveBack, &setting))
+      data->InactiveBackground = (STRPTR)setting;
+  else  data->InactiveBackground = (STRPTR)MUII_BACKGROUND;
 
-	if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_ActiveBack, &setting))
-			data->ActiveBackground = (STRPTR)setting;
-	else	data->ActiveBackground = (STRPTR)"2:m1";
+  if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_ActiveBack, &setting))
+      data->ActiveBackground = (STRPTR)setting;
+  else  data->ActiveBackground = (STRPTR)"2:m1";
 
-	if(!(data->Flags & FLG_OwnFont) && DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Font, &setting))
-	{
-		STRPTR src = (STRPTR)setting;
+  if(!(data->Flags & FLG_OwnFont) && DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Font, &setting))
+  {
+    STRPTR src = (STRPTR)setting;
 
     if(strlen(src) > 0)
     {
-  		char fontname[256];
-	  	struct TextAttr myfont = { fontname, 8, FS_NORMAL, 0 };
-		  LONG c = 0;
+      char fontname[256];
+      struct TextAttr myfont = { fontname, 8, FS_NORMAL, 0 };
+      LONG c = 0;
 
-  		while(src[c] != '/' && src[c] != '\0' && c < 255)
-	  	{
-		  	fontname[c] = src[c];
-			  ++c;
-  		}
-	  	strlcpy(&fontname[c], ".font", 256-c);
-		  StrToLong(&src[c+1], &c);
-  		myfont.ta_YSize = c;
+      while(src[c] != '/' && src[c] != '\0' && c < 255)
+      {
+        fontname[c] = src[c];
+        ++c;
+      }
+      strlcpy(&fontname[c], ".font", 256-c);
+      StrToLong(&src[c+1], &c);
+      myfont.ta_YSize = c;
 
-		  data->Font = OpenDiskFont(&myfont);
+      data->Font = OpenDiskFont(&myfont);
     }
     else
       data->Font = NULL;
-	}
-	else
-		data->Font = NULL;
+  }
+  else
+    data->Font = NULL;
 
-	if(!(data->Flags & FLG_OwnBackground))
-		set(obj, MUIA_Background, data->InactiveBackground);
+  if(!(data->Flags & FLG_OwnBackground))
+    set(obj, MUIA_Background, data->InactiveBackground);
 }
 
 VOID FreeConfig (struct MUI_RenderInfo *mri, struct InstData *data)
 {
-	MUI_ReleasePen(mri, data->InactiveText);
-	MUI_ReleasePen(mri, data->ActiveText);
-	MUI_ReleasePen(mri, data->CursorColor);
-	MUI_ReleasePen(mri, data->MarkedColor);
-	MUI_ReleasePen(mri, data->MarkedTextColor);
+  MUI_ReleasePen(mri, data->InactiveText);
+  MUI_ReleasePen(mri, data->ActiveText);
+  MUI_ReleasePen(mri, data->CursorColor);
+  MUI_ReleasePen(mri, data->MarkedColor);
+  MUI_ReleasePen(mri, data->MarkedTextColor);
 
-	if(data->Font)
-		CloseFont(data->Font);
+  if(data->Font)
+    CloseFont(data->Font);
 }
 

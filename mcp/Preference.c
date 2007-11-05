@@ -66,7 +66,7 @@ struct UtilityIFace *IUtility = NULL;
 
 extern DISPATCHERPROTO(_DispatcherP);
 
-int	main(void)
+int  main(void)
 {
   if((UtilityBase = OpenLibrary("utility.library", 38)) &&
     GETINTERFACE(IUtility, UtilityBase))
@@ -74,72 +74,72 @@ int	main(void)
     GETINTERFACE(IIntuition, IntuitionBase))
   if((LocaleBase = (APTR)OpenLibrary("locale.library", 38)) &&
     GETINTERFACE(ILocale, LocaleBase))
-	if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
+  if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
     GETINTERFACE(IMUIMaster, MUIMasterBase))
-	{
-		Object	*app = NULL, *window;
-		struct	MUI_CustomClass	*mcc;
+  {
+    Object  *app = NULL, *window;
+    struct  MUI_CustomClass  *mcc;
 
-  	OpenCat();
+    OpenCat();
 
-		if((mcc = MUI_CreateCustomClass(NULL, "Group.mui", NULL, sizeof(struct InstData_MCP), ENTRY(_DispatcherP))))
-		{
-			app =	MUI_NewObject("Application.mui",
-					MUIA_Application_Author,		"Allan Odgaard",
-					MUIA_Application_Base,			"BetterString-Prefs",
-					MUIA_Application_Copyright,	"®1997 Allan Odgaard",
-					MUIA_Application_Description,	"Preference for BetterString.mcc",
-					MUIA_Application_Title,			"BetterString-Prefs",
-					MUIA_Application_Version,		"$VER: BetterString-Prefs V1.0 (18-Feb-97)",
+    if((mcc = MUI_CreateCustomClass(NULL, "Group.mui", NULL, sizeof(struct InstData_MCP), ENTRY(_DispatcherP))))
+    {
+      app =  MUI_NewObject("Application.mui",
+          MUIA_Application_Author,    "Allan Odgaard",
+          MUIA_Application_Base,      "BetterString-Prefs",
+          MUIA_Application_Copyright,  "®1997 Allan Odgaard",
+          MUIA_Application_Description,  "Preference for BetterString.mcc",
+          MUIA_Application_Title,      "BetterString-Prefs",
+          MUIA_Application_Version,    "$VER: BetterString-Prefs V1.0 (18-Feb-97)",
 
-					MUIA_Application_Window,
-						window = MUI_NewObject("Window.mui",
-						MUIA_Window_Title,		"BetterString-Prefs",
-						MUIA_Window_ID,			  MAKE_ID('M','A','I','N'),
-						MUIA_Window_RootObject,
-							MUI_NewObject("Group.mui",
-							MUIA_Background, MUII_PageBack,
-							MUIA_Frame, MUIV_Frame_Text,
-							MUIA_InnerBottom,	11,
-							MUIA_InnerLeft,	 6,
-							MUIA_InnerRight,	 6,
-							MUIA_InnerTop,		11,
+          MUIA_Application_Window,
+            window = MUI_NewObject("Window.mui",
+            MUIA_Window_Title,    "BetterString-Prefs",
+            MUIA_Window_ID,        MAKE_ID('M','A','I','N'),
+            MUIA_Window_RootObject,
+              MUI_NewObject("Group.mui",
+              MUIA_Background, MUII_PageBack,
+              MUIA_Frame, MUIV_Frame_Text,
+              MUIA_InnerBottom,  11,
+              MUIA_InnerLeft,   6,
+              MUIA_InnerRight,   6,
+              MUIA_InnerTop,    11,
 
-							MUIA_Group_Child,
-								NewObject(mcc->mcc_Class, NULL, TAG_DONE),
+              MUIA_Group_Child,
+                NewObject(mcc->mcc_Class, NULL, TAG_DONE),
 
-							TAG_DONE ),
-						TAG_DONE ),
-					TAG_DONE );
+              TAG_DONE ),
+            TAG_DONE ),
+          TAG_DONE );
 
-			if(app)
-			{
-					unsigned long sigs;
+      if(app)
+      {
+          unsigned long sigs;
 
-				DoMethod(window, MUIM_Notify,
-						MUIA_Window_CloseRequest, TRUE,
-						app, 2, MUIM_Application_ReturnID, MUIV_Application_ReturnID_Quit);
+        DoMethod(window, MUIM_Notify,
+            MUIA_Window_CloseRequest, TRUE,
+            app, 2, MUIM_Application_ReturnID, MUIV_Application_ReturnID_Quit);
 
-				set(window, MUIA_Window_Open, TRUE);
-				while((LONG)DoMethod(app, MUIM_Application_NewInput, &sigs) != MUIV_Application_ReturnID_Quit)
-					if(sigs)
-					{
-						sigs = Wait(sigs | SIGBREAKF_CTRL_C);
-						if(sigs & SIGBREAKF_CTRL_C)
-							break;
-					}
+        set(window, MUIA_Window_Open, TRUE);
+        while((LONG)DoMethod(app, MUIM_Application_NewInput, &sigs) != MUIV_Application_ReturnID_Quit)
+          if(sigs)
+          {
+            sigs = Wait(sigs | SIGBREAKF_CTRL_C);
+            if(sigs & SIGBREAKF_CTRL_C)
+              break;
+          }
 
-				MUI_DisposeObject(app);
-			}
-			MUI_DeleteCustomClass(mcc);
-		}
+        MUI_DisposeObject(app);
+      }
+      MUI_DeleteCustomClass(mcc);
+    }
 
-  	CloseCat();
+    CloseCat();
 
     DROPINTERFACE(IMUIMaster);
-		CloseLibrary(MUIMasterBase);
+    CloseLibrary(MUIMasterBase);
 
-	}
+  }
 
   if(LocaleBase)
   {

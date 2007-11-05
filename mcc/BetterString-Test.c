@@ -90,13 +90,13 @@ int main(void)
     GETINTERFACE(IUtility, UtilityBase))
   if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
     GETINTERFACE(IMUIMaster, MUIMasterBase))
-	{
-  	struct MUI_CustomClass *mcc;
-  	Object *a1, *a2, *app, *window, *bstring, *bpos, *ssize, *button, *numbutton;
+  {
+    struct MUI_CustomClass *mcc;
+    Object *a1, *a2, *app, *window, *bstring, *bpos, *ssize, *button, *numbutton;
     Object *menu;
-  	const char *classes[] = {"BetterString.mcc", NULL};
+    const char *classes[] = {"BetterString.mcc", NULL};
 
-  	mcc = MUI_CreateCustomClass(NULL, "Area.mui", NULL, sizeof(struct InstData), ENTRY(_Dispatcher));
+    mcc = MUI_CreateCustomClass(NULL, "Area.mui", NULL, sizeof(struct InstData), ENTRY(_Dispatcher));
 
     menu = MenustripObject,
             MUIA_Family_Child, MenuObject, MUIA_Menu_Title, "Test",
@@ -108,20 +108,20 @@ int main(void)
             End,
            End,
 
-  	app =	ApplicationObject,
-  				MUIA_Application_Author,		  "BetterString.mcc Open Source Team",
-  				MUIA_Application_Base,			  "BetterString-Test",
-  				MUIA_Application_Copyright,	  "(C) 2005-2007 by BetterString.mcc Open Source Team",
-  				MUIA_Application_Description,	"BetterString.mcc demonstration program",
-  				MUIA_Application_Title,			  "BetterString-Test",
-  				MUIA_Application_Version,		  "$VER: BetterString-Demo V1.0 (18.05.2007)",
-  				MUIA_Application_UsedClasses, classes,
+    app =  ApplicationObject,
+          MUIA_Application_Author,      "BetterString.mcc Open Source Team",
+          MUIA_Application_Base,        "BetterString-Test",
+          MUIA_Application_Copyright,    "(C) 2005-2007 by BetterString.mcc Open Source Team",
+          MUIA_Application_Description,  "BetterString.mcc demonstration program",
+          MUIA_Application_Title,        "BetterString-Test",
+          MUIA_Application_Version,      "$VER: BetterString-Demo V1.0 (18.05.2007)",
+          MUIA_Application_UsedClasses, classes,
 
-  				MUIA_Application_Window, window = WindowObject,
-  					MUIA_Window_Title,	"BetterString-Test",
-  					MUIA_Window_ID,			MAKE_ID('M','A','I','N'),
+          MUIA_Application_Window, window = WindowObject,
+            MUIA_Window_Title,  "BetterString-Test",
+            MUIA_Window_ID,      MAKE_ID('M','A','I','N'),
             MUIA_Window_Menustrip, menu,
-  					MUIA_Window_RootObject, VGroup,
+            MUIA_Window_RootObject, VGroup,
 
             Child, PopaslObject,
                 MUIA_Popstring_String,  NewObject(mcc->mcc_Class, NULL, StringFrame, MUIA_BetterString_NoInput, TRUE, MUIA_CycleChain, TRUE, End,
@@ -164,20 +164,20 @@ int main(void)
                     End,
                 End,
 
-  						Child, TextObject,
-  							MUIA_Font, MUIV_Font_Tiny,
-  							MUIA_Text_Contents, "\33cBetterString.mcc",
-  							End,
-  						Child, NewObject(mcc->mcc_Class, NULL,
-  							StringFrame,
-  							MUIA_CycleChain, TRUE,
-  							MUIA_String_Secret, TRUE,
-  //									MUIA_String_MaxLen, 20,
-  							MUIA_String_AdvanceOnCR, TRUE,
-  							MUIA_BetterString_StayActive, TRUE,
-  //									MUIA_String_Accept, "0123456789",
-  							MUIA_String_Contents, "This is some crappy shit!",
-  							End,
+              Child, TextObject,
+                MUIA_Font, MUIV_Font_Tiny,
+                MUIA_Text_Contents, "\33cBetterString.mcc",
+                End,
+              Child, NewObject(mcc->mcc_Class, NULL,
+                StringFrame,
+                MUIA_CycleChain, TRUE,
+                MUIA_String_Secret, TRUE,
+  //                  MUIA_String_MaxLen, 20,
+                MUIA_String_AdvanceOnCR, TRUE,
+                MUIA_BetterString_StayActive, TRUE,
+  //                  MUIA_String_Accept, "0123456789",
+                MUIA_String_Contents, "This is some crappy shit!",
+                End,
               Child, NewObject(mcc->mcc_Class, NULL,
                   StringFrame,
                   MUIA_CycleChain, TRUE,
@@ -189,63 +189,63 @@ int main(void)
                   MUIA_String_Secret, TRUE,
                   MUIA_BetterString_InactiveContents, "This is some crappy shit!",
                   End,
-  						Child, TextObject,
-  							MUIA_Font, MUIV_Font_Tiny,
-  							MUIA_Text_Contents, "\33cCentered",
-  							End,
-  						Child, bstring = (Object *)NewObject(mcc->mcc_Class, NULL,
-  							ButtonFrame,
-  							MUIA_Font, MUIV_Font_Big,
-  //									StringFrame,
-  							MUIA_String_AdvanceOnCR, TRUE,
-  							MUIA_String_Format, MUIV_String_Format_Center,
-  							MUIA_String_Contents, "This is some crappy shit!",
-  							MUIA_CycleChain, TRUE,
-  							End,
-  						Child, TextObject,
-  							MUIA_Font, MUIV_Font_Tiny,
-  							MUIA_Text_Contents, "\33cRight-Aligned",
-  							End,
-  						Child, NewObject(mcc->mcc_Class, NULL,
-  //									StringFrame,
-  							MUIA_String_AdvanceOnCR, TRUE,
-  							MUIA_String_Contents, "This is some crappy shit!",
-  							MUIA_String_Format, MUIV_String_Format_Right,
-  							MUIA_CycleChain, TRUE,
-  							End,
-  						Child, TextObject,
-  							MUIA_Font, MUIV_Font_Tiny,
-  							MUIA_Text_Contents, "\33cPlain",
-  							End,
-  						Child, StringObject,
-  							StringFrame,
-  							MUIA_String_AdvanceOnCR, TRUE,
-  							MUIA_String_Contents, "This is some crappy shit!",
-  							MUIA_String_Format, MUIV_String_Format_Right,
-  							MUIA_CycleChain, TRUE,
-  							End,
-  						Child, HGroup,
-  							Child, button = SimpleButton("Insert"),
-  							Child, bpos = SliderObject,
-  								MUIA_Slider_Horiz, TRUE,
-  								MUIA_Numeric_Max, 60,
-  								End,
-  							Child, ssize = SliderObject,
-  								MUIA_Slider_Horiz, TRUE,
-  								MUIA_Numeric_Min, -30,
-  								MUIA_Numeric_Max, 30,
-  								MUIA_Numeric_Value, 0,
-  								End,
-  							Child, numbutton = NumericbuttonObject,
-  								MUIA_Numeric_Min, -30,
-  								MUIA_Numeric_Max, 30,
-  								MUIA_Numeric_Value, 0,
-  								MUIA_Disabled, TRUE,
-  								End,
-  							End,
-  						End,
-  					End,
-  				End;
+              Child, TextObject,
+                MUIA_Font, MUIV_Font_Tiny,
+                MUIA_Text_Contents, "\33cCentered",
+                End,
+              Child, bstring = (Object *)NewObject(mcc->mcc_Class, NULL,
+                ButtonFrame,
+                MUIA_Font, MUIV_Font_Big,
+  //                  StringFrame,
+                MUIA_String_AdvanceOnCR, TRUE,
+                MUIA_String_Format, MUIV_String_Format_Center,
+                MUIA_String_Contents, "This is some crappy shit!",
+                MUIA_CycleChain, TRUE,
+                End,
+              Child, TextObject,
+                MUIA_Font, MUIV_Font_Tiny,
+                MUIA_Text_Contents, "\33cRight-Aligned",
+                End,
+              Child, NewObject(mcc->mcc_Class, NULL,
+  //                  StringFrame,
+                MUIA_String_AdvanceOnCR, TRUE,
+                MUIA_String_Contents, "This is some crappy shit!",
+                MUIA_String_Format, MUIV_String_Format_Right,
+                MUIA_CycleChain, TRUE,
+                End,
+              Child, TextObject,
+                MUIA_Font, MUIV_Font_Tiny,
+                MUIA_Text_Contents, "\33cPlain",
+                End,
+              Child, StringObject,
+                StringFrame,
+                MUIA_String_AdvanceOnCR, TRUE,
+                MUIA_String_Contents, "This is some crappy shit!",
+                MUIA_String_Format, MUIV_String_Format_Right,
+                MUIA_CycleChain, TRUE,
+                End,
+              Child, HGroup,
+                Child, button = SimpleButton("Insert"),
+                Child, bpos = SliderObject,
+                  MUIA_Slider_Horiz, TRUE,
+                  MUIA_Numeric_Max, 60,
+                  End,
+                Child, ssize = SliderObject,
+                  MUIA_Slider_Horiz, TRUE,
+                  MUIA_Numeric_Min, -30,
+                  MUIA_Numeric_Max, 30,
+                  MUIA_Numeric_Value, 0,
+                  End,
+                Child, numbutton = NumericbuttonObject,
+                  MUIA_Numeric_Min, -30,
+                  MUIA_Numeric_Max, 30,
+                  MUIA_Numeric_Value, 0,
+                  MUIA_Disabled, TRUE,
+                  End,
+                End,
+              End,
+            End,
+          End;
 
     if(app)
     {
@@ -256,15 +256,15 @@ int main(void)
       DoMethod(a1, MUIM_Notify, MUIA_String_Contents, MUIV_EveryTime, a2, 3, MUIM_Set, MUIA_String_Contents, MUIV_TriggerValue);
       DoMethod(a2, MUIM_Notify, MUIA_String_Contents, MUIV_EveryTime, a1, 3, MUIM_Set, MUIA_String_Contents, MUIV_TriggerValue);
 
-  		DoMethod(ssize, MUIM_Notify, MUIA_Numeric_Value, MUIV_EveryTime, numbutton, 3, MUIM_Set, MUIA_Numeric_Value, MUIV_TriggerValue);
-  		DoMethod(bpos, MUIM_Notify, MUIA_Numeric_Value, MUIV_EveryTime, bstring, 3, MUIM_Set, MUIA_String_BufferPos, MUIV_TriggerValue);
-  		DoMethod(ssize, MUIM_Notify, MUIA_Numeric_Value, MUIV_EveryTime, bstring, 3, MUIM_Set, MUIA_BetterString_SelectSize, MUIV_TriggerValue);
-  		DoMethod(button, MUIM_Notify, MUIA_Pressed, FALSE, bstring, 3, MUIM_BetterString_Insert, "*Test*", MUIV_BetterString_Insert_BufferPos);
-  		DoMethod(window, MUIM_Notify, MUIA_Window_CloseRequest, TRUE, MUIV_Notify_Application, 2, MUIM_Application_ReturnID, MUIV_Application_ReturnID_Quit);
+      DoMethod(ssize, MUIM_Notify, MUIA_Numeric_Value, MUIV_EveryTime, numbutton, 3, MUIM_Set, MUIA_Numeric_Value, MUIV_TriggerValue);
+      DoMethod(bpos, MUIM_Notify, MUIA_Numeric_Value, MUIV_EveryTime, bstring, 3, MUIM_Set, MUIA_String_BufferPos, MUIV_TriggerValue);
+      DoMethod(ssize, MUIM_Notify, MUIA_Numeric_Value, MUIV_EveryTime, bstring, 3, MUIM_Set, MUIA_BetterString_SelectSize, MUIV_TriggerValue);
+      DoMethod(button, MUIM_Notify, MUIA_Pressed, FALSE, bstring, 3, MUIM_BetterString_Insert, "*Test*", MUIV_BetterString_Insert_BufferPos);
+      DoMethod(window, MUIM_Notify, MUIA_Window_CloseRequest, TRUE, MUIV_Notify_Application, 2, MUIM_Application_ReturnID, MUIV_Application_ReturnID_Quit);
 
-  		set(window, MUIA_Window_ActiveObject, bstring);
-  		set(window, MUIA_Window_DefaultObject, bstring);
-  		set(window, MUIA_Window_Open, TRUE);
+      set(window, MUIA_Window_ActiveObject, bstring);
+      set(window, MUIA_Window_DefaultObject, bstring);
+      set(window, MUIA_Window_Open, TRUE);
 
         while((LONG)DoMethod(app, MUIM_Application_NewInput, &sigs) != MUIV_Application_ReturnID_Quit)
         {
