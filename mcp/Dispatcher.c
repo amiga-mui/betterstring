@@ -44,7 +44,7 @@ static struct PrefsExchangeData PrefsInfo[] =
   { ActiveBack,    MUIA_Imagedisplay_Spec,  MUICFG_BetterString_ActiveBack,    64, "2:m1"    },
   { ActiveText,    MUIA_Pendisplay_Spec,    MUICFG_BetterString_ActiveText,    32, "m5"      },
   { InactiveBack,  MUIA_Imagedisplay_Spec,  MUICFG_BetterString_InactiveBack,  64, "2:m2"    },
-  { InactiveText,  MUIA_Pendisplay_Spec,    MUICFG_BetterString_InactiveText,  32, "m5"      },
+  { InactiveText,  MUIA_Pendisplay_Spec,    MUICFG_BetterString_InactiveText,  32, "m4"      },
   { Cursor,        MUIA_Pendisplay_Spec,    MUICFG_BetterString_Cursor,        32, "m0"      },
   { MarkedBack,    MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedBack,    32, "m6"      },
   { MarkedText,    MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedText,    32, "m5"      },

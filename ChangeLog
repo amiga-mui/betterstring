@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-11-05 Jens Langner <Jens.Langner@light-speed.de>
+
+   * mcp/Dispatcher.c, mcc/InitConfig.c: changed the default inactive text color
+     to use the shadow pen instead of the text pen. This should a default inactive
+     betterstring object a slightly better look.
+
 2007-11-05  Thore Böckelmann <tboeckel@gmx.de>
 
    * mcc/private.h, mcc/hotkeystring/private.h: added missing rawkey definitions
