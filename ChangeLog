@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2007-12-03 Vit Sindlar <sindlarv at centrum dot cz>
+
+   * mcp/locale/czech.ct: added Czech catalog translation
+
 2007-11-05 Jens Langner <Jens.Langner@light-speed.de>
 
    * mcp/Dispatcher.c, mcc/InitConfig.c: changed the default inactive text color
