@@ -238,7 +238,8 @@ CATALOGS = $(LOCALE)/deutsch.catalog \
            $(LOCALE)/svenska.catalog \
            $(LOCALE)/dansk.catalog \
            $(LOCALE)/russian.catalog \
-           $(LOCALE)/italian.catalog
+           $(LOCALE)/italian.catalog \
+			  $(LOCALE)/czech.catalog
 
 #
 all: $(BINDIR) $(OBJDIR) locale.c $(MCPTARGET) $(PREFTARGET)
