@@ -243,8 +243,8 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 
         if((data->BufferPos-namestart) < 32)
         {
-          strlcpy(pattern, data->Contents+namestart, data->BufferPos-namestart);
-          strlcat(pattern, "~(#?.info)", data->BufferPos-namestart);
+          strlcpy(pattern, data->Contents+namestart, sizeof(pattern));
+          strlcat(pattern, "~(#?.info)", sizeof(pattern));
 
           oldletter = data->Contents[namestart];
           data->Contents[namestart] = '\0';
@@ -255,9 +255,9 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 
             if((control = (struct ExAllControl *)AllocDosObject(DOS_EXALLCONTROL, NULL)))
             {
-              char tokenized[80];
+              char tokenized[sizeof(pattern) * 2 + 2];
 
-              if(ParsePatternNoCase(pattern, tokenized, 40) != -1)
+              if(ParsePatternNoCase(pattern, tokenized, sizeof(tokenized)) != -1)
                 control->eac_MatchString = tokenized;
 
               if((dirlock = Lock(data->Contents+pos, ACCESS_READ)))
