@@ -233,13 +233,13 @@ PREFOBJS= $(OBJDIR)/locale.o \
           $(OBJDIR)/Preference.o
 
 # available catalog translations
-CATALOGS = $(LOCALE)/deutsch.catalog \
+CATALOGS = $(LOCALE)/german.catalog \
            $(LOCALE)/french.catalog \
-           $(LOCALE)/svenska.catalog \
-           $(LOCALE)/dansk.catalog \
+           $(LOCALE)/swedish.catalog \
+           $(LOCALE)/danish.catalog \
            $(LOCALE)/russian.catalog \
            $(LOCALE)/italian.catalog \
-			  $(LOCALE)/czech.catalog
+           $(LOCALE)/czech.catalog
 
 #
 all: $(BINDIR) $(OBJDIR) locale.c $(MCPTARGET) $(PREFTARGET)
