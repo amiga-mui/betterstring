@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-01-03  Thore Böckelmann <tboeckel@gmx.de>
+
+   * mcp/locale/#?.ct: changed all .ct file names to english names instead of
+     translated ones.
+
 2007-12-19  Thore Böckelmann <tboeckel@gmx.de>
 
    * mcc/FileNameComp.c: ParsePatternNoCase() was called with a too small buffer
