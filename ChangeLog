@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-01-04 Vit Sindlar <sindlarv at centrum dot cz>
+
+   * mcp/locale/czech.ct: updated Czech catalog translation
+
 2008-01-03  Thore Böckelmann <tboeckel@gmx.de>
 
    * mcp/locale/#?.ct: changed all .ct file names to english names instead of

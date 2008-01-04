@@ -1,10 +1,10 @@
-## version $VER: BetterString_mcp.catalog 2.2 (30.11.2007)
+## version $VER: BetterString_mcp.catalog 2.3 (3.1.2008)
 ## language czech
-## codeset 0
+## codeset 5
 ;
 ;
 ; BetterString_mcp.cd - BetterString MUI custom prefs catalog description file
-; $Id$
+; $Id: BetterString_mcp.cd 104 2007-08-29 08:19:24Z thboeckel $
 ;
 ;#version 2
 ;#language english
@@ -43,7 +43,7 @@ Text
 ; Text
 ;
 MSG_String_TestString
-Vyzkou¹ejte v¹echno, co BetterString nabízí!
+Vyzkou¹ejte mo¾nosti prvku BetterString, nabízí toho hodnì!
 ; Test the power of BetterString here!
 ;
 MSG_Help_Copy
@@ -111,7 +111,7 @@ Amiga + G
 ; Amiga + G
 ;
 MSG_Help_IncreaseNumber
-Zvý¹í hodnotu èísla.
+K aktuální hodnotì èísla pøiète jednièku.
 ; Increase number
 ;
 MSG_Help_IncreaseNumber_Shortcut
@@ -119,7 +119,7 @@ Amiga + i
 ; Amiga + i
 ;
 MSG_Help_DecreaseNumber
-Sní¾í hodnotu èísla.
+Od aktuální hodnoty èísla odeète jednièku.
 ; Decrease number
 ;
 MSG_Help_DecreaseNumber_Shortcut
