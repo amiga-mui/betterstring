@@ -33,9 +33,13 @@
 #include "BetterString_mcc.h"
 #include "private.h"
 
-BOOL OverwriteA (STRPTR text, UWORD x, UWORD length, UWORD ptrn_length, struct InstData *data)
+#include "Debug.h"
+
+BOOL OverwriteA(STRPTR text, UWORD x, UWORD length, UWORD ptrn_length, struct InstData *data)
 {
   BOOL result = TRUE;
+
+  ENTER();
 
   if(length < ptrn_length)
   {
@@ -63,20 +67,30 @@ BOOL OverwriteA (STRPTR text, UWORD x, UWORD length, UWORD ptrn_length, struct I
       data->BufferPos = x;
   }
 
-  if(!result)
+  if(result == FALSE)
     DisplayBeep(NULL);
 
-  return(result);
+  RETURN(result);
+  return result;
 }
 
-BOOL Overwrite (STRPTR text, UWORD x, UWORD length, struct InstData *data)
+BOOL Overwrite(STRPTR text, UWORD x, UWORD length, struct InstData *data)
 {
-  return(OverwriteA(text, x, length, strlen(text), data));
+  BOOL result;
+
+  ENTER();
+
+  result = OverwriteA(text, x, length, strlen(text), data);
+
+  RETURN(result);
+  return result;
 }
 
-WORD VolumeStart (STRPTR text, WORD pos)
+WORD VolumeStart(STRPTR text, WORD pos)
 {
-    BOOL searching = TRUE;
+  BOOL searching = TRUE;
+
+  ENTER();
 
   while(pos > 0 && searching)
   {
@@ -88,51 +102,61 @@ WORD VolumeStart (STRPTR text, WORD pos)
       case '=':
         searching = FALSE;
         break;
+
       default:
         pos--;
+        break;
     }
   }
-  return(pos);
+
+  RETURN(pos);
+  return pos;
 }
 
-LONG FileNameStart (struct MUIP_BetterString_FileNameStart *msg)
+LONG FileNameStart(struct MUIP_BetterString_FileNameStart *msg)
 {
   STRPTR buffer = msg->buffer;
   LONG pos = msg->pos;
+
+  ENTER();
 
   while(pos && buffer[pos] != ':')
     pos--;
 
   if(buffer[pos] == ':')
-      pos = VolumeStart(buffer, pos);
-  else  pos = MUIR_BetterString_FileNameStart_Volume;
+    pos = VolumeStart(buffer, pos);
+  else
+    pos = MUIR_BetterString_FileNameStart_Volume;
 
-  return(pos);
+  RETURN(pos);
+  return pos;
 }
 
-VOID InsertFileName (UWORD namestart, struct InstData *data)
+VOID InsertFileName(UWORD namestart, struct InstData *data)
 {
-  struct ExAllData  *ead1 = &data->FNCBuffer->buffer;
-  struct ExAllData  *ead2;
-  struct FNCData    *fncframe;
-  struct FNCData    *fncframe1 = data->FNCBuffer;
+  struct ExAllData *ead1 = &data->FNCBuffer->buffer;
+  struct ExAllData *ead2;
+  struct FNCData *fncframe;
+  struct FNCData *fncframe1 = data->FNCBuffer;
   UWORD entrynum;
   UWORD findnum = data->FileNumber;
   char tmpname[32];
+
+  ENTER();
 
   do
   {
     entrynum = 0;
     fncframe = data->FNCBuffer;
     ead2 = &fncframe->buffer;
-    while(ead2)
+    while(ead2 != NULL)
     {
       //if(CmpStrings(ead1->ed_Name, ead2->ed_Name) > 0)
       if(strcmp((const char *)ead1->ed_Name, (const char *)ead2->ed_Name) > 0)
         entrynum++;
 
       ead2 = ead2->ed_Next;
-      if(!ead2 && fncframe->next)
+      if(ead2 == NULL && fncframe->next != NULL)
       {
         fncframe = fncframe->next;
         ead2 = &fncframe->buffer;
@@ -141,22 +165,28 @@ VOID InsertFileName (UWORD namestart, struct InstData *data)
 
     if(entrynum != findnum)
       ead1 = ead1->ed_Next;
-    if(!ead1 && fncframe1->next)
+    if(ead1 == NULL && fncframe1->next != NULL)
     {
       fncframe1 = fncframe1->next;
       ead1 = &fncframe1->buffer;
     }
-  }  while(entrynum != findnum);
+  }
+  while(entrynum != findnum);
 
   snprintf(tmpname, sizeof(tmpname), "%s%s", ead1->ed_Name, ead1->ed_Type == 2 ? "/" : " ");
 
   Overwrite(tmpname, namestart, data->BufferPos-namestart, data);
+
+  LEAVE();
 }
 
 BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
 {
   BOOL edited = FALSE;
-  if(data->FNCBuffer)
+
+  ENTER();
+
+  if(data->FNCBuffer != NULL)
   {
     if(data->FileEntries == 1)
     {
@@ -180,8 +210,9 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
   }
   else
   {
-    LONG pos;
-    switch(pos = DoMethod(obj, MUIM_BetterString_FileNameStart, data->Contents, data->BufferPos))
+    LONG pos = DoMethod(obj, MUIM_BetterString_FileNameStart, data->Contents, data->BufferPos);
+
+    switch(pos)
     {
       case MUIR_BetterString_FileNameStart_Volume:
       {
@@ -294,11 +325,13 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
           }
         }
 
-        if(!edited)
+        if(edited == FALSE)
           data->Contents[namestart] = oldletter;
       }
       break;
     }
   }
-  return(edited);
+
+  RETURN(edited);
+  return edited;
 }

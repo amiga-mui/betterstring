@@ -779,6 +779,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
   BOOL  FNC = FALSE;
   Object *focus = NULL;
 
+  ENTER();
+
   if(msg->muikey == MUIKEY_UP)
     focus = data->KeyUpFocus;
   else if(msg->muikey == MUIKEY_DOWN)
@@ -1429,5 +1431,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
       }
     }
   }
-  return(result);
+
+  RETURN(result);
+  return result;
 }

@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-01-24  Thore Böckelmann <tboeckel@gmx.de>
+
+   * mcc/FileNameCompl.c, mcc/HandleInput.c, mcc/PrintString.c,
+     mcc/Dispatcher.c: added some STYLEGUIDE stuff.
+
 2008-01-04 Vit Sindlar <sindlarv at centrum dot cz>
 
    * mcp/locale/czech.ct: updated Czech catalog translation
@@ -16,7 +21,7 @@ $URL$
 
 2007-12-19  Thore Böckelmann <tboeckel@gmx.de>
 
-   * mcc/FileNameComp.c: ParsePatternNoCase() was called with a too small buffer
+   * mcc/FileNameCompl.c: ParsePatternNoCase() was called with a too small buffer
      which could have caused trashed memory. This most probably fixes bug
      #1824388.
 
