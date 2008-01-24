@@ -114,7 +114,8 @@ VOID PrintString(struct IClass *cl, Object *obj)
   }
   else
   {
-    if(data->Flags & FLG_Active)
+    // display the cursor only if input is allowed
+    if((data->Flags & FLG_Active) && !(data->Flags & FLG_NoInput))
     {
       crsr_x = TextLength(rport, text, data->BufferPos-data->DisplayPos);
       crsr_color = data->CursorColor;

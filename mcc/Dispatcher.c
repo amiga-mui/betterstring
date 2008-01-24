@@ -316,30 +316,35 @@ DISPATCHER(_Dispatcher)
 
         if(!result && data->ForwardObject)
         {
-            ULONG attr = 0;
+          ULONG attr = 0;
 
           switch(((struct MUIP_HandleEvent *)msg)->muikey)
           {
-              case MUIKEY_TOP:
-                attr = MUIV_List_Active_Top;
-                break;
-              case MUIKEY_BOTTOM:
-                attr = MUIV_List_Active_Bottom;
-                break;
-              case MUIKEY_UP:
-                attr = MUIV_List_Active_Up;
-                break;
-              case MUIKEY_DOWN:
-                attr = MUIV_List_Active_Down;
-                break;
-              case MUIKEY_PAGEUP:
-                attr = MUIV_List_Active_PageUp;
-                break;
-              case MUIKEY_PAGEDOWN:
-                attr = MUIV_List_Active_PageDown;
-                break;
+            case MUIKEY_TOP:
+              attr = MUIV_List_Active_Top;
+            break;
+
+            case MUIKEY_BOTTOM:
+              attr = MUIV_List_Active_Bottom;
+            break;
+
+            case MUIKEY_UP:
+              attr = MUIV_List_Active_Up;
+            break;
+
+            case MUIKEY_DOWN:
+              attr = MUIV_List_Active_Down;
+            break;
+
+            case MUIKEY_PAGEUP:
+              attr = MUIV_List_Active_PageUp;
+            break;
+
+            case MUIKEY_PAGEDOWN:
+              attr = MUIV_List_Active_PageDown;
+            break;
           }
-          if(attr)
+          if(attr != 0)
           {
             SetAttrs(data->ForwardObject, MUIA_List_Active, attr, TAG_DONE);
             result = MUI_EventHandlerRC_Eat;
