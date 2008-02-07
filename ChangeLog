@@ -7,6 +7,7 @@ $URL$
 
 2008-02-07  Thore Böckelmann <tboeckel@gmx.de>
 
+  * mcc/hotkeystring/HandleInput.c: fixed a signedness warning.
   * #?.c: replaced all "value & flag" style bit checks and manipulations by
     isFlagSet() and setFlag() style macros. This should make the source a lot
     more readable and less error prone to wrong checks.
