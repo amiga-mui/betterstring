@@ -83,7 +83,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
     for(i=0; qualifier_name[i]; i++)
     {
-      if(isFlagSet(qualifier, (1 << i)))
+      if(isFlagSet(qualifier, (1U << i)))
       {
         strlcat(buffer, qualifier_name[i], sizeof(buffer));
         strlcat(buffer, " ", sizeof(buffer));
