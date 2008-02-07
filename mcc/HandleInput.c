@@ -40,7 +40,7 @@
 
 static BOOL BlockEnabled(struct InstData *data)
 {
-  return((data->Flags & FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
+  return(isFlagSet(data->Flags, FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
 }
 
 #if defined(__amigaos4__) || defined(__MORPHOS__)
@@ -80,7 +80,7 @@ static void AddToUndo(struct InstData *data)
   {
     strlcpy(data->Undo, data->Contents, strlen(data->Contents)+1);
     data->UndoPos = data->BufferPos;
-    data->Flags &= ~FLG_RedoAvailable;
+    clearFlag(data->Flags, FLG_RedoAvailable);
   }
 }
 
@@ -102,7 +102,7 @@ static WORD AlignOffset(Object *obj, struct InstData *data)
     length = TextFit(&data->rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
     textlength = TextLength(&data->rport, text, length);
 
-    crsr_width = (data->Flags & FLG_Active) ? TextLength(&data->rport, (*(data->Contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(data->Contents+data->BufferPos), 1) : 0;
+    crsr_width = isFlagSet(data->Flags, FLG_Active) ? TextLength(&data->rport, (*(data->Contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(data->Contents+data->BufferPos), 1) : 0;
     if(crsr_width && !BlockEnabled(data) && data->BufferPos == data->DisplayPos+StrLength)
     {
       textlength += crsr_width;
@@ -250,7 +250,7 @@ static void CopyBlock(struct InstData *data)
     struct IOClipReq  *iorequest;
     UWORD Blk_Start, Blk_Width;
 
-  if(data->Flags & FLG_Secret)
+  if(isFlagSet(data->Flags, FLG_Secret))
     return;
 
   if(BlockEnabled(data))
@@ -309,7 +309,7 @@ static void CutBlock(struct InstData *data)
   {
     CopyBlock(data);
     DeleteBlock(data);
-    data->Flags &= ~FLG_BlockEnabled;
+    clearFlag(data->Flags, FLG_BlockEnabled);
   }
   else
   {
@@ -412,8 +412,11 @@ static void UndoRedo(struct InstData *data)
 
   data->Contents = data->Undo;
   data->Undo = oldcontents;
-  data->Flags ^= FLG_RedoAvailable;
-  data->Flags &= ~FLG_BlockEnabled;
+  if(isFlagSet(data->Flags, FLG_RedoAvailable))
+    clearFlag(data->Flags, FLG_RedoAvailable);
+  else
+    setFlag(data->Flags, FLG_RedoAvailable);
+  clearFlag(data->Flags, FLG_BlockEnabled);
   data->BufferPos = data->UndoPos;
   data->UndoPos = oldpos;
 
@@ -428,8 +431,8 @@ static void RevertToOriginal(struct InstData *data)
 
   data->Contents = data->Original;
   data->Original = oldcontents;
-  data->Flags |= FLG_Original;
-  data->Flags &= ~FLG_BlockEnabled;
+  setFlag(data->Flags, FLG_Original);
+  clearFlag(data->Flags, FLG_BlockEnabled);
   data->BufferPos = strlen(data->Contents);
 
   LEAVE();
@@ -631,7 +634,7 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     case MUIV_BetterString_DoAction_Copy:
     {
       CopyBlock(data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
       result = TRUE;
     }
     break;
@@ -639,7 +642,7 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     case MUIV_BetterString_DoAction_Paste:
     {
       Paste(data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
       edited = TRUE;
       result = TRUE;
     }
@@ -648,7 +651,7 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     case MUIV_BetterString_DoAction_Delete:
     {
       DeleteBlock(data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
       edited = TRUE;
       result = TRUE;
     }
@@ -658,14 +661,14 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     {
       data->BlockStart = 0;
       data->BlockStop = strlen(data->Contents);
-      data->Flags |= FLG_BlockEnabled;
+      setFlag(data->Flags, FLG_BlockEnabled);
       result = TRUE;
     }
     break;
 
     case MUIV_BetterString_DoAction_SelectNone:
     {
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
       result = TRUE;
     }
     break;
@@ -674,11 +677,11 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     case MUIV_BetterString_DoAction_Redo:
     {
       if(data->Undo &&
-         (((msg->action == MUIV_BetterString_DoAction_Redo) && (data->Flags & FLG_RedoAvailable)) ||
-          ((msg->action == MUIV_BetterString_DoAction_Undo) && !(data->Flags & FLG_RedoAvailable))))
+         (((msg->action == MUIV_BetterString_DoAction_Redo) && isFlagSet(data->Flags, FLG_RedoAvailable)) ||
+          ((msg->action == MUIV_BetterString_DoAction_Undo) && isFlagClear(data->Flags, FLG_RedoAvailable))))
       {
         UndoRedo(data);
-        data->Flags &= ~FLG_BlockEnabled;
+        clearFlag(data->Flags, FLG_BlockEnabled);
         edited = TRUE;
         result = TRUE;
       }
@@ -688,7 +691,7 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     case MUIV_BetterString_DoAction_Revert:
     {
       RevertToOriginal(data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
       edited = TRUE;
       result = TRUE;
     }
@@ -697,56 +700,56 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     case MUIV_BetterString_DoAction_ToggleCase:
     {
       edited = result = ToggleCaseChar(data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
     }
     break;
 
     case MUIV_BetterString_DoAction_ToggleCaseWord:
     {
       edited = result = ToggleCaseWord(data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
     }
     break;
 
     case MUIV_BetterString_DoAction_IncreaseNum:
     {
       edited = result = IncreaseNearNumber(data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
     }
     break;
 
     case MUIV_BetterString_DoAction_DecreaseNum:
     {
       edited = result = DecreaseNearNumber(data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
     }
     break;
 
     case MUIV_BetterString_DoAction_HexToDec:
     {
       edited = result = HexToDec(data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
     }
     break;
 
     case MUIV_BetterString_DoAction_DecToHex:
     {
       edited = result = DecToHex(data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
     }
     break;
 
     case MUIV_BetterString_DoAction_NextFileComp:
     {
       edited = result = FileNameComplete(obj, FALSE, data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
     }
     break;
 
     case MUIV_BetterString_DoAction_PrevFileComp:
     {
       edited = result = FileNameComplete(obj, TRUE, data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
     }
     break;
   }
@@ -799,14 +802,14 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 //       msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
        msg->imsg->Code <= IECODE_KEY_CODE_LAST)
     {
-      if(data->Flags & FLG_Active)
+      if(isFlagSet(data->Flags, FLG_Active))
       {
         BOOL input = TRUE;
 
-        if(!(data->Flags & FLG_BlockEnabled))
+        if(isFlagClear(data->Flags, FLG_BlockEnabled))
           data->BlockStart = data->BufferPos;
 
-        if(data->Flags & FLG_NoInput)
+        if(isFlagSet(data->Flags, FLG_NoInput))
         {
           switch(msg->imsg->Code)
           {
@@ -825,10 +828,10 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             // Tab
             case RAWKEY_TAB:
             {
-              if(data->Flags & FLG_NoShortcuts || !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND))
+              if(isFlagSet(data->Flags, FLG_NoShortcuts) || isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_RCOMMAND))
                 return(0);
 
-              if(!(edited = FileNameComplete(obj, (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT)) ? TRUE : FALSE, data)))
+              if(!(edited = FileNameComplete(obj, (isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT)) ? TRUE : FALSE, data)))
                 DisplayBeep(NULL);
 
               FNC = TRUE;
@@ -840,19 +843,19 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             {
               if(data->BufferPos < StringLength)
               {
-                if(msg->imsg->Qualifier & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+                if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT))
                 {
                   data->BufferPos = StringLength;
                 }
                 else
                 {
-                  if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+                  if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LALT))
                   {
                     data->BufferPos = NextWord(data->Contents, data->BufferPos, data->locale);
                   }
                   else
                   {
-                    if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+                    if(BlockEnabled(data) && isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
                       data->BufferPos = MAX(data->BlockStart, data->BlockStop);
                     else
                       data->BufferPos++;
@@ -868,19 +871,19 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             {
               if(data->BufferPos)
               {
-                if(msg->imsg->Qualifier & (IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+                if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT))
                 {
                   data->BufferPos = 0;
                 }
                 else
                 {
-                  if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+                  if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LALT))
                   {
                     data->BufferPos = PrevWord(data->Contents, data->BufferPos, data->locale);
                   }
                   else
                   {
-                    if(BlockEnabled(data) && !(msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+                    if(BlockEnabled(data) && isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
                       data->BufferPos = MIN(data->BlockStart, data->BlockStop);
 
                     if(data->BufferPos)
@@ -903,7 +906,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               {
                 if(data->BufferPos)
                 {
-                  if(msg->imsg->Qualifier & (IEQUALIFIER_CONTROL | IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+                  if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
                   {
                     AddToUndo(data);
                     strcpy(data->Contents, data->Contents+data->BufferPos);
@@ -911,7 +914,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                   }
                   else
                   {
-                    if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+                    if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LALT))
                     {
                         UWORD NewPos = PrevWord(data->Contents, data->BufferPos, data->locale);
 
@@ -942,14 +945,14 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               {
                 if(data->BufferPos < StringLength)
                 {
-                  if(msg->imsg->Qualifier & (IEQUALIFIER_CONTROL | IEQUALIFIER_LSHIFT | IEQUALIFIER_RSHIFT))
+                  if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
                   {
                     AddToUndo(data);
                     *(data->Contents+data->BufferPos) = '\0';
                   }
                   else
                   {
-                    if(msg->imsg->Qualifier & (IEQUALIFIER_RALT | IEQUALIFIER_LALT))
+                    if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LALT))
                     {
                       AddToUndo(data);
                       strcpy(data->Contents+data->BufferPos, data->Contents+NextWord(data->Contents, data->BufferPos, data->locale));
@@ -994,9 +997,9 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               else
               {
                 UBYTE  code = ConvertKey(msg->imsg);
-                if((((code >= 32 && code <= 126) || code >= 160) && !(msg->imsg->Qualifier & IEQUALIFIER_RCOMMAND)) || (code && msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+                if((((code >= 32 && code <= 126) || code >= 160) && isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_RCOMMAND)) || (code && isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL)))
                 {
-                  if(!(data->Flags & FLG_NoInput))
+                  if(isFlagClear(data->Flags, FLG_NoInput))
                   {
                     DeleteBlock(data);
 
@@ -1017,7 +1020,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                 }
                 else
                 {
-                  if(data->Flags & FLG_NoInput)
+                  if(isFlagClear(data->Flags, FLG_NoInput))
                   {
                     switch(code)
                     {
@@ -1034,8 +1037,22 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                   // check if the user pressed return and if he has activated AdvanceOnCr or not
                   if(code == '\r')
                   {
-                    if(!(data->Flags & FLG_StayActive))
-                      set(_win(obj), MUIA_Window_ActiveObject, (data->Flags & FLG_AdvanceOnCr) ? (msg->imsg->Qualifier & (IEQUALIFIER_RSHIFT | IEQUALIFIER_LSHIFT) ?  MUIV_Window_ActiveObject_Prev : MUIV_Window_ActiveObject_Next) : MUIV_Window_ActiveObject_None);
+                    if(isFlagClear(data->Flags, FLG_StayActive))
+                    {
+                      ULONG active;
+
+                      if(isFlagSet(data->Flags, FLG_AdvanceOnCr))
+                      {
+                        if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT))
+                          active = MUIV_Window_ActiveObject_Prev;
+                        else
+                          active = MUIV_Window_ActiveObject_Next;
+                      }
+                      else
+                        active = MUIV_Window_ActiveObject_None;
+
+                      set(_win(obj), MUIA_Window_ActiveObject, active);
+                    }
 
                     set(obj, MUIA_String_Acknowledge, data->Contents);
 
@@ -1043,7 +1060,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                   }
 
                   // see if we should skip the default shorcuts or not
-                  if(!(data->Flags & FLG_NoShortcuts))
+                  if(isFlagClear(data->Flags, FLG_NoShortcuts))
                   {
                     // depending on the pressed key code
                     // we perform different actions.
@@ -1113,8 +1130,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                       case 'z':
                       case 'Z':
                       {
-                        if(data->Undo && (((code == 'Z') && (data->Flags & FLG_RedoAvailable)) ||
-                                          ((code == 'z') && !(data->Flags & FLG_RedoAvailable))))
+                        if(data->Undo && (((code == 'Z') && isFlagSet(data->Flags, FLG_RedoAvailable)) ||
+                                          ((code == 'z') && isFlagClear(data->Flags, FLG_RedoAvailable))))
                         {
                           UndoRedo(data);
                           edited = TRUE;
@@ -1125,13 +1142,13 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                       break;
 
                       default:
-                        msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
+                        clearFlag(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT);
                         return(0);
                     }
                   }
                   else
                   {
-                    msg->imsg->Qualifier &= ~IEQUALIFIER_RSHIFT;
+                    clearFlag(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT);
                     return(0);
                   }
                 }
@@ -1154,14 +1171,13 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           data->FNCBuffer = NULL;
         }
 
-        if(movement && msg->imsg->Qualifier & IEQUALIFIER_CONTROL)
-            data->Flags |=  FLG_BlockEnabled;
-        else  data->Flags &= ~FLG_BlockEnabled;
+        if(movement && isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
+          setFlag(data->Flags, FLG_BlockEnabled);
+        else
+          clearFlag(data->Flags, FLG_BlockEnabled);
 
-        if(data->Flags & FLG_BlockEnabled)
-        {
+        if(isFlagSet(data->Flags, FLG_BlockEnabled))
           data->BlockStop = data->BufferPos;
-        }
 
         if(edited)
         {
@@ -1192,15 +1208,16 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
       {
         if(msg->imsg->Code == (IECODE_LBUTTON | IECODE_UP_PREFIX))
         {
-          if(data->ehnode.ehn_Events & (IDCMP_MOUSEMOVE | IDCMP_INTUITICKS))
+          if(isFlagSet(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE) || isFlagSet(data->ehnode.ehn_Events, IDCMP_INTUITICKS))
           {
             DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-            data->ehnode.ehn_Events &= ~(IDCMP_MOUSEMOVE | IDCMP_INTUITICKS);
+            clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
+            clearFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
             DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
           }
 
 #ifdef ALLOW_OUTSIDE_MARKING
-          if((data->Flags & (FLG_Active|FLG_DragOutside)) == (FLG_Active|FLG_DragOutside))
+          if(isFlagSet(data->Flags, FLG_Active) && isFlagSet(data->Flags, FLG_DragOutside))
           {
             Object *active;
             get(_win(obj), MUIA_Window_ActiveObject, &active);
@@ -1214,7 +1231,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
             if(!(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height))
             {
-              D(DBF_STARTUP, "Detected LMB+up outside (drag: %ld)", data->Flags & FLG_DragOutside ? 1:0);
+              D(DBF_STARTUP, "Detected LMB+up outside (drag: %ld)", isFlagSet(data->Flags, FLG_DragOutside));
               set(_win(obj), MUIA_Window_ActiveObject, MUIV_Window_ActiveObject_None);
             }
           }
@@ -1242,7 +1259,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             {
               // on a secret gadget we skip clickcount step 1 as
               // it might be misused to guess the words in the gadget.
-              if((data->Flags & FLG_Secret) && data->ClickCount == 0)
+              if(isFlagSet(data->Flags, FLG_Secret) && data->ClickCount == 0)
                 data->ClickCount++;
 
               data->ClickCount++;
@@ -1260,7 +1277,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             {
               case 0:
               {
-                if(!(data->Flags & FLG_BlockEnabled && msg->imsg->Qualifier & IEQUALIFIER_CONTROL))
+                if(isFlagClear(data->Flags, FLG_BlockEnabled) && isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
                   data->BlockStart = data->BufferPos;
               }
               break;
@@ -1300,13 +1317,14 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               break;
             }
             data->BlockStop = data->BufferPos;
-            data->Flags |= FLG_BlockEnabled;
+            setFlag(data->Flags, FLG_BlockEnabled);
 
             DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-            data->ehnode.ehn_Events |= (IDCMP_MOUSEMOVE | IDCMP_INTUITICKS);
+            setFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
+            setFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
             DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 
-            if(data->Flags & FLG_Active)
+            if(isFlagSet(data->Flags, FLG_Active))
               MUI_Redraw(obj, MADF_DRAWUPDATE);
             else
               set(_win(obj), MUIA_Window_ActiveObject, obj);
@@ -1316,11 +1334,11 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           else
           {
             data->ClickCount = 0;
-            if(data->Flags & FLG_Active && !(data->Flags & FLG_StayActive))
+            if(isFlagSet(data->Flags, FLG_Active) && isFlagClear(data->Flags, FLG_StayActive))
             {
 #ifdef ALLOW_OUTSIDE_MARKING
               D(DBF_STARTUP, "Clicked outside gadget");
-              data->Flags |= FLG_DragOutside;
+              setFlag(data->Flags, FLG_DragOutside);
 
               DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
               data->ehnode.ehn_Events |= IDCMP_MOUSEMOVE;
@@ -1337,11 +1355,11 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 #ifdef ALLOW_OUTSIDE_MARKING
         if(msg->imsg->Class == IDCMP_MOUSEMOVE)
         {
-          data->Flags &= ~FLG_DragOutside;
+          clearFlag(data->Flags, FLG_DragOutside);
           D(DBF_STARTUP, "Detected drag");
         }
 #endif
-        if((msg->imsg->Class == IDCMP_MOUSEMOVE || msg->imsg->Class == IDCMP_INTUITICKS) && data->Flags & FLG_Active)
+        if((msg->imsg->Class == IDCMP_MOUSEMOVE || msg->imsg->Class == IDCMP_INTUITICKS) && isFlagSet(data->Flags, FLG_Active))
         {
           WORD x, width, mousex;
           struct TextExtent tExtend;

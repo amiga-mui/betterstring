@@ -85,10 +85,10 @@ ULONG  New(struct IClass *cl, Object *obj, struct opSet *msg)
                 TAG_DONE );
 
       if(FindTagItem(MUIA_Font, msg->ops_AttrList))
-        data->Flags |= FLG_OwnFont;
+        setFlag(data->Flags, FLG_OwnFont);
 
       if(FindTagItem(MUIA_Background, msg->ops_AttrList))
-        data->Flags |= FLG_OwnBackground;
+        setFlag(data->Flags, FLG_OwnBackground);
 
       {
         struct TagItem *tag;
@@ -96,7 +96,7 @@ ULONG  New(struct IClass *cl, Object *obj, struct opSet *msg)
         if((tag = FindTagItem(MUIA_Frame, msg->ops_AttrList)))
         {
           if(tag->ti_Data == MUIV_Frame_String)
-            data->Flags |= FLG_SetFrame;
+            setFlag(data->Flags, FLG_SetFrame);
         }
       }
 
@@ -163,16 +163,18 @@ ULONG Cleanup(struct IClass *cl, Object *obj, Msg msg)
   DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
 
   // make sure the gadget is being set to inactive state
-/*  if(data->Flags & FLG_Active)
+/*
+  if(isFlagSet(data->Flags, FLG_Active))
   {
-    data->Flags &= ~FLG_Active;
-    data->ehnode.ehn_Events &= ~IDCMP_MOUSEMOVE;
+    clearFlag(data->Flags, FLG_Active);
+    clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
 
-    if(!(data->Flags & FLG_OwnBackground))
+    if(isFlagClear(data->Flags, FLG_OwnBackground))
       set(obj, MUIA_Background, data->InactiveBackground);
   }
 */
   FreeConfig(muiRenderInfo(obj), data);
+
   return(DoSuperMethodA(cl, obj, msg));
 }
 
@@ -213,11 +215,11 @@ ULONG  AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 
 ULONG Show(struct IClass *cl, Object *obj, Msg msg)
 {
-    struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-    struct MUI_AreaData *ad = muiAreaData(obj);
-    struct BitMap *friendBMp = muiRenderInfo(obj)->mri_RastPort->BitMap;
-    WORD  width, height, depth;
-    struct TextFont    *font = data->Font ? data->Font : ad->mad_Font;
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  struct MUI_AreaData *ad = muiAreaData(obj);
+  struct BitMap *friendBMp = muiRenderInfo(obj)->mri_RastPort->BitMap;
+  WORD  width, height, depth;
+  struct TextFont *font = data->Font ? data->Font : ad->mad_Font;
 
   DoSuperMethodA(cl, obj, msg);
 
@@ -230,16 +232,18 @@ ULONG Show(struct IClass *cl, Object *obj, Msg msg)
   SetFont(&data->rport, font);
   SetDrMd(&data->rport, JAM1);
 
-  data->Flags |= FLG_Shown;
+  setFlag(data->Flags, FLG_Shown);
+
   return(TRUE);
 }
 
 ULONG Hide(struct IClass *cl, Object *obj, Msg msg)
 {
-    struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-  data->Flags &= ~FLG_Shown;
+  clearFlag(data->Flags, FLG_Shown);
   MUIG_FreeBitMap(data->rport.BitMap);
+
   return(DoSuperMethodA(cl, obj, msg));
 }
 
@@ -247,12 +251,7 @@ ULONG mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
 {
   DoSuperMethodA(cl, obj, (Msg)msg);
 
-  if(msg->flags & MADF_DRAWUPDATE)
-  {
-    PrintString(cl, obj);
-  }
-
-  if(msg->flags & MADF_DRAWOBJECT)
+  if(isFlagSet(msg->flags, MADF_DRAWUPDATE) || isFlagSet(msg->flags, MADF_DRAWOBJECT))
   {
     PrintString(cl, obj);
   }
@@ -303,7 +302,7 @@ DISPATCHER(_Dispatcher)
     {
       struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-      if(data->Flags & FLG_Ghosted || !(data->Flags & FLG_Shown))
+      if(isFlagSet(data->Flags, FLG_Ghosted) || isFlagClear(data->Flags, FLG_Shown))
       {
         result = 0;
       }
@@ -358,9 +357,10 @@ DISPATCHER(_Dispatcher)
     {
       struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-      data->Flags |= FLG_Active;
-/*      DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-      data->ehnode.ehn_Events |= IDCMP_RAWKEY;
+      setFlag(data->Flags, FLG_Active);
+/*
+      DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
+      setFlag(data->ehnode.ehn_Events, IDCMP_RAWKEY);
       DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 */
       if(data->Original)
@@ -369,9 +369,10 @@ DISPATCHER(_Dispatcher)
       if((data->Original = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)))
         strlcpy(data->Original, data->Contents, strlen(data->Contents+1));
 
-      if(!(data->Flags & FLG_OwnBackground))
-          set(obj, MUIA_Background, data->ActiveBackground);
-      else  MUI_Redraw(obj, MADF_DRAWUPDATE);
+      if(isFlagClear(data->Flags, FLG_OwnBackground))
+        set(obj, MUIA_Background, data->ActiveBackground);
+      else
+        MUI_Redraw(obj, MADF_DRAWUPDATE);
     }
     break;
 
@@ -381,13 +382,13 @@ DISPATCHER(_Dispatcher)
 
       // clean an eventually marked block and the
       // active state flag of the gadget
-      data->Flags &= ~FLG_BlockEnabled;
-      data->Flags &= ~FLG_Active;
+      clearFlag(data->Flags, FLG_BlockEnabled);
+      clearFlag(data->Flags, FLG_Active);
       DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-      data->ehnode.ehn_Events &= ~IDCMP_MOUSEMOVE;
+      clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
       DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 
-      if(!(data->Flags & FLG_OwnBackground))
+      if(isFlagClear(data->Flags, FLG_OwnBackground))
         set(obj, MUIA_Background, data->InactiveBackground);
       else
         MUI_Redraw(obj, MADF_DRAWUPDATE);
@@ -468,7 +469,7 @@ DISPATCHER(_Dispatcher)
           break;
       }
       Overwrite(ins_msg->text, pos, 0, data);
-      data->Flags &= ~FLG_BlockEnabled;
+      clearFlag(data->Flags, FLG_BlockEnabled);
       MUI_Redraw(obj, MADF_DRAWUPDATE);
     }
     break;
@@ -481,9 +482,9 @@ DISPATCHER(_Dispatcher)
 /*
     case MUIM_Backfill:
     {
-        struct MUIP_Backfill *fill_msg = (struct MUIP_Backfill *)msg;
+      struct MUIP_Backfill *fill_msg = (struct MUIP_Backfill *)msg;
 
-      if(!(data->Flags & FLG_Active))
+      if(isFlagClear(data->Flags, FLG_Active))
         DoMethod(obj, MUIM_DrawBackground, fill_msg->left, fill_msg->top, fill_msg->right-fill_msg->left+1, fill_msg->bottom-fill_msg->top+1, fill_msg->xoffset, fill_msg->yoffset);
 //      printf("%ld, %ld, %ld, %ld\n%ld, %ld\n", fill_msg->left, fill_msg->top, fill_msg->right, fill_msg->bottom, fill_msg->xoffset, fill_msg->yoffset);
     }

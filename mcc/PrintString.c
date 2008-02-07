@@ -43,7 +43,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   WORD crsr_x=0, crsr_width=0, crsr_color=0;
   WORD dst_x, dst_y, length, offset = 0, StrLength;
   STRPTR text;
-  BOOL   BlockEnabled = ((data->Flags & FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
+  BOOL   BlockEnabled = (isFlagSet(data->Flags, FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
   UWORD  Blk_Start=0, Blk_Width=0;
   STRPTR fake_contents = NULL;
   BOOL showInactiveContents = FALSE;
@@ -56,7 +56,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   contents = data->Contents;
   StrLength = strlen(contents);
 
-  if(data->Flags & FLG_Secret && (fake_contents = (STRPTR)MyAllocPooled(data->Pool, StrLength+1)))
+  if(isFlagSet(data->Flags, FLG_Secret) && (fake_contents = (STRPTR)MyAllocPooled(data->Pool, StrLength+1)))
   {
     WORD strlength = StrLength;
 
@@ -66,7 +66,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
       contents[strlength] = '*';
   }
 
-  if(StrLength == 0 && (data->Flags & FLG_Active) == 0 && data->InactiveContents != NULL)
+  if(StrLength == 0 && isFlagClear(data->Flags, FLG_Active) && data->InactiveContents != NULL)
   {
     contents = data->InactiveContents;
     StrLength = strlen(contents);
@@ -74,7 +74,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   }
 
   SetFont(rport, font);
-  crsr_width = (data->Flags & FLG_Active) && !BlockEnabled ? TextLength(rport, (*(contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(contents+data->BufferPos), 1) : 0;
+  crsr_width = isFlagSet(data->Flags, FLG_Active) && !BlockEnabled ? TextLength(rport, (*(contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(contents+data->BufferPos), 1) : 0;
 
   if(data->DisplayPos > data->BufferPos)
     data->DisplayPos = data->BufferPos;
@@ -115,7 +115,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   else
   {
     // display the cursor only if input is allowed
-    if((data->Flags & FLG_Active) && !(data->Flags & FLG_NoInput))
+    if(isFlagSet(data->Flags, FLG_Active) && isFlagClear(data->Flags, FLG_NoInput))
     {
       crsr_x = TextLength(rport, text, data->BufferPos-data->DisplayPos);
       crsr_color = data->CursorColor;
@@ -161,7 +161,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   if(length)
   {
     UWORD newlength;
-    LONG textcolor= (data->Flags & FLG_Active) ? data->ActiveText : data->InactiveText;
+    LONG textcolor= isFlagSet(data->Flags, FLG_Active) ? data->ActiveText : data->InactiveText;
 
     Move(rport, x+offset, y+font->tf_Baseline);
 
@@ -200,7 +200,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
   BltBitMapRastPort(data->rport.BitMap, x, y, muiRenderInfo(obj)->mri_RastPort, dst_x, dst_y, width, height, 0xc0);
 
-  if(data->Flags & FLG_Ghosted)
+  if(isFlagSet(data->Flags, FLG_Ghosted))
   {
     UWORD GhostPattern[] = {0x4444, 0x1111};
     struct RastPort *rport = muiRenderInfo(obj)->mri_RastPort;
