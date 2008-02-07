@@ -113,4 +113,9 @@ struct InstData
 // prototypes
 ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg);
 
+#define setFlag(mask, flag)             (mask) |= (flag)
+#define clearFlag(mask, flag)           (mask) &= ~(flag)
+#define isFlagSet(mask, flag)           (((mask) & (flag)) == (flag))
+#define isFlagClear(mask, flag)         (((mask) & (flag)) == 0)
+
 #endif /* HOTKEYSTRING_MCC_PRIV_H */

@@ -64,11 +64,12 @@ VOID Set (struct IClass *cl, Object *obj, struct opSet *msg)
   if((tag = FindTagItem(MUIA_HotkeyString_Snoop, msg->ops_AttrList)))
   {
     if(tag->ti_Data)
-        data->Flags |=  FLG_Snoop;
-    else  data->Flags &= ~FLG_Snoop;
+      setFlag(data->Flags, FLG_Snoop);
+    else
+      clearFlag(data->Flags, FLG_Snoop);
 
-    if(data->Flags & FLG_Active)
-      set(_win(obj), MUIA_Window_DisableKeys, (data->Flags & FLG_Snoop) ? 0xffffff : 0);
+    if(isFlagSet(data->Flags, FLG_Active))
+      set(_win(obj), MUIA_Window_DisableKeys, isFlagSet(data->Flags, FLG_Snoop) ? 0xffffff : 0);
   }
 
   if((tag = FindTagItem(MUIA_HotkeyString_IX, msg->ops_AttrList)))
@@ -123,7 +124,8 @@ DISPATCHER(_Dispatcher)
       if((obj = (Object *)(result = DoSuperMethodA(cl, obj, msg))))
       {
         struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-        data->Flags |= FLG_Snoop;
+
+        setFlag(data->Flags, FLG_Snoop);
         Set(cl, obj, (struct opSet *)msg);
       }
     }
@@ -145,15 +147,16 @@ DISPATCHER(_Dispatcher)
     case MUIM_HandleEvent:
     {
       struct MUIP_HandleEvent *hmsg = (struct MUIP_HandleEvent *)msg;
-      if(((data->Flags & (FLG_Active | FLG_Snoop)) == (FLG_Active | FLG_Snoop)) && hmsg->imsg)
+
+      if(isFlagSet(data->Flags, FLG_Active) && isFlagSet(data->Flags, FLG_Snoop) && hmsg->imsg)
         result = HandleInput(cl, obj, hmsg);
     }
     break;
 
     case MUIM_GoActive:
     {
-      data->Flags |= FLG_Active;
-      if(data->Flags & FLG_Snoop)
+      setFlag(data->Flags, FLG_Active);
+      if(isFlagSet(data->Flags, FLG_Snoop))
         set(_win(obj), MUIA_Window_DisableKeys, 0xffffffff);
       result = DoSuperMethodA(cl, obj, msg);
     }
@@ -161,8 +164,8 @@ DISPATCHER(_Dispatcher)
 
     case MUIM_GoInactive:
     {
-      data->Flags &= ~FLG_Active;
-      if(data->Flags & FLG_Snoop)
+      clearFlag(data->Flags, FLG_Active);
+      if(isFlagSet(data->Flags, FLG_Snoop))
         set(_win(obj), MUIA_Window_DisableKeys, 0);
       result = DoSuperMethodA(cl, obj, msg);
     }

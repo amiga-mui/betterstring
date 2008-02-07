@@ -46,10 +46,11 @@ ULONG GetCol (Object *obj, ULONG item, struct MUI_PenSpec *defaultcol, UNUSED st
 
 void InitConfig (Object *obj, struct InstData *data)
 {
-    LONG  setting;
+  LONG  setting;
 
-  if((data->Flags & FLG_SetFrame) && MUIMasterBase->lib_Version >= 20)
+  if(isFlagSet(data->Flags, FLG_SetFrame) && MUIMasterBase->lib_Version >= 20)
     set(obj, MUIA_Frame, DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Frame, &setting) ? (STRPTR)setting : (STRPTR)"302211");
+
   data->InactiveText = GetCol(obj, MUICFG_BetterString_InactiveText, (struct MUI_PenSpec *)"m4", data);
   data->ActiveText = GetCol(obj, MUICFG_BetterString_ActiveText, (struct MUI_PenSpec *)"m5", data);
   data->CursorColor = GetCol(obj, MUICFG_BetterString_Cursor, (struct MUI_PenSpec *)"m0", data);
@@ -57,14 +58,16 @@ void InitConfig (Object *obj, struct InstData *data)
   data->MarkedTextColor = GetCol(obj, MUICFG_BetterString_MarkedText, (struct MUI_PenSpec *)"m5", data);
 
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_InactiveBack, &setting))
-      data->InactiveBackground = (STRPTR)setting;
-  else  data->InactiveBackground = (STRPTR)MUII_BACKGROUND;
+    data->InactiveBackground = (STRPTR)setting;
+  else
+    data->InactiveBackground = (STRPTR)MUII_BACKGROUND;
 
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_ActiveBack, &setting))
-      data->ActiveBackground = (STRPTR)setting;
-  else  data->ActiveBackground = (STRPTR)"2:m1";
+    data->ActiveBackground = (STRPTR)setting;
+  else
+    data->ActiveBackground = (STRPTR)"2:m1";
 
-  if(!(data->Flags & FLG_OwnFont) && DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Font, &setting))
+  if(isFlagClear(data->Flags, FLG_OwnFont) && DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Font, &setting))
   {
     STRPTR src = (STRPTR)setting;
 
@@ -91,7 +94,7 @@ void InitConfig (Object *obj, struct InstData *data)
   else
     data->Font = NULL;
 
-  if(!(data->Flags & FLG_OwnBackground))
+  if(isFlagClear(data->Flags, FLG_OwnBackground))
     set(obj, MUIA_Background, data->InactiveBackground);
 }
 

@@ -83,7 +83,7 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
     break;
 
     case MUIA_String_Secret:
-      ti_Data = (data->Flags & FLG_Secret) ? TRUE : FALSE;
+      ti_Data = isFlagSet(data->Flags, FLG_Secret) ? TRUE : FALSE;
     break;
 
     case MUIA_String_EditHook:
@@ -99,15 +99,15 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
     break;
 
     case MUIA_BetterString_SelectSize:
-      ti_Data = (data->Flags & FLG_BlockEnabled) ? data->BlockStop-data->BlockStart : 0;
+      ti_Data = isFlagSet(data->Flags, FLG_BlockEnabled) ? data->BlockStop-data->BlockStart : 0;
     break;
 
     case MUIA_BetterString_StayActive:
-      ti_Data = (data->Flags & FLG_StayActive) ? TRUE : FALSE;
+      ti_Data = isFlagSet(data->Flags, FLG_StayActive) ? TRUE : FALSE;
     break;
 
     case MUIA_BetterString_NoInput:
-      ti_Data = (data->Flags & FLG_NoInput) ? TRUE : FALSE;
+      ti_Data = isFlagSet(data->Flags, FLG_NoInput) ? TRUE : FALSE;
     break;
 
     case MUIA_BetterString_InactiveContents:
@@ -115,7 +115,7 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
     break;
 
     case MUIA_BetterString_NoShortcuts:
-      ti_Data = (data->Flags & FLG_NoShortcuts) ? TRUE : FALSE;
+      ti_Data = isFlagSet(data->Flags, FLG_NoShortcuts) ? TRUE : FALSE;
     break;
 
     case MUIA_Version:
@@ -174,7 +174,7 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
       case MUIA_String_BufferPos:
         data->BufferPos = (UWORD)ti_Data;
-        data->Flags &= ~FLG_BlockEnabled;
+        clearFlag(data->Flags, FLG_BlockEnabled);
       break;
 
       case MUIA_BetterString_Columns:
@@ -214,7 +214,7 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
               data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, extra);
 
             strcpy(data->Contents, new_str);
-            data->Flags &= ~FLG_BlockEnabled;
+            clearFlag(data->Flags, FLG_BlockEnabled);
             data->BufferPos = strlen(data->Contents);
             data->DisplayPos = 0;
             if(data->MaxLength && data->BufferPos >= data->MaxLength)
@@ -226,7 +226,7 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
           else
           {
             *data->Contents = '\0';
-            data->Flags &= ~FLG_BlockEnabled;
+            clearFlag(data->Flags, FLG_BlockEnabled);
 //            data->BlockStart = data->BlockStop = 0;
           }
         }
@@ -277,7 +277,7 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
       case MUIA_BetterString_SelectSize:
       {
         data->BlockStart = data->BufferPos;
-        data->Flags |= FLG_BlockEnabled;
+        setFlag(data->Flags, FLG_BlockEnabled);
 
         data->BlockStop = data->BufferPos+ti_Data;
 

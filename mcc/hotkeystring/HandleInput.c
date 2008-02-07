@@ -62,7 +62,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
   qual_only = BETWEEN(msg->imsg->Code, 0x60, 0x67); // betwenn LSHIFT/RCOMMAND
 
-  if(qual_only || (data->Flags & (FLG_Snoop|FLG_Active) &&
+  if(qual_only || ((isFlagSet(data->Flags, FLG_Snoop) || isFlagSet(data->Flags, FLG_Active)) &&
      msg->imsg->Class == IDCMP_RAWKEY &&
      msg->imsg->Code <= IECODE_KEY_CODE_LAST &&
      msg->muikey != MUIKEY_GADGET_NEXT &&
@@ -83,7 +83,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
     for(i=0; qualifier_name[i]; i++)
     {
-      if(qualifier & (1 << i))
+      if(isFlagSet(qualifier, (1 << i)))
       {
         strlcat(buffer, qualifier_name[i], sizeof(buffer));
         strlcat(buffer, " ", sizeof(buffer));
@@ -194,7 +194,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             break;
 
             case 13:
-              append = ((qualifier & IEQUALIFIER_NUMERICPAD) ? "enter" : "return");
+              append = isFlagSet(qualifier, IEQUALIFIER_NUMERICPAD) ? "enter" : "return";
             break;
 
             case 27:
@@ -225,19 +225,19 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
     {
       if(backspace)
       {
-        if(data->Flags & FLG_Backspace)
+        if(isFlagSet(data->Flags, FLG_Backspace))
         {
           *buffer = '\0';
-          data->Flags &= ~FLG_Backspace;
+          clearFlag(data->Flags, FLG_Backspace);
         }
         else
         {
-          data->Flags |= FLG_Backspace;
+          setFlag(data->Flags, FLG_Backspace);
         }
       }
       else
       {
-        data->Flags &= ~FLG_Backspace;
+        clearFlag(data->Flags, FLG_Backspace);
       }
       SetAttrs(obj, MUIA_String_Contents, buffer, TAG_DONE);
     }
