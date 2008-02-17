@@ -197,16 +197,16 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
         STRPTR new_str = (STRPTR)ti_Data;
         BOOL circular = FALSE;
 
-        if(new_str)
+        if(new_str != NULL)
         {
           circular = !strcmp(data->Contents, new_str);
-          if(!circular && data->MaxLength && strlen(new_str) > data->MaxLength)
+          if(circular == FALSE && data->MaxLength && strlen(new_str) > data->MaxLength)
             circular = !strncmp(data->Contents, new_str, data->MaxLength);
         }
 
-        if(!circular)
+        if(circular == FALSE)
         {
-          if(new_str)
+          if(new_str != NULL)
           {
             WORD extra = strlen(new_str)-strlen(data->Contents);
 
@@ -217,17 +217,22 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
             clearFlag(data->Flags, FLG_BlockEnabled);
             data->BufferPos = strlen(data->Contents);
             data->DisplayPos = 0;
-            if(data->MaxLength && data->BufferPos >= data->MaxLength)
+            if(data->MaxLength != 0 && data->BufferPos >= data->MaxLength)
             {
               data->Contents[data->MaxLength-1] = '\0';
               data->BufferPos = data->MaxLength-1;
             }
+
+            // the start of a block cannot be behind the last character
+            if(data->BlockStart > strlen(data->Contents))
+              data->BlockStart = strlen(data->Contents);
           }
           else
           {
             *data->Contents = '\0';
             clearFlag(data->Flags, FLG_BlockEnabled);
-//            data->BlockStart = data->BlockStop = 0;
+            data->BlockStart = 0;
+            data->BlockStop = 0;
           }
         }
         else

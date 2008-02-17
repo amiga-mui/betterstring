@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-02-17  Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/GetSetAttrs.c: if an empty or NULL string is set as new content the
+    selection start index will now be adapted to prevent false markings.
+
 2008-02-07  Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/hotkeystring/HandleInput.c: fixed a signedness warning.
