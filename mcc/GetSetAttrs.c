@@ -206,6 +206,9 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
         if(circular == FALSE)
         {
+          // we don't have a valid block anymore
+          clearFlag(data->Flags, FLG_BlockEnabled);
+
           if(new_str != NULL)
           {
             WORD extra = strlen(new_str)-strlen(data->Contents);
@@ -214,7 +217,6 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
               data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, extra);
 
             strcpy(data->Contents, new_str);
-            clearFlag(data->Flags, FLG_BlockEnabled);
             data->BufferPos = strlen(data->Contents);
             data->DisplayPos = 0;
             if(data->MaxLength != 0 && data->BufferPos >= data->MaxLength)
@@ -229,16 +231,17 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
           }
           else
           {
-            *data->Contents = '\0';
-            clearFlag(data->Flags, FLG_BlockEnabled);
+            data->Contents[0] = '\0';
             data->BlockStart = 0;
             data->BlockStop = 0;
+            data->BufferPos = 0;
+            data->DisplayPos = 0;
           }
         }
         else
         {
-//          if(data->Contents != (STRPTR)ti_Data)
-            tag->ti_Tag = TAG_IGNORE;
+//        if(data->Contents != (STRPTR)ti_Data)
+          tag->ti_Tag = TAG_IGNORE;
         }
       }
       break;

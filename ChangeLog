@@ -7,6 +7,7 @@ $URL$
 
 2008-02-25  Thore Böckelmann <tboeckel@gmx.de>
 
+  * mcc/GetSetAttrs.c: minor optimizations
   * mcc/HandleInput.c: fixed a bug introduced by the recent flag checks by
     macros which caused the text to be immediately marked as block.
 
