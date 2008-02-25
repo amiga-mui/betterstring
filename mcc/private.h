@@ -217,6 +217,7 @@ VOID SAVEDS ASM MUIG_FreeBitMap(REG(a0, struct BitMap *));
 
 #define setFlag(mask, flag)             (mask) |= (flag)
 #define clearFlag(mask, flag)           (mask) &= ~(flag)
+#define isAnyFlagSet(mask, flag)        (((mask) & (flag)) != 0)
 #define isFlagSet(mask, flag)           (((mask) & (flag)) == (flag))
 #define isFlagClear(mask, flag)         (((mask) & (flag)) == 0)
 

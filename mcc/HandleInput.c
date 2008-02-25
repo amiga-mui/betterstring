@@ -831,7 +831,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               if(isFlagSet(data->Flags, FLG_NoShortcuts) || isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_RCOMMAND))
                 return(0);
 
-              if(!(edited = FileNameComplete(obj, (isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT)) ? TRUE : FALSE, data)))
+              if(!(edited = FileNameComplete(obj, isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT|IEQUALIFIER_LSHIFT), data)))
                 DisplayBeep(NULL);
 
               FNC = TRUE;
@@ -843,23 +843,21 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             {
               if(data->BufferPos < StringLength)
               {
-                if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT))
+                if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT|IEQUALIFIER_LSHIFT))
                 {
                   data->BufferPos = StringLength;
                 }
+                else if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT|IEQUALIFIER_LALT))
+                {
+                  data->BufferPos = NextWord(data->Contents, data->BufferPos, data->locale);
+                }
+                else if(BlockEnabled(data) && isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
+                {
+                  data->BufferPos = MAX(data->BlockStart, data->BlockStop);
+                }
                 else
                 {
-                  if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LALT))
-                  {
-                    data->BufferPos = NextWord(data->Contents, data->BufferPos, data->locale);
-                  }
-                  else
-                  {
-                    if(BlockEnabled(data) && isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
-                      data->BufferPos = MAX(data->BlockStart, data->BlockStop);
-                    else
-                      data->BufferPos++;
-                  }
+                  data->BufferPos++;
                 }
               }
               movement = TRUE;
@@ -871,24 +869,21 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             {
               if(data->BufferPos)
               {
-                if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT))
+                if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT|IEQUALIFIER_LSHIFT))
                 {
                   data->BufferPos = 0;
                 }
+                else if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT|IEQUALIFIER_LALT))
+                {
+                  data->BufferPos = PrevWord(data->Contents, data->BufferPos, data->locale);
+                }
                 else
                 {
-                  if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LALT))
-                  {
-                    data->BufferPos = PrevWord(data->Contents, data->BufferPos, data->locale);
-                  }
-                  else
-                  {
-                    if(BlockEnabled(data) && isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
-                      data->BufferPos = MIN(data->BlockStart, data->BlockStop);
+                  if(BlockEnabled(data) && isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
+                    data->BufferPos = MIN(data->BlockStart, data->BlockStop);
 
-                    if(data->BufferPos)
-                      data->BufferPos--;
-                  }
+                  if(data->BufferPos)
+                    data->BufferPos--;
                 }
               }
               movement = TRUE;
@@ -904,29 +899,26 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               }
               else
               {
-                if(data->BufferPos)
+                if(data->BufferPos != 0)
                 {
-                  if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
+                  if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT|IEQUALIFIER_LSHIFT|IEQUALIFIER_CONTROL))
                   {
                     AddToUndo(data);
                     strcpy(data->Contents, data->Contents+data->BufferPos);
                     data->BufferPos = 0;
                   }
+                  else if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT|IEQUALIFIER_LALT))
+                  {
+                    UWORD NewPos = PrevWord(data->Contents, data->BufferPos, data->locale);
+
+                    AddToUndo(data);
+                    strcpy(data->Contents+NewPos, data->Contents+data->BufferPos);
+                    data->BufferPos = NewPos;
+                  }
                   else
                   {
-                    if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LALT))
-                    {
-                        UWORD NewPos = PrevWord(data->Contents, data->BufferPos, data->locale);
-
-                      AddToUndo(data);
-                      strcpy(data->Contents+NewPos, data->Contents+data->BufferPos);
-                      data->BufferPos = NewPos;
-                    }
-                    else
-                    {
-                      strcpy(data->Contents+data->BufferPos-1, data->Contents+data->BufferPos);
-                      data->BufferPos--;
-                    }
+                    strcpy(data->Contents+data->BufferPos-1, data->Contents+data->BufferPos);
+                    data->BufferPos--;
                   }
                 }
               }
@@ -945,22 +937,19 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               {
                 if(data->BufferPos < StringLength)
                 {
-                  if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
+                  if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT|IEQUALIFIER_LSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
                   {
                     AddToUndo(data);
                     *(data->Contents+data->BufferPos) = '\0';
                   }
+                  else if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT|IEQUALIFIER_LALT))
+                  {
+                    AddToUndo(data);
+                    strcpy(data->Contents+data->BufferPos, data->Contents+NextWord(data->Contents, data->BufferPos, data->locale));
+                  }
                   else
                   {
-                    if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LALT))
-                    {
-                      AddToUndo(data);
-                      strcpy(data->Contents+data->BufferPos, data->Contents+NextWord(data->Contents, data->BufferPos, data->locale));
-                    }
-                    else
-                    {
-                      strcpy(data->Contents+data->BufferPos, data->Contents+data->BufferPos+1);
-                    }
+                    strcpy(data->Contents+data->BufferPos, data->Contents+data->BufferPos+1);
                   }
                 }
               }
@@ -996,7 +985,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               }
               else
               {
-                UBYTE  code = ConvertKey(msg->imsg);
+                UBYTE code = ConvertKey(msg->imsg);
+
                 if((((code >= 32 && code <= 126) || code >= 160) && isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_RCOMMAND)) || (code && isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL)))
                 {
                   if(isFlagClear(data->Flags, FLG_NoInput))
@@ -1043,7 +1033,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
                       if(isFlagSet(data->Flags, FLG_AdvanceOnCr))
                       {
-                        if(isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT) || isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_LSHIFT))
+                        if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT|IEQUALIFIER_LSHIFT))
                           active = MUIV_Window_ActiveObject_Prev;
                         else
                           active = MUIV_Window_ActiveObject_Next;
@@ -1208,7 +1198,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
       {
         if(msg->imsg->Code == (IECODE_LBUTTON | IECODE_UP_PREFIX))
         {
-          if(isFlagSet(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE) || isFlagSet(data->ehnode.ehn_Events, IDCMP_INTUITICKS))
+          if(isAnyFlagSet(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE|IDCMP_INTUITICKS))
           {
             DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
             clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
@@ -1277,14 +1267,14 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             {
               case 0:
               {
-                if(isFlagClear(data->Flags, FLG_BlockEnabled) && isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
+                if(isFlagClear(data->Flags, FLG_BlockEnabled) || isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
                   data->BlockStart = data->BufferPos;
               }
               break;
 
               case 1:
               {
-                if(*(data->Contents+data->BufferPos) != '\0')
+                if(data->Contents[data->BufferPos] != '\0')
                 {
                   UWORD start = data->BufferPos;
                   UWORD  stop  = data->BufferPos;
