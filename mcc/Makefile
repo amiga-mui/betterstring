@@ -228,8 +228,7 @@ MCCOBJS = $(OBJDIR)/library.o \
           $(OBJDIR)/GetSetAttrs.o \
           $(OBJDIR)/HandleInput.o \
           $(OBJDIR)/InitConfig.o \
-          $(OBJDIR)/PrintString.o \
-          $(OBJDIR)/extrasrc.o
+          $(OBJDIR)/PrintString.o
 
 
 TESTOBJS= $(OBJDIR)/BetterString-Test.o \
@@ -241,8 +240,7 @@ TESTOBJS= $(OBJDIR)/BetterString-Test.o \
           $(OBJDIR)/GetSetAttrs.o \
           $(OBJDIR)/HandleInput.o \
           $(OBJDIR)/InitConfig.o \
-          $(OBJDIR)/PrintString.o \
-          $(OBJDIR)/extrasrc.o
+          $(OBJDIR)/PrintString.o
 
 #
 all: $(BINDIR) $(OBJDIR) $(MCCTARGET) $(TESTTARGET)
