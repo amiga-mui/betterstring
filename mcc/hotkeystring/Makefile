@@ -222,15 +222,13 @@ endif
 MCCOBJS = $(OBJDIR)/library.o \
           $(OBJDIR)/Debug.o \
           $(OBJDIR)/Dispatcher.o \
-          $(OBJDIR)/HandleInput.o \
-          $(OBJDIR)/extrasrc.o
+          $(OBJDIR)/HandleInput.o
 
 
 TESTOBJS= $(OBJDIR)/HotkeyString-Test.o \
           $(OBJDIR)/Debug.o \
           $(OBJDIR)/Dispatcher.o \
-          $(OBJDIR)/HandleInput.o \
-          $(OBJDIR)/extrasrc.o
+          $(OBJDIR)/HandleInput.o
 
 #
 all: $(BINDIR) $(OBJDIR) $(MCCTARGET) $(TESTTARGET)
