@@ -7,6 +7,7 @@ $URL$
 
 2008-03-04  Thore Böckelmann <tboeckel@gmx.de>
 
+  * mcc/Makefile: removed accidently included extrasrc.o dependency.
   * #?/Makefile: removed -lm from the linker libs as nothing needs floating
     point math. Also added dump as target.
 
