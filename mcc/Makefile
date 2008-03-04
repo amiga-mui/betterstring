@@ -139,7 +139,7 @@ DEBUGSYM = -gstabs
 CFLAGS   = -I. -I../mcp -I../include $(CPU) $(WARN) $(OPTFLAGS) \
            $(DEBUG) $(DEBUGSYM) -c
 LDFLAGS  = $(CPU) $(DEBUGSYM)
-LDLIBS   = -lm
+LDLIBS   =
 
 # different options per target OS
 ifeq ($(OS), os4)
@@ -228,7 +228,8 @@ MCCOBJS = $(OBJDIR)/library.o \
           $(OBJDIR)/GetSetAttrs.o \
           $(OBJDIR)/HandleInput.o \
           $(OBJDIR)/InitConfig.o \
-          $(OBJDIR)/PrintString.o
+          $(OBJDIR)/PrintString.o \
+          $(OBJDIR)/extrasrc.o
 
 
 TESTOBJS= $(OBJDIR)/BetterString-Test.o \
@@ -240,7 +241,8 @@ TESTOBJS= $(OBJDIR)/BetterString-Test.o \
           $(OBJDIR)/GetSetAttrs.o \
           $(OBJDIR)/HandleInput.o \
           $(OBJDIR)/InitConfig.o \
-          $(OBJDIR)/PrintString.o
+          $(OBJDIR)/PrintString.o \
+          $(OBJDIR)/extrasrc.o
 
 #
 all: $(BINDIR) $(OBJDIR) $(MCCTARGET) $(TESTTARGET)
@@ -292,6 +294,10 @@ $(TESTTARGET): $(TESTOBJS)
 $(OBJDIR)/library.o: library.c ../include/mccinit.c private.h rev.h
 
 #
+
+.PHONY: dump
+dump:
+	-$(OBJDUMP) --section-headers --all-headers --reloc --disassemble-all $(MCCTARGET) > $(MCCTARGET).dump
 
 .PHONY: clean
 clean:

@@ -139,7 +139,7 @@ DEBUGSYM = -gstabs
 CFLAGS   = -I. -I.. -I../../include $(CPU) $(WARN) $(OPTFLAGS) \
            $(DEBUG) $(DEBUGSYM) -c
 LDFLAGS  = $(CPU) $(DEBUGSYM)
-LDLIBS   = -lm
+LDLIBS   =
 
 # different options per target OS
 ifeq ($(OS), os4)
@@ -222,13 +222,15 @@ endif
 MCCOBJS = $(OBJDIR)/library.o \
           $(OBJDIR)/Debug.o \
           $(OBJDIR)/Dispatcher.o \
-          $(OBJDIR)/HandleInput.o
+          $(OBJDIR)/HandleInput.o \
+          $(OBJDIR)/extrasrc.o
 
 
 TESTOBJS= $(OBJDIR)/HotkeyString-Test.o \
           $(OBJDIR)/Debug.o \
           $(OBJDIR)/Dispatcher.o \
-          $(OBJDIR)/HandleInput.o
+          $(OBJDIR)/HandleInput.o \
+          $(OBJDIR)/extrasrc.o
 
 #
 all: $(BINDIR) $(OBJDIR) $(MCCTARGET) $(TESTTARGET)
@@ -280,6 +282,10 @@ $(TESTTARGET): $(TESTOBJS)
 $(OBJDIR)/library.o: library.c ../../include/mccinit.c private.h rev.h
 
 #
+
+.PHONY: dump
+dump:
+	-$(OBJDUMP) --section-headers --all-headers --reloc --disassemble-all $(MCCTARGET) > $(MCCTARGET).dump
 
 .PHONY: clean
 clean:
