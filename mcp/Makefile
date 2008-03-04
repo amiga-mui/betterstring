@@ -140,7 +140,7 @@ DEBUGSYM = -gstabs
 CFLAGS   = -I. -I../mcc -I../include $(CPU) $(WARN) $(OPTFLAGS) \
            $(DEBUG) $(DEBUGSYM) -c
 LDFLAGS  = $(CPU) $(DEBUGSYM)
-LDLIBS   = -lm
+LDLIBS   =
 
 # different options per target OS
 ifeq ($(OS), os4)
@@ -224,13 +224,15 @@ MCPOBJS = $(OBJDIR)/library.o \
           $(OBJDIR)/Debug.o \
           $(OBJDIR)/locale.o \
           $(OBJDIR)/CreatePrefsGroup.o \
-          $(OBJDIR)/Dispatcher.o
+          $(OBJDIR)/Dispatcher.o \
+          $(OBJDIR)/extrasrc.o
 
 PREFOBJS= $(OBJDIR)/locale.o \
           $(OBJDIR)/Debug.o \
           $(OBJDIR)/CreatePrefsGroup.o \
           $(OBJDIR)/Dispatcher.o \
-          $(OBJDIR)/Preference.o
+          $(OBJDIR)/Preference.o \
+          $(OBJDIR)/extrasrc.o
 
 # available catalog translations
 CATALOGS = $(LOCALE)/german.catalog \
@@ -311,6 +313,10 @@ $(LOCALE)/%.catalog: $(LOCALE)/%.ct
 catalogs: $(CATALOGS)
 
 #
+
+.PHONY: dump
+dump:
+	-$(OBJDUMP) --section-headers --all-headers --reloc --disassemble-all $(MCPTARGET) > $(MCPTARGET).dump
 
 .PHONY: clean
 clean:
