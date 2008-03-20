@@ -90,6 +90,10 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
       ti_Data = (ULONG)data->EditHook;
     break;
 
+    case MUIA_String_AdvanceOnCR:
+      ti_Data = isFlagSet(data->Flags, FLG_AdvanceOnCr) ? TRUE : FALSE;
+    break;
+
     case MUIA_BetterString_KeyUpFocus:
       ti_Data = (ULONG)data->KeyUpFocus;
     break;
