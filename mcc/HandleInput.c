@@ -33,10 +33,15 @@
 #include <proto/keymap.h>
 #include <proto/locale.h>
 #include <proto/dos.h>
+#include <proto/iffparse.h>
 
 #include "private.h"
 
 #include "SDI_stdarg.h"
+
+#define ID_FORM    MAKE_ID('F','O','R','M')
+#define ID_FTXT    MAKE_ID('F','T','X','T')
+#define ID_CHRS    MAKE_ID('C','H','R','S')
 
 static BOOL BlockEnabled(struct InstData *data)
 {
@@ -246,57 +251,49 @@ void DeleteBlock(struct InstData *data)
 
 static void CopyBlock(struct InstData *data)
 {
-    struct MsgPort    *port;
-    struct IOClipReq  *iorequest;
+  ENTER();
+
+  if(isFlagClear(data->Flags, FLG_Secret))
+  {
     UWORD Blk_Start, Blk_Width;
+    struct IFFHandle *iff;
 
-  if(isFlagSet(data->Flags, FLG_Secret))
-    return;
-
-  if(BlockEnabled(data))
-  {
-    Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
-    Blk_Width = abs(data->BlockStop-data->BlockStart);
-  }
-  else
-  {
-    Blk_Start = 0;
-    Blk_Width = strlen(data->Contents);
-  }
-
-  if((port = CreateMsgPort()))
-  {
-    if((iorequest = (struct IOClipReq *)CreateIORequest(port, sizeof(struct IOClipReq))))
+    if(BlockEnabled(data))
     {
-      if(!OpenDevice("clipboard.device", 0, (struct IORequest *)iorequest, 0))
-      {
-        ULONG IFF_Head[] = { MAKE_ID('F','O','R','M'),
-                             12 + ((Blk_Width + 1) & ~1),
-                             MAKE_ID('F','T','X','T'),
-                             MAKE_ID('C','H','R','S'),
-                             Blk_Width
-                           };
-
-        iorequest->io_ClipID    = 0;
-        iorequest->io_Offset    = 0;
-        iorequest->io_Data    = (STRPTR)IFF_Head;
-        iorequest->io_Length    = sizeof(IFF_Head);
-        iorequest->io_Command  = CMD_WRITE;
-        DoIO((struct IORequest *)iorequest);
-
-        iorequest->io_Data    = data->Contents+Blk_Start;
-        iorequest->io_Length    = Blk_Width;
-        DoIO((struct IORequest *)iorequest);
-
-        iorequest->io_Command  = CMD_UPDATE;
-        DoIO((struct IORequest *)iorequest);
-
-        CloseDevice((struct IORequest *)iorequest);
-      }
-      DeleteIORequest((struct IORequest *)iorequest);
+      Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
+      Blk_Width = abs(data->BlockStop-data->BlockStart);
     }
-    DeleteMsgPort(port);
+    else
+    {
+      Blk_Start = 0;
+      Blk_Width = strlen(data->Contents);
+    }
+
+    if((iff = AllocIFF()) != NULL)
+    {
+      if((iff->iff_Stream = (ULONG)OpenClipboard(0)) != 0)
+      {
+        InitIFFasClip(iff);
+
+        if(OpenIFF(iff, IFFF_WRITE) == 0)
+        {
+          PushChunk(iff, ID_FTXT, ID_FORM, IFFSIZE_UNKNOWN);
+          PushChunk(iff, 0, ID_CHRS, IFFSIZE_UNKNOWN);
+          WriteChunkBytes(iff, data->Contents + Blk_Start, Blk_Width);
+          PopChunk(iff);
+          PopChunk(iff);
+
+          CloseIFF(iff);
+        }
+
+        CloseClipboard((struct ClipboardHandle *)iff->iff_Stream);
+      }
+
+      FreeIFF(iff);
+    }
   }
+
+  LEAVE();
 }
 
 static void CutBlock(struct InstData *data)
@@ -322,85 +319,89 @@ static void CutBlock(struct InstData *data)
 
 static void Paste(struct InstData *data)
 {
-  struct MsgPort    *port;
-  struct IOClipReq  *iorequest;
+  struct IFFHandle *iff;
+
+  ENTER();
 
   // clear the selection
   DeleteBlock(data);
 
-  if((port = CreateMsgPort()))
+  if((iff = AllocIFF()) != NULL)
   {
-    if((iorequest = (struct IOClipReq *)CreateIORequest(port, sizeof(struct IOClipReq))))
+    if((iff->iff_Stream = (ULONG)OpenClipboard(0)) != 0)
     {
-      if(!OpenDevice("clipboard.device", 0, (struct IORequest *)iorequest, 0))
+      InitIFFasClip(iff);
+
+      if(OpenIFF(iff, IFFF_READ) == 0)
       {
-        ULONG IFF_Head[3];
-        LONG  length;
-
-        iorequest->io_ClipID    = 0;
-        iorequest->io_Offset    = 0;
-        iorequest->io_Data    = (STRPTR)IFF_Head;
-        iorequest->io_Length    = sizeof(IFF_Head);
-        iorequest->io_Command  = CMD_READ;
-        DoIO((struct IORequest *)iorequest);
-        length = IFF_Head[1]-4;
-
-        if(iorequest->io_Actual == sizeof(IFF_Head) && *IFF_Head == MAKE_ID('F','O','R','M') && IFF_Head[2] == MAKE_ID('F','T','X','T') && length > 8)
+        if(StopChunk(iff, ID_FTXT, ID_CHRS) == 0)
         {
-          iorequest->io_Length = 8;
-          DoIO((struct IORequest *)iorequest);
-          length -= 8;
-
-          while(length > 0 && *IFF_Head != MAKE_ID('C','H','R','S'))
+          while(TRUE)
           {
-            iorequest->io_Offset += IFF_Head[1];
-            length -= IFF_Head[1]+8;
-            DoIO((struct IORequest *)iorequest);
-          }
+            LONG error;
+            struct ContextNode *cn;
 
-          if(*IFF_Head == MAKE_ID('C','H','R','S'))
-          {
-            ULONG pastelength = IFF_Head[1];
+            error = ParseIFF(iff, IFFPARSE_SCAN);
+            if(error == IFFERR_EOC)
+              continue;
+            else if(error != 0)
+              break;
 
-            if(data->MaxLength && strlen(data->Contents)+pastelength > (ULONG)(data->MaxLength-1))
+            if((cn = CurrentChunk(iff)) != NULL)
             {
-              DisplayBeep(NULL);
-              pastelength = (data->MaxLength-1)-strlen(data->Contents);
-            }
+              if(cn->cn_ID == ID_CHRS && cn->cn_Size > 0)
+              {
+                ULONG length = cn->cn_Size;
+                char *buffer;
 
-            data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, pastelength);
-            strcpyback(data->Contents+data->BufferPos+pastelength, data->Contents+data->BufferPos);
-            iorequest->io_Length  = pastelength;
-            iorequest->io_Data  = data->Contents+data->BufferPos;
-            DoIO((struct IORequest *)iorequest);
+                if(data->MaxLength != 0 && strlen(data->Contents) + length > (ULONG)data->MaxLength - 1)
+                {
+                  DisplayBeep(NULL);
+                  length = data->MaxLength - 1 - strlen(data->Contents);
+                }
 
-            while(pastelength--)
-            {
-              if(data->Contents[data->BufferPos] == '\0')
-                data->Contents[data->BufferPos] = '?';
-              data->BufferPos++;
+                if((buffer = MyAllocPooled(data->Pool, length + 1)) != NULL)
+                {
+                  char *p = buffer;
+                  ULONG i;
+
+                  // read the string from the clipboard
+                  error = ReadChunkBytes(iff, buffer, length);
+                  // parse the string and eliminate certain characters
+                  for(i = 0; i < length; i++)
+                  {
+                    if(*p == '\0')
+                      *p = '?';
+                    else if(*p == '\n' || *p == '\r')
+                      *p = ' ';
+
+                    p++;
+                  }
+                  // make sure the buffer is NUL terminated
+                  *p = '\0';
+
+                  data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, length);
+                  strcpyback(data->Contents + data->BufferPos + length, data->Contents + data->BufferPos);
+                  strcpy(data->Contents + data->BufferPos, buffer);
+                  data->BufferPos += length;
+
+                  MyFreePooled(data->Pool, buffer);
+                }
+              }
             }
-          }
-          else
-          {
-            DisplayBeep(NULL);
           }
         }
-        else
-        {
-          DisplayBeep(NULL);
-        }
 
-        iorequest->io_Offset    = 0xfffffff;
-        iorequest->io_Data    = NULL;
-        DoIO((struct IORequest *)iorequest);
-
-        CloseDevice((struct IORequest *)iorequest);
+        CloseIFF(iff);
       }
-      DeleteIORequest((struct IORequest *)iorequest);
+
+      CloseClipboard((struct ClipboardHandle *)iff->iff_Stream);
     }
-    DeleteMsgPort(port);
+
+    FreeIFF(iff);
   }
+
+  LEAVE();
 }
 
 static void UndoRedo(struct InstData *data)
@@ -829,7 +830,10 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             case RAWKEY_TAB:
             {
               if(isFlagSet(data->Flags, FLG_NoShortcuts) || isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_RCOMMAND))
-                return(0);
+              {
+                RETURN(0);
+                return 0;
+              }
 
               if(!(edited = FileNameComplete(obj, isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT|IEQUALIFIER_LSHIFT), data)))
                 DisplayBeep(NULL);
@@ -1019,7 +1023,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                       break;
 
                       default:
-                        return(MUI_EventHandlerRC_Eat);
+                        RETURN(MUI_EventHandlerRC_Eat);
+                        return MUI_EventHandlerRC_Eat;
                       break;
                     }
                   }
@@ -1046,7 +1051,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
                     set(obj, MUIA_String_Acknowledge, data->Contents);
 
-                    return(MUI_EventHandlerRC_Eat);
+                    RETURN(MUI_EventHandlerRC_Eat);
+                    return MUI_EventHandlerRC_Eat;
                   }
 
                   // see if we should skip the default shorcuts or not
@@ -1133,13 +1139,15 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
                       default:
                         clearFlag(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT);
-                        return(0);
+                        RETURN(0);
+                        return 0;
                     }
                   }
                   else
                   {
                     clearFlag(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT);
-                    return(0);
+                    RETURN(0);
+                    return 0;
                   }
                 }
               }

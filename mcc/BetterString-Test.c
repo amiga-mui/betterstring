@@ -28,6 +28,7 @@
 #include <proto/muimaster.h>
 #include <proto/exec.h>
 #include <proto/utility.h>
+#include <proto/iffparse.h>
 
 #include "BetterString_mcc.h"
 #include "private.h"
@@ -40,6 +41,7 @@ struct Library *MUIMasterBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *UtilityBase = NULL;
 struct Library *KeymapBase = NULL;
+struct Library *IFFParseBase = NULL;
 #elif defined(__MORPHOS__)
 struct Library *DiskfontBase = NULL;
 struct Library *GfxBase = NULL;
@@ -48,6 +50,7 @@ struct Library *MUIMasterBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *UtilityBase = NULL;
 struct Library *KeymapBase = NULL;
+struct Library *IFFParseBase = NULL;
 #else
 struct Library *DiskfontBase = NULL;
 struct Library *GfxBase = NULL;
@@ -56,6 +59,7 @@ struct Library *MUIMasterBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *UtilityBase = NULL;
 struct Library *KeymapBase = NULL;
+struct Library *IFFParseBase = NULL;
 #endif
 
 #if defined(__amigaos4__)
@@ -66,6 +70,7 @@ struct IntuitionIFace *IIntuition = NULL;
 struct LocaleIFace *ILocale = NULL;
 struct UtilityIFace *IUtility = NULL;
 struct KeymapIFace *IKeymap = NULL;
+struct IFFParseIFace *IIFFParse = NULL;
 #endif
 
 extern SAVEDS ASM ULONG _Dispatcher(REG(a0, struct IClass * cl), REG(a2, Object * obj), REG(a1, Msg msg));
@@ -90,11 +95,17 @@ int main(void)
     GETINTERFACE(IUtility, UtilityBase))
   if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
     GETINTERFACE(IMUIMaster, MUIMasterBase))
+  if((IFFParseBase = OpenLibrary("iffparse.library", 36)) &&
+    GETINTERFACE(IIFFParse, IFFParseBase))
   {
     struct MUI_CustomClass *mcc;
     Object *a1, *a2, *app, *window, *bstring, *bpos, *ssize, *button, *numbutton;
     Object *menu;
     const char *classes[] = {"BetterString.mcc", NULL};
+
+    #if defined(DEBUG)
+    SetupDebug();
+    #endif
 
     mcc = MUI_CreateCustomClass(NULL, "Area.mui", NULL, sizeof(struct InstData), ENTRY(_Dispatcher));
 
@@ -285,6 +296,13 @@ int main(void)
     DROPINTERFACE(IMUIMaster);
     CloseLibrary(MUIMasterBase);
     MUIMasterBase = NULL;
+  }
+
+  if(IFFParseBase)
+  {
+    DROPINTERFACE(IIFFParse);
+    CloseLibrary(IFFParseBase);
+    IFFParseBase = NULL;
   }
 
   if(UtilityBase)

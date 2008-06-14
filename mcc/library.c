@@ -54,11 +54,13 @@ static const char *used_classesP[] = { "BetterString.mcp", NULL };
 struct Library *DiskfontBase = NULL;
 struct Library *KeymapBase = NULL;
 struct Library *LocaleBase = NULL;
+struct Library *IFFParseBase = NULL;
 
 #if defined(__amigaos4__)
 struct DiskfontIFace *IDiskfont = NULL;
 struct KeymapIFace *IKeymap = NULL;
 struct LocaleIFace *ILocale = NULL;
+struct IFFParseIFace *IIFFParse = NULL;
 #endif
 
 /******************************************************************************/
@@ -86,7 +88,15 @@ static BOOL ClassInit(UNUSED struct Library *base)
       if((DiskfontBase = OpenLibrary("diskfont.library", 38)) &&
          GETINTERFACE(IDiskfont, struct DiskfontIFace *, DiskfontBase))
       {
-        return(TRUE);
+        if((IFFParseBase = OpenLibrary("iffparse.library", 36)) &&
+           GETINTERFACE(IIFFParse, struct IFFParseIFace *, IFFParseBase))
+        {
+          return(TRUE);
+        }
+
+        DROPINTERFACE(IDiskfont);
+        CloseLibrary(DiskfontBase);
+        DiskfontBase = NULL;
       }
 
       DROPINTERFACE(IKeymap);
@@ -105,6 +115,13 @@ static BOOL ClassInit(UNUSED struct Library *base)
 
 static VOID ClassExpunge(UNUSED struct Library *base)
 {
+  if(IFFParseBase)
+  {
+    DROPINTERFACE(IIFFParse);
+    CloseLibrary(IFFParseBase);
+    IFFParseBase = NULL;
+  }
+
   if(DiskfontBase)
   {
     DROPINTERFACE(IDiskfont);
