@@ -5,6 +5,15 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-06-14  Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/HandleInput.c, mcc/library.c: replaced the handcrafted clipboard access
+    by usage of iffparse.library. Before only the first FTXT chunk was examined,
+    which resulted in partial pastes from TextEditor.mcc only in case there were
+    multiple lines in the clipboards. LF's and CR's will be replaced by spaces
+    and hence multiple lines will be concatenated to one single line. Hopefully
+    this fixes bug #1992568.
+
 2008-03-19  Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/GetSetAttrs.c: made MUIA_String_AdvanceOnCR OM_GET'able.
