@@ -362,28 +362,20 @@ static void Paste(struct InstData *data)
 
                 if((buffer = MyAllocPooled(data->Pool, length + 1)) != NULL)
                 {
-                  char *p = buffer;
-                  ULONG i;
+                  LONG readBytes;
+
+                  memset(buffer, 0, length+1);
 
                   // read the string from the clipboard
-                  error = ReadChunkBytes(iff, buffer, length);
-                  // parse the string and eliminate certain characters
-                  for(i = 0; i < length; i++)
+                  if((readBytes = ReadChunkBytes(iff, buffer, length)) > 0)
                   {
-                    if(*p == '\0')
-                      *p = '?';
-                    else if(*p == '\n' || *p == '\r')
-                      *p = ' ';
-
-                    p++;
+                    data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, readBytes);
+                    strcpyback(data->Contents + data->BufferPos + readBytes, data->Contents + data->BufferPos);
+                    strcpy(data->Contents + data->BufferPos, buffer);
+                    data->BufferPos += readBytes;
                   }
-                  // make sure the buffer is NUL terminated
-                  *p = '\0';
-
-                  data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, length);
-                  strcpyback(data->Contents + data->BufferPos + length, data->Contents + data->BufferPos);
-                  strcpy(data->Contents + data->BufferPos, buffer);
-                  data->BufferPos += length;
+                  else
+                    E(DBF_ALWAYS, "ReadChunkBytes error! (%ld)", readBytes);
 
                   MyFreePooled(data->Pool, buffer);
                 }
@@ -991,7 +983,8 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               {
                 UBYTE code = ConvertKey(msg->imsg);
 
-                if((((code >= 32 && code <= 126) || code >= 160) && isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_RCOMMAND)) || (code && isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL)))
+                if((((code >= 32 && code <= 126) || code >= 160) && isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_RCOMMAND)) ||
+                   (code && isFlagSet(msg->imsg->Qualifier, IEQUALIFIER_CONTROL)))
                 {
                   if(isFlagClear(data->Flags, FLG_NoInput))
                   {
@@ -1014,7 +1007,10 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                 }
                 else
                 {
-                  if(isFlagClear(data->Flags, FLG_NoInput))
+                  // if this betterstring object is a read-only object
+                  // we only accept a view characters or otherwise reject
+                  // the rawkey operation
+                  if(isFlagSet(data->Flags, FLG_NoInput))
                   {
                     switch(code)
                     {

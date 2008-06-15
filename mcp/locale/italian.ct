@@ -1,5 +1,5 @@
 ## chunk AUTH Samir Hawamdeh (http://www.betatesting.it/backforthefuture)
-## version $VER: Betterstring_mcp.ct 2.0 (1.9.2007)
+## version $VER: Betterstring_mcp.ct 2.0 (28.02.2008)
 ## language italiano
 ## codeset 0
 ;
@@ -149,7 +149,7 @@ Amiga + TAB
 ; Amiga + TAB
 ;
 MSG_Help_Mark
-Marca
+Contrassegna
 ; Mark
 ;
 MSG_Help_Mark_Shortcut

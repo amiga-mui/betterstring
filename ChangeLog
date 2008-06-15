@@ -5,6 +5,17 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-06-15 Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcc/HandleInput.c: slightly improved the ReadChunkBytes() handling with
+    iffparse library. Now the return value is checked correctly and the buffer
+    is cleared before placing the bytes from clipboard there. In addition, the
+    LF and CR stripping is removed again as this was not the root of bug #1992568
+    and LF and CR should be able to be placed in the string object as well.
+  * mcc/HandleInput.c: fixed a bug where the keyboard shortcuts didn't work for
+    a normal object due to a wrong flag check.
+  * locale/italian.ct: updated italian catalog
+
 2008-06-14  Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/HandleInput.c, mcc/library.c: replaced the handcrafted clipboard access

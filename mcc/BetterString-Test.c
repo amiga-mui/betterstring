@@ -101,7 +101,7 @@ int main(void)
     struct MUI_CustomClass *mcc;
     Object *a1, *a2, *app, *window, *bstring, *bpos, *ssize, *button, *numbutton;
     Object *menu;
-    const char *classes[] = {"BetterString.mcc", NULL};
+    const char *classes[] = {"BetterString.mcp", NULL};
 
     #if defined(DEBUG)
     SetupDebug();
@@ -109,6 +109,7 @@ int main(void)
 
     mcc = MUI_CreateCustomClass(NULL, "Area.mui", NULL, sizeof(struct InstData), ENTRY(_Dispatcher));
 
+    /*
     menu = MenustripObject,
             MUIA_Family_Child, MenuObject, MUIA_Menu_Title, "Test",
               MUIA_Family_Child, MenuitemObject,
@@ -118,6 +119,7 @@ int main(void)
               End,
             End,
            End,
+    */
 
     app =  ApplicationObject,
           MUIA_Application_Author,      "BetterString.mcc Open Source Team",
@@ -131,13 +133,13 @@ int main(void)
           MUIA_Application_Window, window = WindowObject,
             MUIA_Window_Title,  "BetterString-Test",
             MUIA_Window_ID,      MAKE_ID('M','A','I','N'),
-            MUIA_Window_Menustrip, menu,
+            //MUIA_Window_Menustrip, menu,
             MUIA_Window_RootObject, VGroup,
 
             Child, PopaslObject,
                 MUIA_Popstring_String,  NewObject(mcc->mcc_Class, NULL, StringFrame, MUIA_BetterString_NoInput, TRUE, MUIA_CycleChain, TRUE, End,
                 MUIA_Popstring_Button,  MUI_MakeObject(MUIO_PopButton, MUII_PopUp),
-                MUIA_Popasl_Type,           ASL_FontRequest,
+                MUIA_Popasl_Type,       ASL_FontRequest,
                 End,
 
             Child, ColGroup(2), StringFrame,
@@ -218,21 +220,22 @@ int main(void)
                 MUIA_Text_Contents, "\33cRight-Aligned",
                 End,
               Child, NewObject(mcc->mcc_Class, NULL,
+                MUIA_CycleChain, TRUE,
   //                  StringFrame,
                 MUIA_String_AdvanceOnCR, TRUE,
                 MUIA_String_Contents, "This is some crappy shit!",
                 MUIA_String_Format, MUIV_String_Format_Right,
-                MUIA_CycleChain, TRUE,
                 End,
               Child, TextObject,
                 MUIA_Font, MUIV_Font_Tiny,
-                MUIA_Text_Contents, "\33cPlain",
+                MUIA_Text_Contents, "\33cStringObject",
                 End,
               Child, StringObject,
                 StringFrame,
                 MUIA_String_AdvanceOnCR, TRUE,
-                MUIA_String_Contents, "This is some crappy shit!",
+                MUIA_String_Contents, "This is a standard StringObject",
                 MUIA_String_Format, MUIV_String_Format_Right,
+                MUIA_String_MaxLen, 1024,
                 MUIA_CycleChain, TRUE,
                 End,
               Child, HGroup,
