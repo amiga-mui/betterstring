@@ -21,10 +21,10 @@
 ***************************************************************************/
 
 #define LIB_VERSION    11
-#define LIB_REVISION   14
+#define LIB_REVISION   15
 
-#define LIB_REV_STRING "11.14"
-#define LIB_DATE       "18.12.2007"
+#define LIB_REV_STRING "11.15"
+#define LIB_DATE       "19.06.2008"
 
 #if defined(__PPC__)
   #if defined(__MORPHOS__)
@@ -44,4 +44,4 @@
   #define CPU ""
 #endif
 
-#define LIB_COPYRIGHT  "Copyright (c) 2005-2007 BetterString.mcc Open Source Team"
+#define LIB_COPYRIGHT  "Copyright (c) 2005-2008 BetterString.mcc Open Source Team"
