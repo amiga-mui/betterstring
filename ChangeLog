@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.15 RELEASE ###########################################################
+
+2008-06-19 Jens Langner <Jens.Langner@light-speed.de>
+
+  * misc: final 11.15 release preparations
+
 2008-06-15 Jens Langner <Jens.Langner@light-speed.de>
 
   * mcc/HandleInput.c: slightly improved the ReadChunkBytes() handling with
