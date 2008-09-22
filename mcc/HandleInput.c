@@ -371,7 +371,7 @@ static void Paste(struct InstData *data)
                   {
                     data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, readBytes);
                     strcpyback(data->Contents + data->BufferPos + readBytes, data->Contents + data->BufferPos);
-                    strcpy(data->Contents + data->BufferPos, buffer);
+                    memcpy(data->Contents + data->BufferPos, buffer, readBytes);
                     data->BufferPos += readBytes;
                   }
                   else

@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-09-22 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/HandleInput.c: replaced the strcpy() call by a memcpy() call, because
+    the former appended a NUL character and hence caused the contents to be
+    "visibly" overwritten by a pasted string. This fixes bug #2121909.
+
 #### v11.15 RELEASE ###########################################################
 
 2008-06-19 Jens Langner <Jens.Langner@light-speed.de>
