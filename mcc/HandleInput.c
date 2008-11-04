@@ -42,6 +42,7 @@
 #define ID_FORM    MAKE_ID('F','O','R','M')
 #define ID_FTXT    MAKE_ID('F','T','X','T')
 #define ID_CHRS    MAKE_ID('C','H','R','S')
+#define ID_CSET    MAKE_ID('C','S','E','T')
 
 static BOOL BlockEnabled(struct InstData *data)
 {
@@ -317,6 +318,29 @@ static void CutBlock(struct InstData *data)
   LEAVE();
 }
 
+#if defined(__MORPHOS__)
+static void utf8_to_ansi(CONST_STRPTR src, STRPTR dst)
+{
+  static struct KeyMap *keymap;
+  ULONG octets;
+
+  keymap = AskKeyMapDefault();
+
+  do
+  {
+     WCHAR wc;
+     UBYTE c;
+
+     octets = UTF8_Decode(src, &wc);
+     c = ToANSI(wc, keymap);
+
+     *dst++ = c;
+     src += octets;
+  }
+  while (octets > 0);
+}
+#endif
+
 static void Paste(struct InstData *data)
 {
   struct IFFHandle *iff;
@@ -334,8 +358,10 @@ static void Paste(struct InstData *data)
 
       if(OpenIFF(iff, IFFF_READ) == 0)
       {
-        if(StopChunk(iff, ID_FTXT, ID_CHRS) == 0)
+        if(StopChunk(iff, ID_FTXT, ID_CHRS) == 0 && StopChunk(iff, ID_FTXT, ID_CSET) == 0)
         {
+          LONG codeset = 0;
+
           while(TRUE)
           {
             LONG error;
@@ -349,7 +375,16 @@ static void Paste(struct InstData *data)
 
             if((cn = CurrentChunk(iff)) != NULL)
             {
-              if(cn->cn_ID == ID_CHRS && cn->cn_Size > 0)
+              if(cn->cn_ID == ID_CSET)
+              {
+                if (cn->cn_Size >= 4)
+                {
+                  /* Only the first four bytes are interesting */
+                  if(ReadChunkBytes(iff, &codeset, 4) != 4)
+                    codeset = 0;
+                }
+              }
+              else if(cn->cn_ID == ID_CHRS && cn->cn_Size > 0)
               {
                 ULONG length = cn->cn_Size;
                 char *buffer;
@@ -369,6 +404,17 @@ static void Paste(struct InstData *data)
                   // read the string from the clipboard
                   if((readBytes = ReadChunkBytes(iff, buffer, length)) > 0)
                   {
+                    #if defined(__MORPHOS__)
+                    if (codeset == UNICODE_UTF8)
+                    {
+                      if (IS_MORPHOS2)
+                      {
+                        utf8_to_ansi(buffer, buffer);
+                        readBytes = strlen(buffer);
+                      }
+                    }
+                    #endif
+
                     data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, readBytes);
                     strcpyback(data->Contents + data->BufferPos + readBytes, data->Contents + data->BufferPos);
                     memcpy(data->Contents + data->BufferPos, buffer, readBytes);
