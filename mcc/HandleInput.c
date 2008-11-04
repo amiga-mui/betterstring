@@ -405,7 +405,7 @@ static void Paste(struct InstData *data)
                   if((readBytes = ReadChunkBytes(iff, buffer, length)) > 0)
                   {
                     #if defined(__MORPHOS__)
-                    if (codeset == UNICODE_UTF8)
+                    if (codeset == CODESET_UTF8)
                     {
                       if (IS_MORPHOS2)
                       {
