@@ -221,4 +221,9 @@ VOID SAVEDS ASM MUIG_FreeBitMap(REG(a0, struct BitMap *));
 #define isFlagSet(mask, flag)           (((mask) & (flag)) == (flag))
 #define isFlagClear(mask, flag)         (((mask) & (flag)) == 0)
 
+#if defined(__MORPHOS__)
+#include <proto/exec.h>
+#define IS_MORPHOS2 (((struct Library *)SysBase)->lib_Version >= 51)
+#endif
+
 #endif /* BETTERSTRING_MCC_PRIV_H */
