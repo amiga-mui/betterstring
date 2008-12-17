@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-12-17 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/Dispatcher.c: replaced the deprecated pool function calls by new ones
+    for the the OS4 build.
+
 2008-11-04  Ilkka Lehtoranta <ilkleht@isoveli.org>
 
   * mcc/HandleInput.c: paste from clipboard now also reads CSET chunk and

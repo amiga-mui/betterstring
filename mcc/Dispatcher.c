@@ -70,7 +70,14 @@ ULONG  New(struct IClass *cl, Object *obj, struct opSet *msg)
   {
     struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-    if((data->Pool = CreatePool(MEMF_ANY, 512, 256)))
+    #if defined(__amigaos4__)
+    if((data->Pool = AllocSysObjectTags(ASOT_MEMPOOL, ASOPOOL_MFlags, MEMF_SHARED,
+                                                      ASOPOOL_Puddle, 512,
+                                                      ASOPOOL_Threshold, 256,
+                                                      TAG_DONE)) != NULL)
+    #else
+    if((data->Pool = CreatePool(MEMF_ANY, 512, 256)) != NULL)
+    #endif
     {
 //      kprintf("OM_NEW by %s\n", FindTask(NULL)->tc_Node.ln_Name);
 
@@ -114,13 +121,29 @@ ULONG  New(struct IClass *cl, Object *obj, struct opSet *msg)
 
 ULONG  Dispose(struct IClass *cl, Object *obj, Msg msg)
 {
-    struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
 //  kprintf("OM_DISPOSE by %s\n", FindTask(NULL)->tc_Node.ln_Name);
 /*  if(data->PopupMenu)
     MUI_DisposeObject(data->PopupMenu);
-*/  DeletePool(data->Pool);
-  CloseLocale(data->locale);
+*/
+
+  if(data->Pool != NULL)
+  {
+    #if defined(__amigaos4__)
+    FreeSysObject(ASOT_MEMPOOL, data->Pool);
+    #else
+    DeletePool(data->Pool);
+    #endif
+    data->Pool = NULL;
+  }
+
+  if(data->locale != NULL)
+  {
+    CloseLocale(data->locale);
+    data->locale = NULL;
+  }
+
   return(DoSuperMethodA(cl, obj, msg));
 }
 
