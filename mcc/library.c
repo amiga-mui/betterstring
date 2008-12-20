@@ -53,12 +53,14 @@ static const char *used_classesP[] = { "BetterString.mcp", NULL };
 
 struct Library *DiskfontBase = NULL;
 struct Library *KeymapBase = NULL;
+struct Library *LayersBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *IFFParseBase = NULL;
 
 #if defined(__amigaos4__)
 struct DiskfontIFace *IDiskfont = NULL;
 struct KeymapIFace *IKeymap = NULL;
+struct LayersIFace *ILayers = NULL;
 struct LocaleIFace *ILocale = NULL;
 struct IFFParseIFace *IIFFParse = NULL;
 #endif
@@ -82,26 +84,34 @@ static BOOL ClassInit(UNUSED struct Library *base)
   if((LocaleBase = OpenLibrary("locale.library", 38)) &&
      GETINTERFACE(ILocale, struct LocaleIFace *, LocaleBase))
   {
-    if((KeymapBase = OpenLibrary("keymap.library", 37)) &&
-       GETINTERFACE(IKeymap, struct KeymapIFace *, KeymapBase))
+    if((LayersBase = OpenLibrary("layers.library", 36)) &&
+       GETINTERFACE(ILayers, struct LayersIFace *, LayersBase))
     {
-      if((DiskfontBase = OpenLibrary("diskfont.library", 38)) &&
-         GETINTERFACE(IDiskfont, struct DiskfontIFace *, DiskfontBase))
+      if((KeymapBase = OpenLibrary("keymap.library", 37)) &&
+         GETINTERFACE(IKeymap, struct KeymapIFace *, KeymapBase))
       {
-        if((IFFParseBase = OpenLibrary("iffparse.library", 36)) &&
-           GETINTERFACE(IIFFParse, struct IFFParseIFace *, IFFParseBase))
+        if((DiskfontBase = OpenLibrary("diskfont.library", 38)) &&
+           GETINTERFACE(IDiskfont, struct DiskfontIFace *, DiskfontBase))
         {
-          return(TRUE);
+          if((IFFParseBase = OpenLibrary("iffparse.library", 36)) &&
+             GETINTERFACE(IIFFParse, struct IFFParseIFace *, IFFParseBase))
+          {
+            return(TRUE);
+          }
+
+          DROPINTERFACE(IDiskfont);
+          CloseLibrary(DiskfontBase);
+          DiskfontBase = NULL;
         }
 
-        DROPINTERFACE(IDiskfont);
-        CloseLibrary(DiskfontBase);
-        DiskfontBase = NULL;
+        DROPINTERFACE(IKeymap);
+        CloseLibrary(KeymapBase);
+        KeymapBase  = NULL;
       }
 
-      DROPINTERFACE(IKeymap);
-      CloseLibrary(KeymapBase);
-      KeymapBase  = NULL;
+      DROPINTERFACE(ILayers);
+      CloseLibrary(LayersBase);
+      LayersBase  = NULL;
     }
 
     DROPINTERFACE(ILocale);
@@ -134,6 +144,13 @@ static VOID ClassExpunge(UNUSED struct Library *base)
     DROPINTERFACE(IKeymap);
     CloseLibrary(KeymapBase);
     KeymapBase = NULL;
+  }
+
+  if(LayersBase)
+  {
+    DROPINTERFACE(ILayers);
+    CloseLibrary(LayersBase);
+    LayersBase = NULL;
   }
 
   if(LocaleBase)

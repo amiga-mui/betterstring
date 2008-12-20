@@ -70,6 +70,10 @@ struct InstData
 
   Object  *KeyUpFocus, *KeyDownFocus;
 
+  // the selection pointer Object
+  Object  *PointerObj;
+  BOOL    activeSelectPointer;
+
   /* Filename completion */
   struct  FNCData *FNCBuffer;
   WORD    FileNumber;
@@ -219,6 +223,12 @@ VOID FreeConfig(struct MUI_RenderInfo *, struct InstData *);
 struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG), REG(d1, LONG), REG(d2, LONG), REG(d3, LONG flags), REG(a0, struct BitMap *));
 VOID SAVEDS ASM MUIG_FreeBitMap(REG(a0, struct BitMap *));
 
+// Pointer.c
+void SetupSelectPointer(struct InstData *data);
+void CleanupSelectPointer(struct InstData *data);
+void ShowSelectPointer(Object *obj, struct InstData *data);
+void HideSelectPointer(Object *obj, struct InstData *data);
+
 #define setFlag(mask, flag)             (mask) |= (flag)
 #define clearFlag(mask, flag)           (mask) &= ~(flag)
 #define isAnyFlagSet(mask, flag)        (((mask) & (flag)) != 0)
@@ -229,5 +239,22 @@ VOID SAVEDS ASM MUIG_FreeBitMap(REG(a0, struct BitMap *));
 #include <proto/exec.h>
 #define IS_MORPHOS2 (((struct Library *)SysBase)->lib_Version >= 51)
 #endif
+
+// some own usefull MUI-style macros to check mouse positions in objects
+#define _between(a,x,b) 					((x)>=(a) && (x)<=(b))
+#define _isinobject(o,x,y) 				(_between(_mleft(o),(x),_mright (o)) && _between(_mtop(o) ,(y),_mbottom(o)))
+#define _isinwholeobject(o,x,y) 	(_between(_left(o),(x),_right (o)) && _between(_top(o) ,(y),_bottom(o)))
+
+/// xget()
+//  Gets an attribute value from a MUI object
+ULONG xget(Object *obj, const ULONG attr);
+#if defined(__GNUC__)
+  // please note that we do not evaluate the return value of GetAttr()
+  // as some attributes (e.g. MUIA_Selected) always return FALSE, even
+  // when they are supported by the object. But setting b=0 right before
+  // the GetAttr() should catch the case when attr doesn't exist at all
+  #define xget(OBJ, ATTR) ({ULONG b=0; GetAttr(ATTR, OBJ, &b); b;})
+#endif
+///
 
 #endif /* BETTERSTRING_MCC_PRIV_H */

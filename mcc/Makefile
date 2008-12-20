@@ -228,6 +228,7 @@ MCCOBJS = $(OBJDIR)/library.o \
           $(OBJDIR)/GetSetAttrs.o \
           $(OBJDIR)/HandleInput.o \
           $(OBJDIR)/InitConfig.o \
+          $(OBJDIR)/Pointer.o \
           $(OBJDIR)/PrintString.o \
           $(OBJDIR)/vastubs.o
 
@@ -241,6 +242,7 @@ TESTOBJS= $(OBJDIR)/BetterString-Test.o \
           $(OBJDIR)/GetSetAttrs.o \
           $(OBJDIR)/HandleInput.o \
           $(OBJDIR)/InitConfig.o \
+          $(OBJDIR)/Pointer.o \
           $(OBJDIR)/PrintString.o \
           $(OBJDIR)/vastubs.o
 

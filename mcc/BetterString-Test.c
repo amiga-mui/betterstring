@@ -38,6 +38,7 @@ struct Library *DiskfontBase = NULL;
 struct Library *GfxBase = NULL;
 struct Library *IntuitionBase = NULL;
 struct Library *MUIMasterBase = NULL;
+struct Library *LayersBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *UtilityBase = NULL;
 struct Library *KeymapBase = NULL;
@@ -47,6 +48,7 @@ struct Library *DiskfontBase = NULL;
 struct Library *GfxBase = NULL;
 struct IntuitionBase *IntuitionBase = NULL;
 struct Library *MUIMasterBase = NULL;
+struct Library *LayersBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *UtilityBase = NULL;
 struct Library *KeymapBase = NULL;
@@ -56,6 +58,7 @@ struct Library *DiskfontBase = NULL;
 struct Library *GfxBase = NULL;
 struct IntuitionBase *IntuitionBase = NULL;
 struct Library *MUIMasterBase = NULL;
+struct Library *LayersBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *UtilityBase = NULL;
 struct Library *KeymapBase = NULL;
@@ -67,6 +70,7 @@ struct DiskfontIFace *IDiskfont = NULL;
 struct GraphicsIFace *IGraphics = NULL;
 struct MUIMasterIFace *IMUIMaster = NULL;
 struct IntuitionIFace *IIntuition = NULL;
+struct LayersIFace *ILayers = NULL;
 struct LocaleIFace *ILocale = NULL;
 struct UtilityIFace *IUtility = NULL;
 struct KeymapIFace *IKeymap = NULL;
@@ -91,6 +95,8 @@ int main(void)
     GETINTERFACE(IKeymap, KeymapBase))
   if((LocaleBase = OpenLibrary("locale.library", 38)) &&
     GETINTERFACE(ILocale, LocaleBase))
+  if((LayersBase = OpenLibrary("layers.library", 38)) &&
+    GETINTERFACE(ILayers, LayersBase))
   if((UtilityBase = OpenLibrary("utility.library", 38)) &&
     GETINTERFACE(IUtility, UtilityBase))
   if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
@@ -312,6 +318,12 @@ int main(void)
   {
     DROPINTERFACE(IUtility);
     CloseLibrary(UtilityBase);
+  }
+
+  if(LayersBase)
+  {
+    DROPINTERFACE(ILayers);
+    CloseLibrary(LayersBase);
   }
 
   if(LocaleBase)
