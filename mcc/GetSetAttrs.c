@@ -122,6 +122,18 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
       ti_Data = isFlagSet(data->Flags, FLG_NoShortcuts) ? TRUE : FALSE;
     break;
 
+    case MUIA_BetterString_SelectOnActive:
+    {
+      if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
+         isFlagSet(data->Flags, FLG_ForceSelectOn))
+      {
+         ti_Data = TRUE;
+      }
+      else
+         ti_Data = FALSE;
+    }
+    break;
+
     case MUIA_Version:
       ti_Data = LIB_VERSION;
     break;
@@ -134,7 +146,9 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
       return DoSuperMethodA(cl, obj, (Msg)msg);
     break;
   }
+
   *msg->opg_Storage = ti_Data;
+
   return TRUE;
 }
 
@@ -298,6 +312,21 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
         if((ULONG)data->BlockStop > strlen(data->Contents))
           data->BlockStop = strlen(data->Contents);
+      }
+      break;
+
+      case MUIA_BetterString_SelectOnActive:
+      {
+         if(ti_Data == FALSE)
+         {
+            setFlag(data->Flags, FLG_ForceSelectOff);
+            clearFlag(data->Flags, FLG_ForceSelectOn);
+         }
+         else
+         {
+            setFlag(data->Flags, FLG_ForceSelectOn);
+            clearFlag(data->Flags, FLG_ForceSelectOff);
+         }
       }
       break;
 

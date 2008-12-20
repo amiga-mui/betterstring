@@ -191,8 +191,8 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
 
         Child, RectangleObject, End,
         Child, RectangleObject,
-          MUIA_Rectangle_HBar,    TRUE,
-          MUIA_VertWeight,      10,
+          MUIA_Rectangle_HBar,  TRUE,
+          MUIA_VertWeight,      5,
           End,
 
         Child, TxtLabel(GetStr(MSG_Label_Cursor)),
@@ -210,7 +210,27 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
             End,
           End,
 
+        Child, RectangleObject, End,
+        Child, RectangleObject,
+          MUIA_Rectangle_HBar,  TRUE,
+          MUIA_VertWeight,      5,
         End,
+
+        Child, TxtLabel(GetStr(MSG_SelectOnActive)),
+        Child, HGroup,
+          MUIA_ShortHelp, GetStr(MSG_HELP_SelectOnActive),
+          Child, objs[SelectOnActive] = MUI_MakeObject(MUIO_Checkmark, NULL),
+          Child, HSpace(0),
+        End,
+
+        Child, TxtLabel(GetStr(MSG_SelectPointer)),
+        Child, HGroup,
+          MUIA_ShortHelp, GetStr(MSG_HELP_SelectPointer),
+          Child, objs[SelectPointer] = MUI_MakeObject(MUIO_Checkmark, NULL),
+          Child, HSpace(0),
+        End,
+
+      End,
 
       Child, RectangleObject,
         MUIA_Rectangle_VBar,  TRUE,

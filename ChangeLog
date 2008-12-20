@@ -5,6 +5,16 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-12-20 Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcc,mcp: added a new preference setting to allow a betterstring object to
+    automatically select all text in case it will get the active object of a
+    window either via a TAB cycle or via mouse activation. In addition, a new
+    MUIA_BetterString_SelectOnActive attribute has been added to allow a
+    developer to override the user settings for specific cases. However, this
+    new functionality is turned off per default as a string gadget in AmigaOS
+    usually does not show this behaviour.
+  
 2008-12-17 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Dispatcher.c: replaced the deprecated pool function calls by new ones

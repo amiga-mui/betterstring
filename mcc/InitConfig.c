@@ -32,6 +32,8 @@
 #include "BetterString_mcp.h"
 #include "private.h"
 
+#include "Debug.h"
+
 ULONG GetCol (Object *obj, ULONG item, struct MUI_PenSpec *defaultcol, UNUSED struct InstData *data)
 {
   ULONG res;
@@ -46,7 +48,9 @@ ULONG GetCol (Object *obj, ULONG item, struct MUI_PenSpec *defaultcol, UNUSED st
 
 void InitConfig (Object *obj, struct InstData *data)
 {
-  LONG  setting;
+  ULONG setting;
+
+  ENTER();
 
   if(isFlagSet(data->Flags, FLG_SetFrame) && MUIMasterBase->lib_Version >= 20)
     set(obj, MUIA_Frame, DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Frame, &setting) ? (STRPTR)setting : (STRPTR)"302211");
@@ -94,8 +98,20 @@ void InitConfig (Object *obj, struct InstData *data)
   else
     data->Font = NULL;
 
+  if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_SelectOnActive, &setting))
+    data->SelectOnActive = *(ULONG*)setting;
+  else
+    data->SelectOnActive = FALSE;
+
+  if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_SelectPointer, &setting))
+    data->SelectPointer = *(ULONG*)setting;
+  else
+    data->SelectPointer = FALSE;
+
   if(isFlagClear(data->Flags, FLG_OwnBackground))
     set(obj, MUIA_Background, data->InactiveBackground);
+
+  LEAVE();
 }
 
 VOID FreeConfig (struct MUI_RenderInfo *mri, struct InstData *data)

@@ -366,6 +366,7 @@ DISPATCHER(_Dispatcher)
               attr = MUIV_List_Active_PageDown;
             break;
           }
+
           if(attr != 0)
           {
             SetAttrs(data->ForwardObject, MUIA_List_Active, attr, TAG_DONE);
@@ -391,6 +392,14 @@ DISPATCHER(_Dispatcher)
 
       if((data->Original = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)))
         strlcpy(data->Original, data->Contents, strlen(data->Contents+1));
+
+      // make the whole string active if the user requested it
+      // via the SelectOnActive checkmark or if the developed forced it
+      if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
+         isFlagSet(data->Flags, FLG_ForceSelectOn))
+      {
+         DoMethod(obj, MUIM_BetterString_DoAction, MUIV_BetterString_DoAction_SelectAll);
+      }
 
       if(isFlagClear(data->Flags, FLG_OwnBackground))
         set(obj, MUIA_Background, data->ActiveBackground);
