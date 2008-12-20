@@ -260,38 +260,40 @@ release:
 
 # make the object directories
 $(OBJDIR):
-	@printf '\033[33mGenerating $@ directory\033[0m\n'
+	@echo "  MK $@"
 	@$(MKDIR) $(OBJDIR)
 
 # make the binary directories
 $(BINDIR):
-	@printf '\033[33mGenerating $@ directory\033[0m\n'
+	@echo "  MK $@"
 	@$(MKDIR) $(BINDIR)
 
 #
 
 $(OBJDIR)/%.o: %.c
-	@printf '\033[32mCompiling $<\033[0m\n'
+	@echo "  CC $<"
 	@$(CC) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/mccclass_68k.o: ../include/mccclass_68k.c
-	@printf '\033[32mCompiling $<\033[0m\n'
+	@echo "  CC $<"
 	@$(CC) $(CFLAGS) $< -o $@
 
 $(LOCALE)/%.catalog: $(LOCALE)/%.ct
-	@printf '\033[33mGenerating $@\033[0m\n'
+	@echo "  MK $@"
 	@$(FC) $(LOCALE)/BetterString_mcp.cd $< CATALOG $@
 
 #
 
 $(MCPTARGET): $(M68KSTUBS) $(MCPOBJS)
-	@printf '\033[32mLinking \033[1m$@\033[0m\n'
+	@echo "  LD $@.debug"
 	@$(CC) -nostartfiles $(LDFLAGS) -o $@.debug $(MCPOBJS) $(M68KSTUBS) $(LDLIBS) -Wl,-Map,$@.map
+	@echo "  LD $@"
 	@$(STRIP) --preserve-dates -R.comment -R.sdata2 -S -o $@ $@.debug
 
 $(PREFTARGET): $(PREFOBJS) $(OBJDIR)/Preference.o
-	@printf '\033[32mLinking \033[1m$@\033[0m\n'
+	@echo "  LD $@.debug"
 	@$(CC) $(LDFLAGS) -o $@.debug $(PREFOBJS) $(LDLIBS) -Wl,-Map,$@.map
+	@echo "  LD $@"
 	@$(STRIP) --preserve-dates -R.comment -R.sdata2 -S -o $@ $@.debug
 
 $(OBJDIR)/library.o: library.c ../include/mccinit.c \
@@ -299,13 +301,13 @@ $(OBJDIR)/library.o: library.c ../include/mccinit.c \
 
 locale.h: locale.c
 locale.c: locale/BetterString_mcp.cd C_h.sd C_c.sd
-	@printf '\033[33mGenerating locale file $@...\033[0m\n'
+	@echo "  MK $@"
 	@$(FC) locale/BetterString_mcp.cd locale.h=C_h.sd locale.c=C_c.sd
 
 ## CATALOG GENERATION #################
 
 $(LOCALE)/%.catalog: $(LOCALE)/%.ct
-	@printf '\033[33mGenerating $@\033[0m\n'
+	@echo "  MK $@"
 	@$(FC) $(LOCALE)/BetterString_mcp.cd $< CATALOG $@
 
 .IGNORE: $(CATALOGS)

@@ -7,6 +7,7 @@ BetterString.mcc/MUIA_BetterString_KeyUpFocus
 BetterString.mcc/MUIA_BetterString_KeyDownFocus
 BetterString.mcc/MUIA_BetterString_NoInput
 BetterString.mcc/MUIA_BetterString_NoShortcuts
+BetterString.mcc/MUIA_BetterString_SelectOnActive
 BetterString.mcc/MUIA_BetterString_SelectSize
 BetterString.mcc/MUIA_BetterString_StayActive
 BetterString.mcc/MUIM_BetterString_ClearSelected
@@ -139,6 +140,29 @@ BetterString.mcc/MUIM_BetterString_Insert
 
     SEE ALSO
         MUIM_BetterString_DoAction
+
+BetterString.mcc/MUIA_BetterString_SelectOnActive
+
+    NAME
+        MUIA_BetterString_SelectOnActive -- [ISG], BOOL
+
+    FUNCTION
+        Allows to override the default settings for the preference setting
+        to directly select all text in case a BetterString object will be
+        the new active object of a window (via Tab-key switching or via
+        using the mouse to make the object active.
+
+    NOTE
+        If this attribute is not explicitly set on object creation or later,
+        the default setting a user has configured is used. This attribute
+        should only be manually set if you are *absolutely* sure you require
+        it. Please don't force a user to use this type of functionality and
+        let him choose himself. However, there might be rare cases where 
+        setting this attribute might be required and thus the reason for it
+        to be there.
+
+    SEE ALSO
+
 
 BetterString.mcc/MUIA_BetterString_SelectSize
 

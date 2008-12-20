@@ -96,26 +96,30 @@ struct InstData
   ULONG   MarkedColor;
   ULONG   MarkedTextColor;
   struct  TextFont *Font;
+  BOOL    SelectOnActive;
+  BOOL    SelectPointer;
 
   /* Edit hook */
   struct Hook *EditHook;
 };
 
-#define FLG_Secret        (1L << 0)
-#define FLG_AdvanceOnCr   (1L << 1)
-#define FLG_BlockEnabled  (1L << 2)
-#define FLG_Active        (1L << 3)
-#define FLG_Ghosted       (1L << 4)
-#define FLG_Shown         (1L << 5)
-#define FLG_Original      (1L << 6)
-#define FLG_RedoAvailable (1L << 7)
-#define FLG_StayActive    (1L << 8)
-#define FLG_SetFrame      (1L << 9)
-#define FLG_OwnFont       (1L << 10)
-#define FLG_OwnBackground (1L << 11)
-#define FLG_NoInput       (1L << 12)
-#define FLG_DragOutside   (1L << 13)
-#define FLG_NoShortcuts   (1L << 14)
+#define FLG_Secret         (1L << 0)
+#define FLG_AdvanceOnCr    (1L << 1)
+#define FLG_BlockEnabled   (1L << 2)
+#define FLG_Active         (1L << 3)
+#define FLG_Ghosted        (1L << 4)
+#define FLG_Shown          (1L << 5)
+#define FLG_Original       (1L << 6)
+#define FLG_RedoAvailable  (1L << 7)
+#define FLG_StayActive     (1L << 8)
+#define FLG_SetFrame       (1L << 9)
+#define FLG_OwnFont        (1L << 10)
+#define FLG_OwnBackground  (1L << 11)
+#define FLG_NoInput        (1L << 12)
+#define FLG_DragOutside    (1L << 13)
+#define FLG_NoShortcuts    (1L << 14)
+#define FLG_ForceSelectOn  (1L << 15)
+#define FLG_ForceSelectOff (1L << 16)
 
 // proper RAWKEY_ defines were first introduced in OS4 and MorphOS
 // and unfortunately they are also a bit different, so lets

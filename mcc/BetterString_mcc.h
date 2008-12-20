@@ -51,6 +51,7 @@ extern "C" {
 #define MUIA_BetterString_KeyDownFocus          0xad001009
 #define MUIA_BetterString_InactiveContents      0xad00100a
 #define MUIA_BetterString_NoShortcuts           0xad00100c
+#define MUIA_BetterString_SelectOnActive        0xad00100d
 
 // methods
 #define MUIM_BetterString_Insert                0xad001002
