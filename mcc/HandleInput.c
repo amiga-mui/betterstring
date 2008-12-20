@@ -31,6 +31,7 @@
 #include <proto/intuition.h>
 #include <proto/muimaster.h>
 #include <proto/keymap.h>
+#include <proto/layers.h>
 #include <proto/locale.h>
 #include <proto/dos.h>
 #include <proto/iffparse.h>
@@ -1244,14 +1245,52 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
     }
     else
     {
-      if(msg->imsg->Class == IDCMP_MOUSEBUTTONS)
+      // we check if this is a mousemove input message and if
+      // so we check whether the mouse is currently over our
+      // texteditor object or not.
+      if(msg->imsg->Class == IDCMP_MOUSEMOVE)
+      {
+        BOOL isOverObject = FALSE;
+
+        if(_isinobject(obj, msg->imsg->MouseX, msg->imsg->MouseY))
+        {
+          #if defined(__MORPHOS__)
+          if(IS_MORPHOS2)
+            isOverObject = TRUE;
+          #endif
+
+          if(isOverObject == FALSE)
+          {
+            struct Layer_Info *li = &(_screen(obj)->LayerInfo);
+            struct Layer *layer;
+
+            // get the layer that belongs to the current mouse coordinates
+            LockLayerInfo(li);
+            layer = WhichLayer(li, _window(obj)->LeftEdge + msg->imsg->MouseX, _window(obj)->TopEdge + msg->imsg->MouseY);
+            UnlockLayerInfo(li);
+
+            // if the mouse is currently over the object and over the object's
+            // window we go and change the pointer to show the selection pointer
+            if(layer != NULL && layer->Window == _window(obj))
+              isOverObject = TRUE;
+          }
+        }
+
+        if(isOverObject == TRUE)
+          ShowSelectPointer(obj, data);
+        else
+          HideSelectPointer(obj, data);
+
+        D(DBF_INPUT, "IDCMP_MOUSEMOVE");
+      }
+      else if(msg->imsg->Class == IDCMP_MOUSEBUTTONS)
       {
         if(msg->imsg->Code == (IECODE_LBUTTON | IECODE_UP_PREFIX))
         {
-          if(isAnyFlagSet(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE|IDCMP_INTUITICKS))
+          if(isAnyFlagSet(data->ehnode.ehn_Events, /*IDCMP_MOUSEMOVE|*/IDCMP_INTUITICKS))
           {
             DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-            clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
+//            clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
             clearFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
             DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
           }
@@ -1360,7 +1399,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             setFlag(data->Flags, FLG_BlockEnabled);
 
             DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-            setFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
+//            setFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
             setFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
             DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 
@@ -1381,7 +1420,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               setFlag(data->Flags, FLG_DragOutside);
 
               DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-              data->ehnode.ehn_Events |= IDCMP_MOUSEMOVE;
+//              data->ehnode.ehn_Events |= IDCMP_MOUSEMOVE;
               DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 #else
               set(_win(obj), MUIA_Window_ActiveObject, MUIV_Window_ActiveObject_None);
@@ -1399,7 +1438,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           D(DBF_STARTUP, "Detected drag");
         }
 #endif
-        if((msg->imsg->Class == IDCMP_MOUSEMOVE || msg->imsg->Class == IDCMP_INTUITICKS) && isFlagSet(data->Flags, FLG_Active))
+        if((/*msg->imsg->Class == IDCMP_MOUSEMOVE ||*/ msg->imsg->Class == IDCMP_INTUITICKS) && isFlagSet(data->Flags, FLG_Active))
         {
           WORD x, width, mousex;
           struct TextExtent tExtend;

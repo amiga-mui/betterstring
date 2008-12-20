@@ -7,6 +7,13 @@ $URL$
 
 2008-12-20 Jens Langner <Jens.Langner@light-speed.de>
 
+  * mcc/Pointer.c: added support for displaying a selection pointer similar to
+    what TextEditor.mcc or NList.mcc displays to a user in case the mouse is
+    over a BetterString object. Per default the selection pointer is turned on
+    but can be globally disabled via a new user definable setting in the mcp.
+    There might be still some glitches. So before we can release a new version
+    we ought to run some details tests with the selection pointer enabled and
+    disabled.
   * mcc,mcp: added a new preference setting to allow a betterstring object to
     automatically select all text in case it will get the active object of a
     window either via a TAB cycle or via mouse activation. In addition, a new

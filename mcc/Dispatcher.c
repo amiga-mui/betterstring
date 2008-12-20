@@ -147,11 +147,14 @@ ULONG  Dispose(struct IClass *cl, Object *obj, Msg msg)
   return(DoSuperMethodA(cl, obj, msg));
 }
 
-ULONG  Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
+ULONG Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 {
-    struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
+  ENTER();
 
   InitConfig(obj, data);
+
   if(DoSuperMethodA(cl, obj, (Msg)rinfo))
   {
 /*      ULONG color;
@@ -167,21 +170,35 @@ ULONG  Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 
     _flags(obj) |= (1<<7);
 
-    data->ehnode.ehn_Priority  = 0;
+    data->ehnode.ehn_Priority = 0;
     data->ehnode.ehn_Flags    = MUI_EHF_GUIMODE;
-    data->ehnode.ehn_Object    = obj;
+    data->ehnode.ehn_Object   = obj;
     data->ehnode.ehn_Class    = cl;
-    data->ehnode.ehn_Events    = IDCMP_MOUSEBUTTONS | IDCMP_RAWKEY;
+    data->ehnode.ehn_Events   = IDCMP_MOUSEBUTTONS | IDCMP_RAWKEY;
+
+    // setup the selection pointer
+    if(data->SelectPointer == TRUE)
+    {
+      data->ehnode.ehn_Events |= IDCMP_MOUSEMOVE;
+      SetupSelectPointer(data);
+    }
+
     DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 
+    RETURN(TRUE);
     return(TRUE);
   }
+
+  RETURN(FALSE);
   return(FALSE);
 }
 
 ULONG Cleanup(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
+  // cleanup the selection pointer
+  CleanupSelectPointer(data);
 
   DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
 
@@ -265,6 +282,10 @@ ULONG Hide(struct IClass *cl, Object *obj, Msg msg)
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
   clearFlag(data->Flags, FLG_Shown);
+
+  // hide the selection pointer
+  HideSelectPointer(obj, data);
+
   MUIG_FreeBitMap(data->rport.BitMap);
 
   return(DoSuperMethodA(cl, obj, msg));
@@ -416,9 +437,11 @@ DISPATCHER(_Dispatcher)
       // active state flag of the gadget
       clearFlag(data->Flags, FLG_BlockEnabled);
       clearFlag(data->Flags, FLG_Active);
-      DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
+
+/*    DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
       clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
       DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
+*/
 
       if(isFlagClear(data->Flags, FLG_OwnBackground))
         set(obj, MUIA_Background, data->InactiveBackground);
