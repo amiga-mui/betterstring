@@ -35,6 +35,9 @@
 
 struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG width), REG(d1, LONG height), REG(d2, LONG depth), REG(d3, LONG flags), REG(a0, struct BitMap *friend))
 {
+  #if defined(__amigaos4__)
+  return AllocBitMap(width,height,depth,flags,friend);
+  #else
   if(USE_OS3)
   {
     if(friend != NULL)
@@ -73,6 +76,7 @@ struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG width), REG(d1, LONG he
 
     return NULL;
   }
+  #endif
 }
 
 
@@ -80,6 +84,9 @@ VOID SAVEDS ASM MUIG_FreeBitMap(REG(a0, struct BitMap *bm))
 {
   WaitBlit();
 
+  #if defined(__amigaos4__)
+  FreeBitMap(bm);
+  #else
   if(USE_OS3)
   {
     FreeBitMap(bm);
@@ -89,4 +96,5 @@ VOID SAVEDS ASM MUIG_FreeBitMap(REG(a0, struct BitMap *bm))
     FreeVec(bm->Planes[0]);
     FreeMem(bm,sizeof(struct BitMap));
   }
+  #endif
 }

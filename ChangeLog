@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-12-21 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/AllocBitMap.c: replaced the OS3 specific part (and the deprecated
+    AllocMem and AllocVec calls) by simplified code.
+
 2008-12-20 Jens Langner <Jens.Langner@light-speed.de>
 
   * mcc/Pointer.c: added support for displaying a selection pointer similar to
