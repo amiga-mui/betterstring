@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2008-12-22 Thore Böckelmann <tboeckel@gmx.de>
+
+  * vastubs.c: added missing stub function for the OS3 build.
+
 2008-12-21 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/AllocBitMap.c: replaced the OS3 specific part (and the deprecated
@@ -26,7 +30,7 @@ $URL$
     developer to override the user settings for specific cases. However, this
     new functionality is turned off per default as a string gadget in AmigaOS
     usually does not show this behaviour.
-  
+
 2008-12-17 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Dispatcher.c: replaced the deprecated pool function calls by new ones
