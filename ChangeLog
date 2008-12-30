@@ -8,6 +8,9 @@ $URL$
 2008-12-31 Ilkka Lehtoranta <ilkleht@isoveli.org>
 
   * mcc/HandleInput: when pasting text clear only the tail of the buffer.
+  * mcc/AllocBitMap.c: Also MorphOS build is now using AllocBitMap()/FreeBitMap()
+    only. For maximum performance VMEM bitmap is used. WaitBlit() is now called
+    only for OS3 (CGX and P96 synchronise blitters automatically).
 
 2008-12-22 Thore Böckelmann <tboeckel@gmx.de>
 
