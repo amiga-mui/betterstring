@@ -357,8 +357,6 @@ void CleanupSelectPointer(struct InstData *data)
 
     #if defined(__amigaos4__) || defined(__MORPHOS__)
     DisposeObject(data->PointerObj);
-    #elif defined(__MORPHOS__)
-    DisposeObject(data->PointerObj);
     #else
     if(((struct Library *)IntuitionBase)->lib_Version >= 39)
     {
