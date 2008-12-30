@@ -400,11 +400,11 @@ static void Paste(struct InstData *data)
                 {
                   LONG readBytes;
 
-                  memset(buffer, 0, length+1);
-
                   // read the string from the clipboard
                   if((readBytes = ReadChunkBytes(iff, buffer, length)) > 0)
                   {
+	                 memset(buffer + readBytes, 0, length-readBytes+1);
+
                     #if defined(__MORPHOS__)
                     if (codeset == CODESET_UTF8)
                     {
