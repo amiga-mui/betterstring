@@ -237,45 +237,46 @@ all: $(BINDIR) $(OBJDIR) $(MCCTARGET) $(TESTTARGET)
 
 # for making a release we compile ALL target with no debug
 release:
-	@printf '\033[33mCompling for AmigaOS4...\033[1m$@\033[0m\n'
+	@echo "  CC $@"
 	make OS=os4 clean
 	make OS=os4 DEBUG=
-	@printf '\033[33mCompling for AmigaOS3...\033[1m$@\033[0m\n'
+	@echo "  CC $@"
 	make OS=os3 clean
 	make OS=os3 DEBUG=
-	@printf '\033[33mCompling for MorphOS...\033[1m$@\033[0m\n'
+	@echo "  CC $@"
 	make OS=mos clean
 	make OS=mos DEBUG=
 
 # make the object directories
 $(OBJDIR):
-	@printf '\033[33mGenerating $@ directory\033[0m\n'
+	@echo "  MK $@"
 	@$(MKDIR) $(OBJDIR)
 
 # make the binary directories
 $(BINDIR):
-	@printf '\033[33mGenerating $@ directory\033[0m\n'
+	@echo "  MKDIR $@"
 	@$(MKDIR) $(BINDIR)
 
 #
 
 $(OBJDIR)/%.o: %.c
-	@printf '\033[32mCompiling $<\033[0m\n'
+	@echo "  CC $<"
 	@$(CC) $(CFLAGS) $< -o $@
 
 $(OBJDIR)/mccclass_68k.o: ../../include/mccclass_68k.c
-	@printf '\033[32mCompiling $<\033[0m\n'
+	@echo "  CC $<"
 	@$(CC) $(CFLAGS) $< -o $@
 
 #
 
 $(MCCTARGET): $(M68KSTUBS) $(MCCOBJS)
-	@printf '\033[32mLinking \033[1m$@\033[0m\n'
+	@echo "  LD $@.debug"
 	@$(CC) -nostartfiles $(LDFLAGS) -o $@.debug $(MCCOBJS) $(M68KSTUBS) $(LDLIBS) -Wl,-Map,$@.map
+	@echo "  LD $@"
 	@$(STRIP) --preserve-dates -R.comment -R.sdata2 -S -o $@ $@.debug
 
 $(TESTTARGET): $(TESTOBJS)
-	@printf '\033[32mLinking \033[1m$@\033[0m\n'
+	@echo "  LD $@"
 	@$(CC) $(LDFLAGS) -o $@.debug $(TESTOBJS) $(LDLIBS) -Wl,-Map,$@.map
 	@$(STRIP) --preserve-dates -R.comment -R.sdata2 -S -o $@ $@.debug
 
