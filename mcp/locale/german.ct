@@ -1,5 +1,5 @@
 ## chunk AUTH Jens Langner
-## version $VER: Betterstring_mcp.ct 2.0 (06.03.07)
+## version $VER: Betterstring_mcp.ct 2.1 (11.01.09)
 ## language deutsch
 ## codeset 0
 ;
@@ -151,4 +151,20 @@ Lösche vorheriges/nächstes Wort
 ;
 MSG_Help_DeleteToPrevNextWord_Shortcut
 ALT + BACKSPACE/DELETE
+;
+MSG_SelectOnActive
+Auswahl bei Aktivierung:
+;
+MSG_HELP_SelectOnActive
+Wenn ausgewählt wird der Inhalt eines\n\
+BetterString Objektes automatisch selektiert\n\
+wenn es per TAB oder Mauszeiger aktiviert wird.
+;
+MSG_SelectPointer
+Auswahl-Mauszeiger:
+;
+MSG_HELP_SelectPointer
+Wenn ausgewählt wird ein spezieller Mauszeiger\n\
+dargestellt der das selektieren von Zeichen\n\
+vereinfachen soll.
 ;
