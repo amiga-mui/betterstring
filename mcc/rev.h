@@ -44,4 +44,4 @@
   #define CPU ""
 #endif
 
-#define LIB_COPYRIGHT  "Copyright (C) 2005-2008 BetterString.mcc Open Source Team"
+#define LIB_COPYRIGHT  "Copyright (C) 2005-2009 BetterString.mcc Open Source Team"

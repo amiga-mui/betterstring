@@ -124,6 +124,7 @@ struct InstData
 #define FLG_NoShortcuts    (1L << 14)
 #define FLG_ForceSelectOn  (1L << 15)
 #define FLG_ForceSelectOff (1L << 16)
+#define FLG_FreshActive    (1L << 17)
 
 // proper RAWKEY_ defines were first introduced in OS4 and MorphOS
 // and unfortunately they are also a bit different, so lets
