@@ -5,8 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.16 RELEASE ###########################################################
+
 2009-01-11 Jens Langner <Jens.Langner@light-speed.de>
 
+  * misc: final 11.16 release preparations
   * mcc/HandleInput.c, mcc/Disptacher.c: fixed the newly introduced SelectOnActive
     functionality by selecting all text only if the object has been gone
     active freshly and the user released the mouse button without any text
