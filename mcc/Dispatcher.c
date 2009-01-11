@@ -402,7 +402,10 @@ DISPATCHER(_Dispatcher)
     {
       struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
+      D(DBF_INPUT, "GoActive: %08lx", obj);
+
       setFlag(data->Flags, FLG_Active);
+      setFlag(data->Flags, FLG_FreshActive);
 /*
       DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
       setFlag(data->ehnode.ehn_Events, IDCMP_RAWKEY);
@@ -413,14 +416,6 @@ DISPATCHER(_Dispatcher)
 
       if((data->Original = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)))
         strlcpy(data->Original, data->Contents, strlen(data->Contents+1));
-
-      // make the whole string active if the user requested it
-      // via the SelectOnActive checkmark or if the developed forced it
-      if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
-         isFlagSet(data->Flags, FLG_ForceSelectOn))
-      {
-         DoMethod(obj, MUIM_BetterString_DoAction, MUIV_BetterString_DoAction_SelectAll);
-      }
 
       if(isFlagClear(data->Flags, FLG_OwnBackground))
         set(obj, MUIA_Background, data->ActiveBackground);
@@ -433,10 +428,13 @@ DISPATCHER(_Dispatcher)
     {
       struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
+      D(DBF_INPUT, "GoInActive: %08lx", obj);
+
       // clean an eventually marked block and the
       // active state flag of the gadget
       clearFlag(data->Flags, FLG_BlockEnabled);
       clearFlag(data->Flags, FLG_Active);
+      clearFlag(data->Flags, FLG_FreshActive);
 
 /*    DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
       clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);

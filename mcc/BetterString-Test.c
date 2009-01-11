@@ -105,7 +105,7 @@ int main(void)
     GETINTERFACE(IIFFParse, IFFParseBase))
   {
     struct MUI_CustomClass *mcc;
-    Object *a1, *a2, *app, *window, *bstring, *bpos, *ssize, *button, *numbutton;
+    Object *a1, *a2, *app, *window, *bstring, *bstring2, *bpos, *ssize, *button, *numbutton;
     Object *menu;
     const char *classes[] = {"BetterString.mcp", NULL};
 
@@ -225,7 +225,7 @@ int main(void)
                 MUIA_Font, MUIV_Font_Tiny,
                 MUIA_Text_Contents, "\33cRight-Aligned",
                 End,
-              Child, NewObject(mcc->mcc_Class, NULL,
+              Child, bstring2 = NewObject(mcc->mcc_Class, NULL,
                 MUIA_CycleChain, TRUE,
   //                  StringFrame,
                 MUIA_String_AdvanceOnCR, TRUE,
@@ -281,6 +281,9 @@ int main(void)
       DoMethod(ssize, MUIM_Notify, MUIA_Numeric_Value, MUIV_EveryTime, bstring, 3, MUIM_Set, MUIA_BetterString_SelectSize, MUIV_TriggerValue);
       DoMethod(button, MUIM_Notify, MUIA_Pressed, FALSE, bstring, 3, MUIM_BetterString_Insert, "*Test*", MUIV_BetterString_Insert_BufferPos);
       DoMethod(window, MUIM_Notify, MUIA_Window_CloseRequest, TRUE, MUIV_Notify_Application, 2, MUIM_Application_ReturnID, MUIV_Application_ReturnID_Quit);
+
+      set(bstring, MUIA_BetterString_KeyDownFocus, bstring2);
+      set(bstring2, MUIA_BetterString_KeyUpFocus, bstring);
 
       set(window, MUIA_Window_ActiveObject, bstring);
       set(window, MUIA_Window_DefaultObject, bstring);

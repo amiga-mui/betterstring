@@ -2,7 +2,7 @@
 
  BetterString.mcc - A better String gadget MUI Custom Class
  Copyright (C) 1997-2000 Allan Odgaard
- Copyright (C) 2005-2007 by BetterString.mcc Open Source Team
+ Copyright (C) 2005-2009 by BetterString.mcc Open Source Team
 
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -45,12 +45,9 @@
 #define ID_CHRS    MAKE_ID('C','H','R','S')
 #define ID_CSET    MAKE_ID('C','S','E','T')
 
-static BOOL BlockEnabled(struct InstData *data)
-{
-  return(isFlagSet(data->Flags, FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
-}
+#define BlockEnabled(data)  (isFlagSet((data)->Flags, FLG_BlockEnabled) && (data)->BlockStart != (data)->BlockStop)
 
-#if defined(__amigaos4__) || defined(__MORPHOS__)
+#if !defined(__m68k__)
 static int VARARGS68K MySPrintf(const char *buf, const char *fmt, ...)
 {
   VA_LIST args;
@@ -110,7 +107,7 @@ static WORD AlignOffset(Object *obj, struct InstData *data)
     textlength = TextLength(&data->rport, text, length);
 
     crsr_width = isFlagSet(data->Flags, FLG_Active) ? TextLength(&data->rport, (*(data->Contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(data->Contents+data->BufferPos), 1) : 0;
-    if(crsr_width && !BlockEnabled(data) && data->BufferPos == data->DisplayPos+StrLength)
+    if(crsr_width && BlockEnabled(data) == FALSE && data->BufferPos == data->DisplayPos+StrLength)
     {
       textlength += crsr_width;
     }
@@ -241,7 +238,8 @@ void strcpyback(STRPTR dest, STRPTR src)
 void DeleteBlock(struct InstData *data)
 {
   AddToUndo(data);
-  if(BlockEnabled(data))
+
+  if(BlockEnabled(data) == TRUE)
   {
     UWORD Blk_Start, Blk_Width;
     Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
@@ -260,7 +258,7 @@ static void CopyBlock(struct InstData *data)
     UWORD Blk_Start, Blk_Width;
     struct IFFHandle *iff;
 
-    if(BlockEnabled(data))
+    if(BlockEnabled(data) == TRUE)
     {
       Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
       Blk_Width = abs(data->BlockStop-data->BlockStart);
@@ -304,7 +302,7 @@ static void CutBlock(struct InstData *data)
 
   AddToUndo(data);
 
-  if(BlockEnabled(data))
+  if(BlockEnabled(data) == TRUE)
   {
     CopyBlock(data);
     DeleteBlock(data);
@@ -403,7 +401,7 @@ static void Paste(struct InstData *data)
                   // read the string from the clipboard
                   if((readBytes = ReadChunkBytes(iff, buffer, length)) > 0)
                   {
-	                 memset(buffer + readBytes, 0, length-readBytes+1);
+                    memset(buffer + readBytes, 0, length-readBytes+1);
 
                     #if defined(__MORPHOS__)
                     if (codeset == CODESET_UTF8)
@@ -452,10 +450,12 @@ static void UndoRedo(struct InstData *data)
 
   data->Contents = data->Undo;
   data->Undo = oldcontents;
+
   if(isFlagSet(data->Flags, FLG_RedoAvailable))
     clearFlag(data->Flags, FLG_RedoAvailable);
   else
     setFlag(data->Flags, FLG_RedoAvailable);
+
   clearFlag(data->Flags, FLG_BlockEnabled);
   data->BufferPos = data->UndoPos;
   data->UndoPos = oldpos;
@@ -836,7 +836,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
   }
   else if(msg->imsg)
   {
-    WORD StringLength = strlen(data->Contents);
+    ULONG StringLength = strlen(data->Contents);
 
     if(msg->imsg->Class == IDCMP_RAWKEY &&
 //       msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
@@ -1245,6 +1245,22 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
     }
     else
     {
+      D(DBF_INPUT, "%08lx: keycode: %08lx (%ld) %08lx (%ld)", obj, msg->imsg->Code, isFlagSet(data->Flags, FLG_Active), RAWKEY_TAB, msg->imsg->Code <= IECODE_KEY_CODE_LAST);
+
+      // check if the user pressed the TAB key for cycling to the next
+      // mui object and if this object is part of the cyclechain
+      if(msg->imsg->Class == IDCMP_RAWKEY && isFlagSet(data->Flags, FLG_Active) && isFlagSet(data->Flags, FLG_FreshActive))
+      {
+        if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
+          isFlagSet(data->Flags, FLG_ForceSelectOn))
+        {
+          DoMethod(obj, MUIM_BetterString_DoAction, MUIV_BetterString_DoAction_SelectAll);
+        }
+
+        // clear the FreshActive flag
+        clearFlag(data->Flags, FLG_FreshActive);
+      }
+
       // we check if this is a mousemove input message and if
       // so we check whether the mouse is currently over our
       // texteditor object or not.
@@ -1295,6 +1311,14 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
           }
 
+          // make sure to select the whole betterstring content in case
+          // the objec was freshly active and the user pressed the mousebutton
+          if(isFlagSet(data->Flags, FLG_FreshActive) && BlockEnabled(data) == FALSE &&
+             ((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) || isFlagSet(data->Flags, FLG_ForceSelectOn)))
+          {
+            DoMethod(obj, MUIM_BetterString_DoAction, MUIV_BetterString_DoAction_SelectAll);
+          }
+
 #ifdef ALLOW_OUTSIDE_MARKING
           if(isFlagSet(data->Flags, FLG_Active) && isFlagSet(data->Flags, FLG_DragOutside))
           {
@@ -1315,6 +1339,9 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             }
           }
 #endif
+
+          // clear the FreshActive flag
+          clearFlag(data->Flags, FLG_FreshActive);
         }
         else if(msg->imsg->Code == IECODE_LBUTTON)
         {

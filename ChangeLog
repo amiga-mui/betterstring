@@ -5,6 +5,15 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-01-11 Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcc/HandleInput.c, mcc/Disptacher.c: fixed the newly introduced SelectOnActive
+    functionality by selecting all text only if the object has been gone
+    active freshly and the user released the mouse button without any text
+    manually selected. This should make the behaviour of a BetterString object
+    more consistent to what a string object is supposed to do with the
+    SelectOnActive feature enabled.
+
 2008-12-31 Ilkka Lehtoranta <ilkleht@isoveli.org>
 
   * mcc/HandleInput: when pasting text clear only the tail of the buffer.
