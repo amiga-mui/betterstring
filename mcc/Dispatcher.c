@@ -411,11 +411,20 @@ DISPATCHER(_Dispatcher)
       setFlag(data->ehnode.ehn_Events, IDCMP_RAWKEY);
       DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 */
-      if(data->Original)
+      if(data->Original != NULL)
         MyFreePooled(data->Pool, (APTR)data->Original);
 
-      if((data->Original = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)))
+      if((data->Original = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)) != NULL)
         strlcpy(data->Original, data->Contents, strlen(data->Contents+1));
+
+      // select everything if this is necessary or requested
+      if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
+         isFlagSet(data->Flags, FLG_ForceSelectOn))
+      {
+        data->BlockStart = 0;
+        data->BlockStop = strlen(data->Contents);
+        setFlag(data->Flags, FLG_BlockEnabled);
+      }
 
       if(isFlagClear(data->Flags, FLG_OwnBackground))
         set(obj, MUIA_Background, data->ActiveBackground);

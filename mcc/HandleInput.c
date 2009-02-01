@@ -661,6 +661,8 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
 
   ENTER();
 
+  D(DBF_INPUT, "DoAction(%ld)", msg->action);
+
   switch(msg->action)
   {
     case MUIV_BetterString_DoAction_Cut:
@@ -794,7 +796,7 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
     break;
   }
 
-  if(edited)
+  if(edited == TRUE)
   {
     struct TagItem tags[] =
     {
@@ -1251,14 +1253,10 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
       // mui object and if this object is part of the cyclechain
       if(msg->imsg->Class == IDCMP_RAWKEY && isFlagSet(data->Flags, FLG_Active) && isFlagSet(data->Flags, FLG_FreshActive))
       {
-        if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
-          isFlagSet(data->Flags, FLG_ForceSelectOn))
-        {
-          DoMethod(obj, MUIM_BetterString_DoAction, MUIV_BetterString_DoAction_SelectAll);
-        }
-
         // clear the FreshActive flag
         clearFlag(data->Flags, FLG_FreshActive);
+        // no need to do an DoAction(SelectAll), because this effectively has been
+        // done during MUIM_GoActive already
       }
 
       // we check if this is a mousemove input message and if
