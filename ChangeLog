@@ -5,6 +5,14 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-02-01 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/Dispatcher.c, mcc/HandleInput.c: if the SelectOnActive feature was
+    active and the object was activated either by the programmers request (i.e.
+    by setting MUIA_Window_ActiveObject) the object will now correctly select
+    the complete string, instead of doing this right after the first keypress.
+    This should fix bug #2504286.
+
 #### v11.16 RELEASE ###########################################################
 
 2009-01-11 Jens Langner <Jens.Langner@light-speed.de>
