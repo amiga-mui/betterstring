@@ -68,10 +68,11 @@ static VOID ClassExpunge(UNUSED struct Library *base);
 /******************************************************************************/
 /* define all implementations of our user functions                           */
 /******************************************************************************/
+
 static BOOL ClassInit(UNUSED struct Library *base)
 {
   if((KeymapBase = OpenLibrary("keymap.library", 37)) &&
-     GETINTERFACE(IKeymap, struct KeymapIFace*, KeymapBase))
+     GETINTERFACE(IKeymap, struct KeymapIFace *, KeymapBase))
   {
     return(TRUE);
   }
@@ -89,3 +90,4 @@ static VOID ClassExpunge(UNUSED struct Library *base)
     KeymapBase = NULL;
   }
 }
+

@@ -36,24 +36,24 @@
 
 enum
 {
-	ActiveBack = 0,
-	ActiveText,
-	InactiveBack,
-	InactiveText,
-	Cursor,
-	MarkedBack,
-	MarkedText,
-	Font,
-	Frame,
+  ActiveBack = 0,
+  ActiveText,
+  InactiveBack,
+  InactiveText,
+  Cursor,
+  MarkedBack,
+  MarkedText,
+  Font,
+  Frame,
   SelectOnActive,
   SelectPointer,
 
-	NumberOfObject
+  NumberOfObject
 };
 
 struct InstData_MCP
 {
-	Object *Objects[NumberOfObject];
+  Object *Objects[NumberOfObject];
 };
 
 Object *CreatePrefsGroup(struct InstData_MCP *data);
