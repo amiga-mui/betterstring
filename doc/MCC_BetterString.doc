@@ -57,7 +57,7 @@ BetterString.mcc/MUIM_BetterString_Insert
         Set the text which will be displayed if no other text is to be displayed
         and the string gadget is inactive. The text will be shown in an italic
         style. The supplied text will NOT be copied by BetterString.mcc!! Upon
-        OM_GET the retured pointer is READ-ONLY!!
+        OM_GET the returned pointer is READ-ONLY!!
 
 BetterString.mcc/MUIA_BetterString_KeyUpFocus
 
