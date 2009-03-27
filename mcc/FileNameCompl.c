@@ -217,27 +217,32 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
       case MUIR_BetterString_FileNameStart_Volume:
       {
         struct DosList *dl;
-        STRPTR VolumeName = NULL;
+        STRPTR volumeName = NULL;
+        char tmpBuffer[256];
         UWORD cut;
 
         pos = VolumeStart(data->Contents, data->BufferPos);
-        if((cut = data->BufferPos-pos))
+        if((cut = data->BufferPos-pos) != 0)
         {
           dl = LockDosList(LDF_READ|LDF_DEVICES|LDF_VOLUMES|LDF_ASSIGNS);
-          while((dl = NextDosEntry(dl, LDF_READ|LDF_DEVICES|LDF_VOLUMES|LDF_ASSIGNS)))
+          while((dl = NextDosEntry(dl, LDF_READ|LDF_DEVICES|LDF_VOLUMES|LDF_ASSIGNS)) != NULL)
           {
-            STRPTR NodeName = (STRPTR)((dl->dol_Name << 2)+1);
+            // dol_Name is a BSTR, we have to convert it to a regular C string
+            char *bstr = BADDR(dl->dol_Name);
 
-            if(!Strnicmp(NodeName, data->Contents+pos, cut))
+            // a BSTR cannot exceed 255 characters, hence the buffer size of 256 is enough in any case
+            strlcpy(tmpBuffer, &bstr[1], (unsigned char)bstr[0]);
+
+            if(Strnicmp(tmpBuffer, data->Contents+pos, cut) == 0)
             {
-              VolumeName = NodeName;
+              volumeName = tmpBuffer;
               break;
             }
           }
 
-          if(VolumeName)
+          if(volumeName != NULL)
           {
-            if(OverwriteA(VolumeName, pos, cut, *(VolumeName-1)+1, data))
+            if(OverwriteA(volumeName, pos, cut, strlen(volumeName)+1, data))
               data->Contents[data->BufferPos-1] = ':';
             edited = TRUE;
           }
