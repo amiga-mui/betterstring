@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-03-27 Jens Langner <Jens.Langner@light-speed.de>
+
+  * misc: first preparation for a direct AROS cross-compiler compilation.
+
 2009-03-27 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/FileNameCompl.c: changed to unsafe BSTR conversion to something more

@@ -44,7 +44,11 @@ struct Library *KeymapBase = NULL;
 #else
 struct IntuitionBase *IntuitionBase = NULL;
 struct Library *MUIMasterBase = NULL;
+#if defined(__AROS__)
+struct UtilityBase *UtilityBase = NULL;
+#else
 struct Library *UtilityBase = NULL;
+#endif
 struct Library *KeymapBase = NULL;
 #endif
 

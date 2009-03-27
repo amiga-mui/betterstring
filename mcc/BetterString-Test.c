@@ -60,7 +60,11 @@ struct IntuitionBase *IntuitionBase = NULL;
 struct Library *MUIMasterBase = NULL;
 struct Library *LayersBase = NULL;
 struct Library *LocaleBase = NULL;
+#if defined(__AROS__)
+struct UtilityBase *UtilityBase = NULL;
+#else
 struct Library *UtilityBase = NULL;
+#endif
 struct Library *KeymapBase = NULL;
 struct Library *IFFParseBase = NULL;
 #endif
