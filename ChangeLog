@@ -7,6 +7,8 @@ $URL$
 
 2009-03-27 Jens Langner <Jens.Langner@light-speed.de>
 
+  * misc: fixed the linker options to have everything properly linkable with
+    the latest AROS SDK.
   * misc: first preparation for a direct AROS cross-compiler compilation.
 
 2009-03-27 Thore Böckelmann <tboeckel@gmx.de>
