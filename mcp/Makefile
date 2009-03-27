@@ -242,7 +242,7 @@ ifeq ($(OS), aros-i386)
 
   # Compiler/Linker flags
   CFLAGS += -Wno-pointer-sign -DNO_INLINE_STDARG
-  LDLIBS += -lrom
+  LDLIBS += -larossupport -lrom -lmui
 
 else
 ifeq ($(OS), aros-ppc)
@@ -258,7 +258,7 @@ ifeq ($(OS), aros-ppc)
 
   # Compiler/Linker flags
   CFLAGS += -Wno-pointer-sign -DNO_INLINE_STDARG
-  LDLIBS += -lrom
+  LDLIBS += -larossupport -lrom -lmui
 
 else
 ifeq ($(OS), aros-x86_64)
@@ -274,7 +274,7 @@ ifeq ($(OS), aros-x86_64)
 
   # Compiler/Linker flags
   CFLAGS += -Wno-pointer-sign -DNO_INLINE_STDARG
-  LDLIBS += -lrom
+  LDLIBS += -larossupport -lrom -lmui
 
 endif
 endif
