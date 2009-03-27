@@ -54,7 +54,11 @@ struct Library *UtilityBase = NULL;
 struct IntuitionBase *IntuitionBase = NULL;
 struct Library *MUIMasterBase = NULL;
 struct LocaleBase *LocaleBase = NULL;
+#if defined(__AROS__)
+struct UtilityBase *UtilityBase = NULL;
+#else
 struct Library *UtilityBase = NULL;
+#endif
 #endif
 
 #if defined(__amigaos4__)
