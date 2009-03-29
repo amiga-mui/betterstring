@@ -29,7 +29,7 @@
 #include "HotkeyString_mcc.h"
 
 #include "private.h"
-#include "rev.h"
+#include "version.h"
 
 ULONG  Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 {
