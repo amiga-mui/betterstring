@@ -373,7 +373,7 @@ $(PREFTARGET): $(PREFOBJS) $(OBJDIR)/Preference.o
 	@$(STRIP) --preserve-dates -R.comment -R.sdata2 -S -o $@ $@.debug
 
 $(OBJDIR)/library.o: library.c ../include/mccinit.c \
-  ../mcc/BetterString_mcc.h private.h icon.bh BetterString_mcp.h rev.h
+  ../mcc/BetterString_mcc.h private.h icon.bh BetterString_mcp.h version.h
 
 locale.h: locale.c
 locale.c: locale/BetterString_mcp.cd C_h.sd C_c.sd

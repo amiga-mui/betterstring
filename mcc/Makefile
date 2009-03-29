@@ -372,7 +372,7 @@ $(TESTTARGET): $(TESTOBJS)
 	@echo "  LD $@"
 	@$(STRIP) --preserve-dates -R.comment -R.sdata2 -S -o $@ $@.debug
 
-$(OBJDIR)/library.o: library.c ../include/mccinit.c private.h rev.h
+$(OBJDIR)/library.o: library.c ../include/mccinit.c private.h version.h
 
 #
 

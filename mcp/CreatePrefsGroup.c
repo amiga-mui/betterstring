@@ -31,7 +31,7 @@
 #include "locale.h"
 #include "private.h"
 #include "muiextra.h"
-#include "rev.h"
+#include "version.h"
 
 const char *Key4[]  = { "Amiga + z", "Undo ralast deletion" };
 const char *Key5[]  = { "Amiga + Z", "Redo last deletion" };

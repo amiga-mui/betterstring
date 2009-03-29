@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-03-29 Jens Langner <Jens.Langner@light-speed.de>
+
+  * version.h: renamed the rev.h file to version.h in each subdirectory and
+    updated it with a more flexible version, system and cpu identification
+    model.
+
 2009-03-27 Jens Langner <Jens.Langner@light-speed.de>
 
   * misc: fixed the linker options to have everything properly linkable with
