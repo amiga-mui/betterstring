@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-04-20 Pär Boberg <pbobbenb@spray.se>
+
+  * mcp/locale/swedish.ct: updated according to changes.
+
 2009-04-17 Jens Langner <Jens.Langner@light-speed.de>
 
   * defines/mccclass.h: updated AROS defines header after regeneration with
