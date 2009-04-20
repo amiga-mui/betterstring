@@ -1,6 +1,6 @@
 ## chunk AUTH Pär Boberg
 ## language svenska
-## version $VER: BetterString_mcp.ct 2.1 (01.09.07)
+## version $VER: BetterString_mcp.ct 2.2 (20.04.09)
 MSG_Label_Active
 Aktiv:
 ;#DEF Active:
@@ -181,3 +181,19 @@ MSG_Help_DeleteToPrevNextWord_Shortcut
 ALT + BACKSPACE/DELETE
 ;#DEF ALT + BACKSPACE/DELETE
 ;#SET (44//)
+MSG_SelectOnActive
+Markera när aktiv:
+;#DEF Select on Active:
+;#SET (45//)
+MSG_HELP_SelectOnActive
+Markera automatiskt all text när ett\nBetterString objekt blir aktivt, via\nTAB cykling eller mus aktivering.
+;#DEF Automatically select all text when a\nBetterString object gets activated\nvia TAB cycling or mouse activation.
+;#SET (46//)
+MSG_SelectPointer
+Markeringspekare:
+;#DEF Selection Pointer:
+;#SET (47//)
+MSG_HELP_SelectPointer
+Om vald, kommer en specialpekare att visas\nnär muspekaren är ovanför ett betterstring objekt.
+;#DEF If enabled, a custom selection pointer will appear\nwhen the mouse pointer is above a betterstring gadget.
+;#SET (48//)
