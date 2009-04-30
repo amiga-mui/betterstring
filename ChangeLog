@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-04-30 Thore Böckelmann <tboeckel@gmx.de>
+
+  * include/SDI_lib.h: updated to the latest version.
+
 2009-04-20 Pär Boberg <pbobbenb@spray.se>
 
   * mcp/locale/swedish.ct: updated according to changes.
