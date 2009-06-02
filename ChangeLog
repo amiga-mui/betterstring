@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-06-02 Jens Langner <Jens.Langner@light-speed.de>
+
+  * misc: fixed several compiler warning when compiling for AROS and updated
+    the SDI headers accordingly.
+
 2009-05-04 Thore Böckelmann <tboeckel@gmx.de>
 
   * include/SDI_lib.h: updated to the latest version.

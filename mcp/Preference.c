@@ -70,9 +70,9 @@ struct UtilityIFace *IUtility = NULL;
 
 extern DISPATCHERPROTO(_DispatcherP);
 
-int  main(void)
+int main(void)
 {
-  if((UtilityBase = OpenLibrary("utility.library", 38)) &&
+  if((UtilityBase = (APTR)OpenLibrary("utility.library", 38)) &&
     GETINTERFACE(IUtility, UtilityBase))
   if((IntuitionBase = (APTR)OpenLibrary("intuition.library", 38)) &&
     GETINTERFACE(IIntuition, IntuitionBase))
@@ -160,7 +160,7 @@ int  main(void)
   if(UtilityBase)
   {
     DROPINTERFACE(IUtility);
-    CloseLibrary(UtilityBase);
+    CloseLibrary((struct Library *)UtilityBase);
   }
 
   return 0;

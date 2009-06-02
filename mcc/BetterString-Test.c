@@ -101,7 +101,7 @@ int main(void)
     GETINTERFACE(ILocale, LocaleBase))
   if((LayersBase = OpenLibrary("layers.library", 38)) &&
     GETINTERFACE(ILayers, LayersBase))
-  if((UtilityBase = OpenLibrary("utility.library", 38)) &&
+  if((UtilityBase = (APTR)OpenLibrary("utility.library", 38)) &&
     GETINTERFACE(IUtility, UtilityBase))
   if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
     GETINTERFACE(IMUIMaster, MUIMasterBase))
@@ -324,7 +324,7 @@ int main(void)
   if(UtilityBase)
   {
     DROPINTERFACE(IUtility);
-    CloseLibrary(UtilityBase);
+    CloseLibrary((struct Library *)UtilityBase);
   }
 
   if(LayersBase)
