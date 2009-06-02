@@ -1391,13 +1391,13 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                 if(data->Contents[data->BufferPos] != '\0')
                 {
                   UWORD start = data->BufferPos;
-                  UWORD  stop  = data->BufferPos;
-                  BOOL alpha = IsAlNum(data->locale, (UBYTE)*(data->Contents+data->BufferPos));
+                  UWORD stop  = data->BufferPos;
+                  ULONG alpha = IsAlNum(data->locale, (UBYTE)*(data->Contents+data->BufferPos));
 
-                  while(start > 0 && alpha == IsAlNum(data->locale, (UBYTE)*(data->Contents+start-1)))
+                  while(start > 0 && alpha == (ULONG)IsAlNum(data->locale, (UBYTE)*(data->Contents+start-1)))
                     start--;
 
-                  while(alpha == IsAlNum(data->locale, (UBYTE)*(data->Contents+stop)) && *(data->Contents+stop) != '\0')
+                  while(alpha == (ULONG)IsAlNum(data->locale, (UBYTE)*(data->Contents+stop)) && *(data->Contents+stop) != '\0')
                     stop++;
 
                   data->BlockStart = start;

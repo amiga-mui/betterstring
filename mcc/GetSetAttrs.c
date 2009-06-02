@@ -173,7 +173,7 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
   tags = msg->ops_AttrList;
   data->Flags = PackBoolTags(data->Flags, tags, boolMap);
 
-  while((tag = NextTagItem(&tags)))
+  while((tag = NextTagItem((APTR)&tags)))
   {
     ti_Data = tag->ti_Data;
     switch(tag->ti_Tag)
@@ -205,7 +205,7 @@ ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
         // we are using snprintf() here not only to be on the safe
         // side, but also because modern C runtime libraries should definitly
         // support it!
-        snprintf(IntegerString, 12, "%ld", ti_Data);
+        snprintf(IntegerString, sizeof(IntegerString), "%d", (int)ti_Data);
         ti_Data = (ULONG)IntegerString;
 
         // The missing break is intended!
