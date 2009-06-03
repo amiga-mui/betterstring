@@ -71,7 +71,7 @@ int main(void)
     GETINTERFACE(IIntuition, IntuitionBase))
   if((KeymapBase = OpenLibrary("keymap.library", 37)) &&
     GETINTERFACE(IKeymap, KeymapBase))
-  if((UtilityBase = OpenLibrary("utility.library", 38)) &&
+  if((UtilityBase = (APTR)OpenLibrary("utility.library", 38)) &&
     GETINTERFACE(IUtility, UtilityBase))
   if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
     GETINTERFACE(IMUIMaster, MUIMasterBase))
@@ -140,7 +140,7 @@ int main(void)
       set(window, MUIA_Window_ActiveObject, bstring);
       set(window, MUIA_Window_Open, TRUE);
 
-      while((LONG)DoMethod(app, MUIM_Application_NewInput, &sigs) != MUIV_Application_ReturnID_Quit)
+      while((LONG)DoMethod(app, MUIM_Application_NewInput, &sigs) != (LONG)MUIV_Application_ReturnID_Quit)
       {
         if(sigs)
         {
@@ -162,7 +162,7 @@ int main(void)
   if(UtilityBase)
   {
     DROPINTERFACE(IUtility);
-    CloseLibrary(UtilityBase);
+    CloseLibrary((struct Library *)UtilityBase);
   }
 
   if(KeymapBase)

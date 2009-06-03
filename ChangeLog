@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-06-03 Jens Langner <Jens.Langner@light-speed.de>
+
+  * misc: added dependeny files to our build system and fixed another bunch of
+    AROS related compiler warnings/issues.
+
 2009-06-02 Jens Langner <Jens.Langner@light-speed.de>
 
   * misc: fixed several compiler warning when compiling for AROS and updated
