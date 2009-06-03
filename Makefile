@@ -21,11 +21,15 @@
 #***************************************************************************/
 
 .PHONY: all
-all: mcc mcp
+all: mcc hotkeystring mcp
 
 .PHONY: mcc
 mcc:
 	@$(MAKE) -C mcc --no-print-directory
+
+.PHONY: hotkeystring
+hotkeystring:
+	@$(MAKE) -C mcc/hotkeystring --no-print-directory
 
 .PHONY: mcp
 mcp:
@@ -34,14 +38,17 @@ mcp:
 .PHONY: clean
 clean:
 	@$(MAKE) -C mcc --no-print-directory clean
+	@$(MAKE) -C mcc/hotkeystring --no-print-directory clean
 	@$(MAKE) -C mcp --no-print-directory clean
 
 .PHONY: cleanall
 cleanall:
 	@$(MAKE) -C mcc --no-print-directory cleanall
+	@$(MAKE) -C mcc/hotkeystring --no-print-directory cleanall
 	@$(MAKE) -C mcp --no-print-directory cleanall
 
 .PHONY: install
 install:
 	@$(MAKE) -C mcc --no-print-directory install
+	@$(MAKE) -C mcc/hotkeystring --no-print-directory install
 	@$(MAKE) -C mcp --no-print-directory install
