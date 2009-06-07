@@ -47,7 +47,7 @@
 
 #define BlockEnabled(data)  (isFlagSet((data)->Flags, FLG_BlockEnabled) && (data)->BlockStart != (data)->BlockStop)
 
-#if !defined(__m68k__)
+#if defined(__amigaos4__) || defined(__MORPHOS__)
 static int VARARGS68K MySPrintf(const char *buf, const char *fmt, ...)
 {
   VA_LIST args;
@@ -58,6 +58,8 @@ static int VARARGS68K MySPrintf(const char *buf, const char *fmt, ...)
 
   return(strlen(buf));
 }
+#elif defined(__AROS__)
+#define MySPrintf __sprintf /* from amiga lib */
 #else
 static int STDARGS MySPrintf(const char *buf, const char *fmt, ...)
 {
