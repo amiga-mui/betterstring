@@ -111,7 +111,7 @@ struct InstData
 #endif
 
 // prototypes
-ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg);
+IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg);
 
 #define setFlag(mask, flag)             (mask) |= (flag)
 #define clearFlag(mask, flag)           (mask) &= ~(flag)

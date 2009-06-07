@@ -271,7 +271,7 @@ static void CopyBlock(struct InstData *data)
 
     if((iff = AllocIFF()) != NULL)
     {
-      if((iff->iff_Stream = (ULONG)OpenClipboard(0)) != 0)
+      if((iff->iff_Stream = (IPTR)OpenClipboard(0)) != 0)
       {
         InitIFFasClip(iff);
 
@@ -351,7 +351,7 @@ static void Paste(struct InstData *data)
 
   if((iff = AllocIFF()) != NULL)
   {
-    if((iff->iff_Stream = (ULONG)OpenClipboard(0)) != 0)
+    if((iff->iff_Stream = (IPTR)OpenClipboard(0)) != 0)
     {
       InitIFFasClip(iff);
 
@@ -653,10 +653,10 @@ ULONG ConvertKey(struct IntuiMessage *imsg)
   return(code);
 }
 
-ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction *msg)
+IPTR mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-  ULONG result = FALSE;
+  IPTR result = FALSE;
   BOOL edited = FALSE;
 
   ENTER();
@@ -813,12 +813,12 @@ ULONG mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoActio
   return result;
 }
 
-ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
+IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct MUI_AreaData *ad = muiAreaData(obj);
   struct TextFont *Font = data->Font ? data->Font : ad->mad_Font;
-  ULONG  result = 0;
+  IPTR  result = 0;
   BOOL  movement = FALSE;
   BOOL  edited = FALSE;
   BOOL  FNC = FALSE;
@@ -1226,7 +1226,7 @@ ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
         {
           struct TagItem tags[] =
           {
-            { MUIA_String_Contents, (ULONG)data->Contents },
+            { MUIA_String_Contents, (IPTR)data->Contents },
             { TAG_DONE,             0                     }
           };
 

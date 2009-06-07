@@ -58,17 +58,17 @@ extern "C" {
 #define BetterStringMcpObject MUI_NewObject(MUIC_BetterString_mcp
 #endif
 
-#define MUICFG_BetterString_ActiveBack      0xad000302
-#define MUICFG_BetterString_ActiveText      0xad000303
-#define MUICFG_BetterString_InactiveBack    0xad000300
-#define MUICFG_BetterString_InactiveText    0xad000301
-#define MUICFG_BetterString_Cursor          0xad000304
-#define MUICFG_BetterString_MarkedBack      0xad000305
-#define MUICFG_BetterString_MarkedText      0xad000308
-#define MUICFG_BetterString_Font            0xad000306
-#define MUICFG_BetterString_Frame           0xad000307
-#define MUICFG_BetterString_SelectOnActive  0xad000308
-#define MUICFG_BetterString_SelectPointer   0xad000309
+#define MUICFG_BetterString_ActiveBack      0xad000302UL
+#define MUICFG_BetterString_ActiveText      0xad000303UL
+#define MUICFG_BetterString_InactiveBack    0xad000300UL
+#define MUICFG_BetterString_InactiveText    0xad000301UL
+#define MUICFG_BetterString_Cursor          0xad000304UL
+#define MUICFG_BetterString_MarkedBack      0xad000305UL
+#define MUICFG_BetterString_MarkedText      0xad000308UL
+#define MUICFG_BetterString_Font            0xad000306UL
+#define MUICFG_BetterString_Frame           0xad000307UL
+#define MUICFG_BetterString_SelectOnActive  0xad000308UL
+#define MUICFG_BetterString_SelectPointer   0xad000309UL
 
 #if !defined(__AROS__) && defined(__PPC__)
   #if defined(__GNUC__)

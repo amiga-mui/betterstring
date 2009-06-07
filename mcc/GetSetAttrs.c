@@ -34,52 +34,52 @@
 #include "private.h"
 #include "version.h"
 
-ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
+IPTR Get(struct IClass *cl, Object *obj, struct opGet *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-  ULONG ti_Data;
+  IPTR ti_Data;
 
   switch(msg->opg_AttrID)
   {
     case MUIA_Font:
-      ti_Data = (ULONG)(data->Font ? data->Font : muiAreaData(obj)->mad_Font);
+      ti_Data = (IPTR)(data->Font ? data->Font : muiAreaData(obj)->mad_Font);
     break;
 
     case MUIA_ControlChar:
-      ti_Data = (ULONG)data->CtrlChar;
+      ti_Data = (IPTR)data->CtrlChar;
     break;
 
     case MUIA_String_AttachedList:
-      ti_Data = (ULONG)data->ForwardObject;
+      ti_Data = (IPTR)data->ForwardObject;
     break;
 
     case MUIA_String_BufferPos:
-      ti_Data = (ULONG)data->BufferPos;
+      ti_Data = (IPTR)data->BufferPos;
     break;
 
     case MUIA_String_Acknowledge:
     case MUIA_String_Contents:
-      ti_Data = (ULONG)data->Contents;
+      ti_Data = (IPTR)data->Contents;
     break;
 
     case MUIA_String_DisplayPos:
-      ti_Data = (ULONG)data->DisplayPos;
+      ti_Data = (IPTR)data->DisplayPos;
     break;
 
     case MUIA_String_Format:
-      ti_Data = (ULONG)data->Alignment;
+      ti_Data = (IPTR)data->Alignment;
     break;
 
     case MUIA_String_Integer:
-      StrToLong(data->Contents, (LONG *)&ti_Data);
+      StrToLong(data->Contents, (ULONG *)&ti_Data);
     break;
 
     case MUIA_String_MaxLen:
-      ti_Data = (ULONG)data->MaxLength;
+      ti_Data = (IPTR)data->MaxLength;
     break;
 
     case MUIA_String_Reject:
-      ti_Data = (ULONG)data->Reject;
+      ti_Data = (IPTR)data->Reject;
     break;
 
     case MUIA_String_Secret:
@@ -87,7 +87,7 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
     break;
 
     case MUIA_String_EditHook:
-      ti_Data = (ULONG)data->EditHook;
+      ti_Data = (IPTR)data->EditHook;
     break;
 
     case MUIA_String_AdvanceOnCR:
@@ -95,11 +95,11 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
     break;
 
     case MUIA_BetterString_KeyUpFocus:
-      ti_Data = (ULONG)data->KeyUpFocus;
+      ti_Data = (IPTR)data->KeyUpFocus;
     break;
 
     case MUIA_BetterString_KeyDownFocus:
-      ti_Data = (ULONG)data->KeyDownFocus;
+      ti_Data = (IPTR)data->KeyDownFocus;
     break;
 
     case MUIA_BetterString_SelectSize:
@@ -115,7 +115,7 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
     break;
 
     case MUIA_BetterString_InactiveContents:
-      ti_Data = (ULONG)data->InactiveContents;
+      ti_Data = (IPTR)data->InactiveContents;
     break;
 
     case MUIA_BetterString_NoShortcuts:
@@ -152,12 +152,12 @@ ULONG Get(struct IClass *cl, Object *obj, struct opGet *msg)
   return TRUE;
 }
 
-ULONG Set(struct IClass *cl, Object *obj, struct opSet *msg)
+IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct TagItem *tags, *tag;
   char IntegerString[12];
-  ULONG ti_Data;
+  IPTR ti_Data;
 
   struct TagItem boolMap[] =
   {

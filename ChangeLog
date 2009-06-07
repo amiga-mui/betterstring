@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-06-07 Matthias Rustler <mrustler@gmx.de>
+
+  * AROS metamakefiles added.
+  * Some 64-bit fixes.
+  * BetterString-Test.c: foul language removed.
+
 2009-06-03 Jens Langner <Jens.Langner@light-speed.de>
 
   * misc: added dependeny files to our build system and fixed another bunch of

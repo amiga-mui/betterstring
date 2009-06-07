@@ -37,7 +37,8 @@ struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG width), REG(d1, LONG he
 {
   #if defined(__amigaos4__)
   return AllocBitMap(width,height,depth,flags,friend);
-  #elif defined(__MORPHOS__)
+  #elif defined(__MORPHOS__) || defined(__AROS__)
+  // FIXME: check if this is correct for AROS
   return AllocBitMap(width,height,depth,flags|BMF_MINPLANES|BMF_DISPLAYABLE,friend);
   #else
   if(USE_OS3)
@@ -84,7 +85,7 @@ struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG width), REG(d1, LONG he
 
 VOID SAVEDS ASM MUIG_FreeBitMap(REG(a0, struct BitMap *bm))
 {
-  #if defined(__amigaos4__) || defined(__MORPHOS__)
+  #if defined(__amigaos4__) || defined(__MORPHOS__) || defined(__AROS__)
   FreeBitMap(bm);
   #else
   WaitBlit(); /* OCS/AGA require manual synchronisation */
