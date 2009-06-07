@@ -10,6 +10,7 @@ $URL$
   * AROS metamakefiles added.
   * Some 64-bit fixes.
   * BetterString-Test.c: foul language removed.
+  * Re-added some fixes from previous AROS port.
 
 2009-06-03 Jens Langner <Jens.Langner@light-speed.de>
 
