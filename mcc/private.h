@@ -197,13 +197,13 @@ struct InstData
 
 // our prototypes
 VOID PrintString(struct IClass *, Object *);
-ULONG HandleInput(struct IClass *, Object *, struct MUIP_HandleEvent *);
+IPTR HandleInput(struct IClass *, Object *, struct MUIP_HandleEvent *);
 ULONG ConvertKey(struct IntuiMessage *);
 VOID DeleteBlock(struct InstData *);
 
-ULONG Get(struct IClass *, Object *, struct opGet *);
-ULONG Set(struct IClass *, Object *, struct opSet *);
-ULONG mDoAction(struct IClass *, Object *, struct MUIP_BetterString_DoAction *);
+IPTR Get(struct IClass *, Object *, struct opGet *);
+IPTR Set(struct IClass *, Object *, struct opSet *);
+IPTR mDoAction(struct IClass *, Object *, struct MUIP_BetterString_DoAction *);
 
 APTR MyAllocPooled(APTR, ULONG);
 VOID MyFreePooled(APTR, APTR);

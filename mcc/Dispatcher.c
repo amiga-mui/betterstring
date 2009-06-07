@@ -64,7 +64,7 @@ struct NewMenu PopupMenuData[] =
 //struct  MUIP_Backfill { ULONG MethodID; LONG left; LONG top; LONG right; LONG bottom; LONG xoffset; LONG yoffset; };
 //#endif
 
-ULONG  New(struct IClass *cl, Object *obj, struct opSet *msg)
+IPTR  New(struct IClass *cl, Object *obj, struct opSet *msg)
 {
   if((obj = (Object *)DoSuperMethodA(cl, obj, (Msg)msg)))
   {
@@ -112,14 +112,14 @@ ULONG  New(struct IClass *cl, Object *obj, struct opSet *msg)
       msg->MethodID = OM_NEW;
       data->BufferPos = 0;
 
-      return((ULONG)obj);
+      return((IPTR)obj);
     }
     CoerceMethod(cl, obj, OM_DISPOSE);
   }
   return(FALSE);
 }
 
-ULONG  Dispose(struct IClass *cl, Object *obj, Msg msg)
+IPTR  Dispose(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -147,7 +147,7 @@ ULONG  Dispose(struct IClass *cl, Object *obj, Msg msg)
   return(DoSuperMethodA(cl, obj, msg));
 }
 
-ULONG Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
+IPTR Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -193,7 +193,7 @@ ULONG Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
   return(FALSE);
 }
 
-ULONG Cleanup(struct IClass *cl, Object *obj, Msg msg)
+IPTR Cleanup(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -218,7 +218,7 @@ ULONG Cleanup(struct IClass *cl, Object *obj, Msg msg)
   return(DoSuperMethodA(cl, obj, msg));
 }
 
-ULONG  AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
+IPTR  AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct TextFont *font;
@@ -253,7 +253,7 @@ ULONG  AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
   return(0);
 }
 
-ULONG Show(struct IClass *cl, Object *obj, Msg msg)
+IPTR Show(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct MUI_AreaData *ad = muiAreaData(obj);
@@ -277,7 +277,7 @@ ULONG Show(struct IClass *cl, Object *obj, Msg msg)
   return(TRUE);
 }
 
-ULONG Hide(struct IClass *cl, Object *obj, Msg msg)
+IPTR Hide(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -291,7 +291,7 @@ ULONG Hide(struct IClass *cl, Object *obj, Msg msg)
   return(DoSuperMethodA(cl, obj, msg));
 }
 
-ULONG mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
+IPTR mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
 {
   DoSuperMethodA(cl, obj, (Msg)msg);
 
@@ -305,7 +305,7 @@ ULONG mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
 
 DISPATCHER(_Dispatcher)
 {
-  ULONG  result = TRUE;
+  IPTR  result = TRUE;
 
   ENTER();
 

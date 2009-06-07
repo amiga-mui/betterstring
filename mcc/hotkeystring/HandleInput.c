@@ -54,11 +54,11 @@ static ULONG ConvertKey (struct IntuiMessage *imsg)
 #undef  IECODE_KEY_CODE_LAST
 #define  IECODE_KEY_CODE_LAST 0x7e
 
-ULONG HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
+IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   BOOL nokey = FALSE, backspace = FALSE, qual_only;
-  ULONG result;
+  IPTR result;
 
   qual_only = BETWEEN(msg->imsg->Code, 0x60, 0x67); // betwenn LSHIFT/RCOMMAND
 

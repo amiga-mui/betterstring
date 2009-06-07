@@ -31,10 +31,10 @@
 #include "private.h"
 #include "version.h"
 
-ULONG  Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
+IPTR Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-  ULONG result;
+  IPTR result;
 
   if((result = DoSuperMethodA(cl, obj, (Msg)rinfo)))
   {
@@ -48,7 +48,7 @@ ULONG  Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
   return result;
 }
 
-ULONG Cleanup (struct IClass *cl, Object *obj, Msg msg)
+IPTR Cleanup (struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -90,9 +90,9 @@ VOID Set (struct IClass *cl, Object *obj, struct opSet *msg)
   }
 }
 
-ULONG Get (struct IClass *cl, Object *obj, struct opGet *msg)
+IPTR Get (struct IClass *cl, Object *obj, struct opGet *msg)
 {
-  ULONG ti_Data;
+  IPTR ti_Data;
 
   switch(msg->opg_AttrID)
   {
@@ -115,7 +115,7 @@ ULONG Get (struct IClass *cl, Object *obj, struct opGet *msg)
 DISPATCHER(_Dispatcher)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-  ULONG  result = 0;
+  IPTR  result = 0;
 
   switch(msg->MethodID)
   {
