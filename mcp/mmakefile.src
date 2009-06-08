@@ -37,13 +37,13 @@ LOCALE_C := $(SRCDIR)/$(CURDIR)/locale.c
 
 #MM
 workbench-classes-zune-betterstring-mcp-locale : $(LOCALE_C) $(LOCALE_H) \
-    $(TARGETDIR)/deutsch/BetterString.catalog \
-    $(TARGETDIR)/czech/BetterString.catalog \
-    $(TARGETDIR)/svenska/BetterString.catalog \
-    $(TARGETDIR)/italiano/BetterString.catalog \
-    $(TARGETDIR)/français/BetterString.catalog \
-    $(TARGETDIR)/dansk/BetterString.catalog \
-    $(TARGETDIR)/russian/BetterString.catalog
+    $(TARGETDIR)/deutsch/BetterString_mcp.catalog \
+    $(TARGETDIR)/czech/BetterString_mcp.catalog \
+    $(TARGETDIR)/svenska/BetterString_mcp.catalog \
+    $(TARGETDIR)/italiano/BetterString_mcp.catalog \
+    $(TARGETDIR)/français/BetterString_mcp.catalog \
+    $(TARGETDIR)/dansk/BetterString_mcp.catalog \
+    $(TARGETDIR)/russian/BetterString_mcp.catalog
 
 $(LOCALE_H): locale/BetterString_mcp.cd C_h.sd
 	@$(FLEXCAT) $(SRCDIR)/$(CURDIR)/locale/BetterString_mcp.cd $(LOCALE_H)=$(SRCDIR)/$(CURDIR)/C_h.sd
@@ -51,31 +51,31 @@ $(LOCALE_H): locale/BetterString_mcp.cd C_h.sd
 $(LOCALE_C): locale/BetterString_mcp.cd C_c.sd
 	@$(FLEXCAT) $(SRCDIR)/$(CURDIR)/locale/BetterString_mcp.cd $(LOCALE_C)=$(SRCDIR)/$(CURDIR)/C_c.sd
 
-$(TARGETDIR)/deutsch/BetterString.catalog: $(SRCDIR)/$(CURDIR)/locale/german.ct
+$(TARGETDIR)/deutsch/BetterString_mcp.catalog: $(SRCDIR)/$(CURDIR)/locale/german.ct
 	@$(MKDIR) $(TARGETDIR)/deutsch
 	@$(FLEXCAT) $(SRCDIR)/$(CURDIR)/locale/BetterString_mcp.cd $< CATALOG $@
 
-$(TARGETDIR)/czech/BetterString.catalog: $(SRCDIR)/$(CURDIR)/locale/czech.ct
+$(TARGETDIR)/czech/BetterString_mcp.catalog: $(SRCDIR)/$(CURDIR)/locale/czech.ct
 	@$(MKDIR) $(TARGETDIR)/czech
 	@$(FLEXCAT) $(SRCDIR)/$(CURDIR)/locale/BetterString_mcp.cd $< CATALOG $@
 
-$(TARGETDIR)/français/BetterString.catalog: $(SRCDIR)/$(CURDIR)/locale/french.ct
+$(TARGETDIR)/français/BetterString_mcp.catalog: $(SRCDIR)/$(CURDIR)/locale/french.ct
 	@$(MKDIR) $(TARGETDIR)/français
 	@$(FLEXCAT) $(SRCDIR)/$(CURDIR)/locale/BetterString_mcp.cd $< CATALOG $@
 
-$(TARGETDIR)/svenska/BetterString.catalog: $(SRCDIR)/$(CURDIR)/locale/swedish.ct
+$(TARGETDIR)/svenska/BetterString_mcp.catalog: $(SRCDIR)/$(CURDIR)/locale/swedish.ct
 	@$(MKDIR) $(TARGETDIR)/svenska
 	@$(FLEXCAT) $(SRCDIR)/$(CURDIR)/locale/BetterString_mcp.cd $< CATALOG $@
 
-$(TARGETDIR)/italiano/BetterString.catalog: $(SRCDIR)/$(CURDIR)/locale/italian.ct
+$(TARGETDIR)/italiano/BetterString_mcp.catalog: $(SRCDIR)/$(CURDIR)/locale/italian.ct
 	@$(MKDIR) $(TARGETDIR)/italiano
 	@$(FLEXCAT) $(SRCDIR)/$(CURDIR)/locale/BetterString_mcp.cd $< CATALOG $@
 
-$(TARGETDIR)/dansk/BetterString.catalog: $(SRCDIR)/$(CURDIR)/locale/danish.ct
+$(TARGETDIR)/dansk/BetterString_mcp.catalog: $(SRCDIR)/$(CURDIR)/locale/danish.ct
 	@$(MKDIR) $(TARGETDIR)/dansk
 	@$(FLEXCAT) $(SRCDIR)/$(CURDIR)/locale/BetterString_mcp.cd $< CATALOG $@
 
-$(TARGETDIR)/russian/BetterString.catalog: $(SRCDIR)/$(CURDIR)/locale/russian.ct
+$(TARGETDIR)/russian/BetterString_mcp.catalog: $(SRCDIR)/$(CURDIR)/locale/russian.ct
 	@$(MKDIR) $(TARGETDIR)/russian
 	@$(FLEXCAT) $(SRCDIR)/$(CURDIR)/locale/BetterString_mcp.cd $< CATALOG $@
 
