@@ -5,6 +5,13 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-06-24 Thore Böckelmann <tboeckel@gmx.de>
+
+  * Dispatcher.c, HandleInput.c: fixed the SelectOnActive feature in such a way
+    that the contents are only selected, if the left mouse button is *not*
+    pressed, because MUI issues MUIM_GoActive right after a click on an object.
+    Also cleaned up the dispatcher code a bit.
+
 2009-06-07 Matthias Rustler <mrustler@gmx.de>
 
   * AROS metamakefiles added.
