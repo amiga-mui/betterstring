@@ -74,7 +74,21 @@ VOID PrintString(struct IClass *cl, Object *obj)
   }
 
   SetFont(rport, font);
-  crsr_width = isFlagSet(data->Flags, FLG_Active) && !BlockEnabled ? TextLength(rport, (*(contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(contents+data->BufferPos), 1) : 0;
+  if(isFlagSet(data->Flags, FLG_Active) && BlockEnabled == FALSE)
+  {
+    char *c;
+
+    // use the character at the current position or 'n' as a standard
+    // character to calculate the current cursor width
+    if(contents[data->BufferPos] != '\0')
+      c = &contents[data->BufferPos];
+    else
+      c = (char *)"n";
+
+    crsr_width = TextLength(rport, c, 1);
+  }
+  else
+    crsr_width = 0;
 
   if(data->DisplayPos > data->BufferPos)
     data->DisplayPos = data->BufferPos;

@@ -11,6 +11,7 @@ $URL$
     that the contents are only selected, if the left mouse button is *not*
     pressed, because MUI issues MUIM_GoActive right after a click on an object.
     Also cleaned up the dispatcher code a bit.
+  * PrintString.c: deobfuscated the cursor width calculation.
 
 2009-06-07 Matthias Rustler <mrustler@gmx.de>
 
