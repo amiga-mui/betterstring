@@ -1268,6 +1268,7 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
       {
         BOOL isOverObject = FALSE;
 
+        D(DBF_INPUT, "IDCMP_MOUSEMOVE");
         if(_isinobject(obj, msg->imsg->MouseX, msg->imsg->MouseY))
         {
           #if defined(__MORPHOS__)
@@ -1296,13 +1297,15 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           ShowSelectPointer(obj, data);
         else
           HideSelectPointer(obj, data);
-
-        D(DBF_INPUT, "IDCMP_MOUSEMOVE");
       }
       else if(msg->imsg->Class == IDCMP_MOUSEBUTTONS)
       {
+        D(DBF_INPUT, "IDCMP_MOUSEBUTTONS");
         if(msg->imsg->Code == (IECODE_LBUTTON | IECODE_UP_PREFIX))
         {
+          // forget the pressed mouse button
+          clearFlag(data->Flags, FLG_MouseButtonDown);
+
           if(isAnyFlagSet(data->ehnode.ehn_Events, /*IDCMP_MOUSEMOVE|*/IDCMP_INTUITICKS))
           {
             DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
@@ -1349,6 +1352,9 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           WORD y = ad->mad_Box.Top  + ad->mad_addtop;
           WORD width = ad->mad_Box.Width - ad->mad_subwidth;
           WORD height = Font->tf_YSize;
+
+          // remember the pressed mouse button
+          setFlag(data->Flags, FLG_MouseButtonDown);
 
           if(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height)
           {
