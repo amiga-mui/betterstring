@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-06-26 Matthias Rustler <mrustler@gmx.de>
+
+  * mcp/mmakefile.src,
+    libraries/mui.h   : backport of some AROS related fixes.
+
 2009-06-24 Thore Böckelmann <tboeckel@gmx.de>
 
   * Dispatcher.c, HandleInput.c: fixed the SelectOnActive feature in such a way
