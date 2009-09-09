@@ -231,6 +231,12 @@ void CleanupSelectPointer(struct InstData *data);
 void ShowSelectPointer(Object *obj, struct InstData *data);
 void HideSelectPointer(Object *obj, struct InstData *data);
 
+// ClipboardServer.c
+BOOL StartClipboardServer(void);
+void ShutdownClipboardServer(void);
+void StringToClipboard(STRPTR str, LONG length);
+void ClipboardToString(STRPTR *str, LONG *length);
+
 #define setFlag(mask, flag)             (mask) |= (flag)
 #define clearFlag(mask, flag)           (mask) &= ~(flag)
 #define isAnyFlagSet(mask, flag)        (((mask) & (flag)) != 0)
