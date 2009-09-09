@@ -112,6 +112,29 @@ CC      = gcc
 STRIP   = strip
 OBJDUMP = objdump
 
+# override commands for native builds
+ifeq ($(HOST), AmigaOS4)
+  # AmigaOS4 host
+  RM    = delete force
+  RMDIR = delete force all
+  MKDIR = makedir
+  DATE  = gdate
+else
+ifeq ($(HOST), AmigaOS)
+  # AmigaOS3 host
+  RM    = delete force
+  RMDIR = delete force all
+  MKDIR = makedir
+else
+ifeq ($(HOST), MorphOS)
+  # MorphOS host
+  RM    = delete force
+  RMDIR = delete force all
+  MKDIR = makedir
+endif
+endif
+endif
+
 # path definitions
 CDUP  = /
 CDTHIS=
@@ -176,6 +199,7 @@ LOBJS = library.o
 
 COBJS = AllocBitMap.o \
         AllocFunctions.o \
+        ClipboardServer.o \
         Dispatcher.o \
         FileNameCompl.o \
         GetSetAttrs.o \
