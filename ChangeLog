@@ -5,6 +5,14 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-09-09 Thore Böckelmann <tboeckel@gmx.de>
+
+  * ClipboardServer.c, HandleInput.c: loaded all clipboard access stuff off to
+    a separate process. Accessing the clipboard via iffparse.library requires
+    2 user signals for each instance and thus an application would run out of
+    free signals sooner or later. Especially YAM suffered from this with more
+    than one write window open.
+
 2009-08-14 Thore Böckelmann <tboeckel@gmx.de>
 
   * Makefiles: added "-g" to the debug flags. It seems the OS3 GCC 2.95.3 cross

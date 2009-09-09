@@ -56,14 +56,12 @@ struct Library *DiskfontBase = NULL;
 struct Library *KeymapBase = NULL;
 struct Library *LayersBase = NULL;
 struct Library *LocaleBase = NULL;
-struct Library *IFFParseBase = NULL;
 
 #if defined(__amigaos4__)
 struct DiskfontIFace *IDiskfont = NULL;
 struct KeymapIFace *IKeymap = NULL;
 struct LayersIFace *ILayers = NULL;
 struct LocaleIFace *ILocale = NULL;
-struct IFFParseIFace *IIFFParse = NULL;
 #endif
 
 /******************************************************************************/
@@ -94,8 +92,7 @@ static BOOL ClassInit(UNUSED struct Library *base)
         if((DiskfontBase = OpenLibrary("diskfont.library", 38)) &&
            GETINTERFACE(IDiskfont, struct DiskfontIFace *, DiskfontBase))
         {
-          if((IFFParseBase = OpenLibrary("iffparse.library", 36)) &&
-             GETINTERFACE(IIFFParse, struct IFFParseIFace *, IFFParseBase))
+          if(StartClipboardServer() == TRUE)
           {
             return(TRUE);
           }
@@ -126,12 +123,7 @@ static BOOL ClassInit(UNUSED struct Library *base)
 
 static VOID ClassExpunge(UNUSED struct Library *base)
 {
-  if(IFFParseBase)
-  {
-    DROPINTERFACE(IIFFParse);
-    CloseLibrary(IFFParseBase);
-    IFFParseBase = NULL;
-  }
+  ShutdownClipboardServer();
 
   if(DiskfontBase)
   {

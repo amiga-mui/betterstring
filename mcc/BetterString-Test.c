@@ -28,7 +28,6 @@
 #include <proto/muimaster.h>
 #include <proto/exec.h>
 #include <proto/utility.h>
-#include <proto/iffparse.h>
 
 #include "BetterString_mcc.h"
 #include "private.h"
@@ -42,7 +41,6 @@ struct Library *LayersBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *UtilityBase = NULL;
 struct Library *KeymapBase = NULL;
-struct Library *IFFParseBase = NULL;
 #elif defined(__MORPHOS__)
 struct Library *DiskfontBase = NULL;
 struct Library *GfxBase = NULL;
@@ -52,7 +50,6 @@ struct Library *LayersBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *UtilityBase = NULL;
 struct Library *KeymapBase = NULL;
-struct Library *IFFParseBase = NULL;
 #else
 struct Library *DiskfontBase = NULL;
 struct Library *GfxBase = NULL;
@@ -66,7 +63,6 @@ struct UtilityBase *UtilityBase = NULL;
 struct Library *UtilityBase = NULL;
 #endif
 struct Library *KeymapBase = NULL;
-struct Library *IFFParseBase = NULL;
 #endif
 
 #if defined(__amigaos4__)
@@ -78,7 +74,6 @@ struct LayersIFace *ILayers = NULL;
 struct LocaleIFace *ILocale = NULL;
 struct UtilityIFace *IUtility = NULL;
 struct KeymapIFace *IKeymap = NULL;
-struct IFFParseIFace *IIFFParse = NULL;
 #endif
 
 extern SAVEDS ASM ULONG _Dispatcher(REG(a0, struct IClass * cl), REG(a2, Object * obj), REG(a1, Msg msg));
@@ -105,8 +100,7 @@ int main(void)
     GETINTERFACE(IUtility, UtilityBase))
   if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
     GETINTERFACE(IMUIMaster, MUIMasterBase))
-  if((IFFParseBase = OpenLibrary("iffparse.library", 36)) &&
-    GETINTERFACE(IIFFParse, IFFParseBase))
+  if(StartClipboardServer())
   {
     struct MUI_CustomClass *mcc;
     Object *a1, *a2, *app, *window, *bstring, *bstring2, *bpos, *ssize, *button, *numbutton;
@@ -314,12 +308,7 @@ int main(void)
     MUIMasterBase = NULL;
   }
 
-  if(IFFParseBase)
-  {
-    DROPINTERFACE(IIFFParse);
-    CloseLibrary(IFFParseBase);
-    IFFParseBase = NULL;
-  }
+  ShutdownClipboardServer();
 
   if(UtilityBase)
   {

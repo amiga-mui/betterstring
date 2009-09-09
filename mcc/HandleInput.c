@@ -258,7 +258,7 @@ static void CopyBlock(struct InstData *data)
   if(isFlagClear(data->Flags, FLG_Secret))
   {
     UWORD Blk_Start, Blk_Width;
-    struct IFFHandle *iff;
+    //struct IFFHandle *iff;
 
     if(BlockEnabled(data) == TRUE)
     {
@@ -271,28 +271,7 @@ static void CopyBlock(struct InstData *data)
       Blk_Width = strlen(data->Contents);
     }
 
-    if((iff = AllocIFF()) != NULL)
-    {
-      if((iff->iff_Stream = (IPTR)OpenClipboard(0)) != 0)
-      {
-        InitIFFasClip(iff);
-
-        if(OpenIFF(iff, IFFF_WRITE) == 0)
-        {
-          PushChunk(iff, ID_FTXT, ID_FORM, IFFSIZE_UNKNOWN);
-          PushChunk(iff, 0, ID_CHRS, IFFSIZE_UNKNOWN);
-          WriteChunkBytes(iff, data->Contents + Blk_Start, Blk_Width);
-          PopChunk(iff);
-          PopChunk(iff);
-
-          CloseIFF(iff);
-        }
-
-        CloseClipboard((struct ClipboardHandle *)iff->iff_Stream);
-      }
-
-      FreeIFF(iff);
-    }
+    StringToClipboard(&data->Contents[Blk_Start], Blk_Width);
   }
 
   LEAVE();
@@ -344,100 +323,30 @@ static void utf8_to_ansi(CONST_STRPTR src, STRPTR dst)
 
 static void Paste(struct InstData *data)
 {
-  struct IFFHandle *iff;
+//  struct IFFHandle *iff;
+  STRPTR str;
+  LONG length;
 
   ENTER();
 
   // clear the selection
   DeleteBlock(data);
 
-  if((iff = AllocIFF()) != NULL)
+  ClipboardToString(&str, &length);
+  if(str != NULL && length > 0)
   {
-    if((iff->iff_Stream = (IPTR)OpenClipboard(0)) != 0)
+    if(data->MaxLength != 0 && strlen(data->Contents) + length > (ULONG)data->MaxLength - 1)
     {
-      InitIFFasClip(iff);
-
-      if(OpenIFF(iff, IFFF_READ) == 0)
-      {
-        if(StopChunk(iff, ID_FTXT, ID_CHRS) == 0 && StopChunk(iff, ID_FTXT, ID_CSET) == 0)
-        {
-          LONG codeset = 0;
-
-          while(TRUE)
-          {
-            LONG error;
-            struct ContextNode *cn;
-
-            error = ParseIFF(iff, IFFPARSE_SCAN);
-            if(error == IFFERR_EOC)
-              continue;
-            else if(error != 0)
-              break;
-
-            if((cn = CurrentChunk(iff)) != NULL)
-            {
-              if(cn->cn_ID == ID_CSET)
-              {
-                if (cn->cn_Size >= 4)
-                {
-                  /* Only the first four bytes are interesting */
-                  if(ReadChunkBytes(iff, &codeset, 4) != 4)
-                    codeset = 0;
-                }
-              }
-              else if(cn->cn_ID == ID_CHRS && cn->cn_Size > 0)
-              {
-                ULONG length = cn->cn_Size;
-                char *buffer;
-
-                if(data->MaxLength != 0 && strlen(data->Contents) + length > (ULONG)data->MaxLength - 1)
-                {
-                  DisplayBeep(NULL);
-                  length = data->MaxLength - 1 - strlen(data->Contents);
-                }
-
-                if((buffer = MyAllocPooled(data->Pool, length + 1)) != NULL)
-                {
-                  LONG readBytes;
-
-                  // read the string from the clipboard
-                  if((readBytes = ReadChunkBytes(iff, buffer, length)) > 0)
-                  {
-                    memset(buffer + readBytes, 0, length-readBytes+1);
-
-                    #if defined(__MORPHOS__)
-                    if (codeset == CODESET_UTF8)
-                    {
-                      if (IS_MORPHOS2)
-                      {
-                        utf8_to_ansi(buffer, buffer);
-                        readBytes = strlen(buffer);
-                      }
-                    }
-                    #endif
-
-                    data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, readBytes);
-                    strcpyback(data->Contents + data->BufferPos + readBytes, data->Contents + data->BufferPos);
-                    memcpy(data->Contents + data->BufferPos, buffer, readBytes);
-                    data->BufferPos += readBytes;
-                  }
-                  else
-                    E(DBF_ALWAYS, "ReadChunkBytes error! (%ld)", readBytes);
-
-                  MyFreePooled(data->Pool, buffer);
-                }
-              }
-            }
-          }
-        }
-
-        CloseIFF(iff);
-      }
-
-      CloseClipboard((struct ClipboardHandle *)iff->iff_Stream);
+      DisplayBeep(NULL);
+      length = data->MaxLength - 1 - strlen(data->Contents);
     }
 
-    FreeIFF(iff);
+    data->Contents = (STRPTR)ExpandPool(data->Pool, data->Contents, length);
+    strcpyback(data->Contents + data->BufferPos + length, data->Contents + data->BufferPos);
+    memcpy(data->Contents + data->BufferPos, str, length);
+    data->BufferPos += length;
+
+    FreeVec(str);
   }
 
   LEAVE();
