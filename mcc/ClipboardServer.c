@@ -60,6 +60,10 @@ struct ServerData
 #define ID_CHRS    MAKE_ID('C','H','R','S')
 #define ID_CSET    MAKE_ID('C','S','E','T')
 
+#ifndef MEMF_SHARED
+#define MEMF_SHARED       MEMF_ANY
+#endif
+
 /// StringToClipboard
 // copy a string to the clipboard, public callable function
 void StringToClipboard(STRPTR str, LONG length)
@@ -207,7 +211,7 @@ static void ReadFromClipboard(STRPTR *str, LONG *length)
                 ULONG size = cn->cn_Size;
                 STRPTR buffer;
 
-                if((buffer = AllocVec(size + 1, MEMF_ANY)) != NULL)
+                if((buffer = AllocVec(size + 1, MEMF_SHARED)) != NULL)
                 {
                   LONG readBytes;
 
