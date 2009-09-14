@@ -166,6 +166,32 @@ static void WriteToClipboard(STRPTR str, LONG length)
 }
 
 ///
+/// utf8_to_ansi
+// convert an UTF-8 string to ANSI
+#if defined(__MORPHOS__)
+static void utf8_to_ansi(CONST_STRPTR src, STRPTR dst)
+{
+  static struct KeyMap *keymap;
+  ULONG octets;
+
+  keymap = AskKeyMapDefault();
+
+  do
+  {
+     WCHAR wc;
+     UBYTE c;
+
+     octets = UTF8_Decode(src, &wc);
+     c = ToANSI(wc, keymap);
+
+     *dst++ = c;
+     src += octets;
+  }
+  while (octets > 0);
+}
+#endif
+
+///
 /// ReadFromClipboard
 // read a string via iffparse.library from the clipboard
 // non-public server side function
