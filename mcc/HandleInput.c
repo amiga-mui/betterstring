@@ -25,7 +25,6 @@
 
 #include <clib/alib_protos.h>
 #include <clib/macros.h>
-#include <libraries/iffparse.h>
 #include <proto/exec.h>
 #include <proto/graphics.h>
 #include <proto/intuition.h>
@@ -34,16 +33,10 @@
 #include <proto/layers.h>
 #include <proto/locale.h>
 #include <proto/dos.h>
-#include <proto/iffparse.h>
 
 #include "private.h"
 
 #include "SDI_stdarg.h"
-
-#define ID_FORM    MAKE_ID('F','O','R','M')
-#define ID_FTXT    MAKE_ID('F','T','X','T')
-#define ID_CHRS    MAKE_ID('C','H','R','S')
-#define ID_CSET    MAKE_ID('C','S','E','T')
 
 #define BlockEnabled(data)  (isFlagSet((data)->Flags, FLG_BlockEnabled) && (data)->BlockStart != (data)->BlockStop)
 
