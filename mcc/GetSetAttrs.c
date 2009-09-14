@@ -71,7 +71,7 @@ IPTR Get(struct IClass *cl, Object *obj, struct opGet *msg)
     break;
 
     case MUIA_String_Integer:
-      StrToLong(data->Contents, (ULONG *)&ti_Data);
+      StrToLong(data->Contents, (LONG *)&ti_Data);
     break;
 
     case MUIA_String_MaxLen:

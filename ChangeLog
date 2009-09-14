@@ -7,6 +7,7 @@ $URL$
 
 2009-09-14 Thore Böckelmann <tboeckel@gmx.de>
 
+  * GetSetAttrs.c: fixed signedness warning for OS4.
   * ClipboardServer.c, vastubs.c: fixed OS3 build.
 
 2009-09-09 Thore Böckelmann <tboeckel@gmx.de>
