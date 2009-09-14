@@ -298,29 +298,6 @@ static void CutBlock(struct InstData *data)
   LEAVE();
 }
 
-#if defined(__MORPHOS__)
-static void utf8_to_ansi(CONST_STRPTR src, STRPTR dst)
-{
-  static struct KeyMap *keymap;
-  ULONG octets;
-
-  keymap = AskKeyMapDefault();
-
-  do
-  {
-     WCHAR wc;
-     UBYTE c;
-
-     octets = UTF8_Decode(src, &wc);
-     c = ToANSI(wc, keymap);
-
-     *dst++ = c;
-     src += octets;
-  }
-  while (octets > 0);
-}
-#endif
-
 static void Paste(struct InstData *data)
 {
 //  struct IFFHandle *iff;
