@@ -420,6 +420,8 @@ BOOL StartClipboardServer(void)
                                       NP_WindowPtr, ~0L,
                                       #if defined(__amigaos4__)
                                       NP_Child, FALSE,
+                                      #elif defined(__MORPHOS__)
+                                      NP_CodeType, CODETYPE_PPC,
                                       #endif
                                       TAG_DONE);
     if(serverProcess !=  NULL)

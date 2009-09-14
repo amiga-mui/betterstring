@@ -7,11 +7,12 @@ $URL$
 
 2009-09-14 Thore Böckelmann <tboeckel@gmx.de>
 
+  * mcc/ ClipboardServer.c: added NP_CodeType=CODETYPE_PPC for the MOS build.
   * mcc/BetterString-Test.c: added forced select on activate object.
   * mcc/ClipboardServer.c: fixed wrong server process function prototype for all
     non-OS4 builds.
   * mcc/Debug.c, mcc/Debug.h: added DBF_CLIPBOARD debug flag.
-  * mcc/HandleInput.c, mcc/ClipboardServer.c: moved UTF8 conversion function to 
+  * mcc/HandleInput.c, mcc/ClipboardServer.c: moved UTF8 conversion function to
     where it belongs.
   * mcc/GetSetAttrs.c: fixed signedness warning for OS4.
   * mcc/ClipboardServer.c, vastubs.c: fixed OS3 build.
