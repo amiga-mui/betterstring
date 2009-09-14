@@ -27,6 +27,8 @@
 #include <proto/exec.h>
 #include <proto/intuition.h>
 
+#include <dos/dostags.h>
+
 // for iffparse.library no global variable definitions are needed
 #define __NOLIBBASE__
 #define __NOGLOBALIFACE__
@@ -37,7 +39,9 @@
 #include "Debug.h"
 
 static struct Library *IFFParseBase = NULL;
+#if defined(__amigaos4__)
 static struct IFFParseIFace *IIFFParse = NULL;
+#endif
 static struct SignalSemaphore *serverLock = NULL;
 static struct Process *serverProcess = NULL;
 static struct MsgPort *serverPort = NULL;
@@ -255,12 +259,12 @@ static void ReadFromClipboard(STRPTR *str, LONG *length)
 ///
 /// ClipboardServer
 // the clipboard server process
-static LONG ClipboardServer(UNUSED STRPTR args, UNUSED LONG length, struct ExecBase *sysBase)
+static LONG ClipboardServer(UNUSED STRPTR args, UNUSED LONG length, struct ExecBase *SysBase)
 {
   struct Process *me;
   struct Message *msg;
   #if defined(__amigaos4__)
-  struct ExecIFace *IExec = (struct ExecIFace *)sysBase->MainInterface;
+  struct ExecIFace *IExec = (struct ExecIFace *)SysBase->MainInterface;
   #endif
 
   ENTER();
