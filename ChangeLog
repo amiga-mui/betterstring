@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-09-14 Thore Böckelmann <tboeckel@gmx.de>
+
+  * ClipboardServer.c, vastubs.c: fixed OS3 build.
+
 2009-09-09 Thore Böckelmann <tboeckel@gmx.de>
 
   * ClipboardServer.c, HandleInput.c: loaded all clipboard access stuff off to
