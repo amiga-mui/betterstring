@@ -7,6 +7,8 @@ $URL$
 
 2009-09-14 Thore Böckelmann <tboeckel@gmx.de>
 
+  * ClipboardServer.c: fixed wrong server process function prototype for all
+    non-OS4 builds.
   * Debug.c, Debug.h: added DBF_CLIPBOARD debug flag.
   * HandleInput.c, ClipboardServer.c: moved UTF8 conversion function to where
     it belongs.

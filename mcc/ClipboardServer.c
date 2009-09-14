@@ -285,7 +285,11 @@ static void ReadFromClipboard(STRPTR *str, LONG *length)
 ///
 /// ClipboardServer
 // the clipboard server process
+#if defined(__amigaos4__)
 static LONG ClipboardServer(UNUSED STRPTR args, UNUSED LONG length, struct ExecBase *SysBase)
+#else
+static SAVEDS ASM LONG ClipboardServer(UNUSED REG(a0, STRPTR args), UNUSED REG(d0, LONG length))
+#endif
 {
   struct Process *me;
   struct Message *msg;
@@ -294,6 +298,8 @@ static LONG ClipboardServer(UNUSED STRPTR args, UNUSED LONG length, struct ExecB
   #endif
 
   ENTER();
+
+  D(DBF_CLIPBOARD, "clipboard server starting up");
 
   me = (struct Process *)FindTask(NULL);
   WaitPort(&me->pr_MsgPort);
@@ -321,6 +327,7 @@ static LONG ClipboardServer(UNUSED STRPTR args, UNUSED LONG length, struct ExecB
       msg->mn_Node.ln_Name = (STRPTR)mp;
       ReplyMsg(msg);
 
+      D(DBF_CLIPBOARD, "clipboard server main loop");
       do
       {
         WaitPort(mp);
@@ -369,6 +376,8 @@ static LONG ClipboardServer(UNUSED STRPTR args, UNUSED LONG length, struct ExecB
 
     CloseLibrary(IFFParseBase);
   }
+
+  D(DBF_CLIPBOARD, "clipboard server shutting down");
 
   Forbid();
 
