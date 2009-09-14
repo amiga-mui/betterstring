@@ -7,13 +7,14 @@ $URL$
 
 2009-09-14 Thore Böckelmann <tboeckel@gmx.de>
 
-  * ClipboardServer.c: fixed wrong server process function prototype for all
+  * mcc/BetterString-Test.c: added forced select on activate object.
+  * mcc/ClipboardServer.c: fixed wrong server process function prototype for all
     non-OS4 builds.
-  * Debug.c, Debug.h: added DBF_CLIPBOARD debug flag.
-  * HandleInput.c, ClipboardServer.c: moved UTF8 conversion function to where
-    it belongs.
-  * GetSetAttrs.c: fixed signedness warning for OS4.
-  * ClipboardServer.c, vastubs.c: fixed OS3 build.
+  * mcc/Debug.c, mcc/Debug.h: added DBF_CLIPBOARD debug flag.
+  * mcc/HandleInput.c, mcc/ClipboardServer.c: moved UTF8 conversion function to 
+    where it belongs.
+  * mcc/GetSetAttrs.c: fixed signedness warning for OS4.
+  * mcc/ClipboardServer.c, vastubs.c: fixed OS3 build.
 
 2009-09-09 Thore Böckelmann <tboeckel@gmx.de>
 
