@@ -153,6 +153,7 @@ BINDIR   = bin_$(OS)
 VPATH    = $(OBJDIR)
 DEPFILE  = Makefile.dep
 DESTDIR  = MUI:Libs/MUI
+LOCALE   = locale
 
 # target definition
 TARGET    = $(BINDIR)/BetterString.mcp
