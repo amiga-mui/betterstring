@@ -7,6 +7,7 @@ $URL$
 
 2009-09-17 Thore Böckelmann <tboeckel@gmx.de>
 
+  * mcp/Makefile: fixed Makefile to be able generate the catalogs.
   * mcp/locale/german.ct: added a missing colon in the german translation.
 
 2009-09-14 Thore Böckelmann <tboeckel@gmx.de>
