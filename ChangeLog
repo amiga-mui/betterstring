@@ -7,6 +7,9 @@ $URL$
 
 2009-09-19 Thore Böckelmann <tboeckel@gmx.de>
 
+  * misc: replaced the per-instance memory pool by a global and semaphore
+    protected one. There is absolutely no benefit in having a separate pool
+    for every instance with only just one allocation within this pool.
   * misc: added a name to all memory pools for OS4.
 
 2009-09-17 Thore Böckelmann <tboeckel@gmx.de>

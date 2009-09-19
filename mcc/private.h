@@ -64,7 +64,6 @@ struct InstData
   struct  MUI_EventHandlerNode    ehnode;
   struct  RastPort            rport;
   struct  Locale            *locale;
-  APTR    Pool;
   ULONG   Flags;
   Object  *PopupMenu;
 
@@ -206,9 +205,11 @@ IPTR Get(struct IClass *, Object *, struct opGet *);
 IPTR Set(struct IClass *, Object *, struct opSet *);
 IPTR mDoAction(struct IClass *, Object *, struct MUIP_BetterString_DoAction *);
 
-APTR MyAllocPooled(APTR, ULONG);
-VOID MyFreePooled(APTR, APTR);
-APTR ExpandPool(APTR, APTR, ULONG);
+BOOL MyCreatePool(void);
+void MyDeletePool(void);
+APTR MyAllocPooled(ULONG);
+VOID MyFreePooled(APTR);
+APTR ExpandPool(APTR, ULONG);
 
 VOID strcpyback(STRPTR, STRPTR);
 

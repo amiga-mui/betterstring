@@ -70,53 +70,43 @@ IPTR New(struct IClass *cl, Object *obj, struct opSet *msg)
   {
     struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-    #if defined(__amigaos4__)
-    if((data->Pool = AllocSysObjectTags(ASOT_MEMPOOL, ASOPOOL_MFlags, MEMF_SHARED,
-                                                      ASOPOOL_Puddle, 512,
-                                                      ASOPOOL_Threshold, 256,
-                                                      ASOPOOL_Name, "BetterString.mcc pool",
-                                                      TAG_DONE)) != NULL)
-    #else
-    if((data->Pool = CreatePool(MEMF_ANY, 512, 256)) != NULL)
-    #endif
+//    kprintf("OM_NEW by %s\n", FindTask(NULL)->tc_Node.ln_Name);
+
+    data->locale = OpenLocale(NULL);
+    data->Contents = (STRPTR)MyAllocPooled(40);
+    *data->Contents = '\0';
+
+//    data->PopupMenu = MUI_MakeObject(MUIO_MenustripNM, PopupMenuData, NULL);
+    SetAttrs(obj,  MUIA_FillArea,    FALSE,
+//              MUIA_ContextMenu,  data->PopupMenu,
+//              MUIA_CustomBackfill, TRUE,
+              TAG_DONE );
+
+    if(FindTagItem(MUIA_Font, msg->ops_AttrList))
+      setFlag(data->Flags, FLG_OwnFont);
+
+    if(FindTagItem(MUIA_Background, msg->ops_AttrList))
+      setFlag(data->Flags, FLG_OwnBackground);
+
     {
-//      kprintf("OM_NEW by %s\n", FindTask(NULL)->tc_Node.ln_Name);
+      struct TagItem *tag;
 
-      data->locale = OpenLocale(NULL);
-      data->Contents = (STRPTR)MyAllocPooled(data->Pool, 40);
-      *data->Contents = '\0';
-
-//      data->PopupMenu = MUI_MakeObject(MUIO_MenustripNM, PopupMenuData, NULL);
-      SetAttrs(obj,  MUIA_FillArea,    FALSE,
-//                MUIA_ContextMenu,  data->PopupMenu,
-//                MUIA_CustomBackfill, TRUE,
-                TAG_DONE );
-
-      if(FindTagItem(MUIA_Font, msg->ops_AttrList))
-        setFlag(data->Flags, FLG_OwnFont);
-
-      if(FindTagItem(MUIA_Background, msg->ops_AttrList))
-        setFlag(data->Flags, FLG_OwnBackground);
-
+      if((tag = FindTagItem(MUIA_Frame, msg->ops_AttrList)))
       {
-        struct TagItem *tag;
-
-        if((tag = FindTagItem(MUIA_Frame, msg->ops_AttrList)))
-        {
-          if(tag->ti_Data == MUIV_Frame_String)
-            setFlag(data->Flags, FLG_SetFrame);
-        }
+        if(tag->ti_Data == MUIV_Frame_String)
+          setFlag(data->Flags, FLG_SetFrame);
       }
-
-      msg->MethodID = OM_SET;
-      Set(cl, obj, (struct opSet *)msg);
-      msg->MethodID = OM_NEW;
-      data->BufferPos = 0;
-
-      return((IPTR)obj);
     }
-    CoerceMethod(cl, obj, OM_DISPOSE);
+
+    msg->MethodID = OM_SET;
+    Set(cl, obj, (struct opSet *)msg);
+    msg->MethodID = OM_NEW;
+    data->BufferPos = 0;
+
+    return((IPTR)obj);
   }
+  CoerceMethod(cl, obj, OM_DISPOSE);
+
   return(FALSE);
 }
 
@@ -128,16 +118,6 @@ IPTR Dispose(struct IClass *cl, Object *obj, Msg msg)
 /*  if(data->PopupMenu)
     MUI_DisposeObject(data->PopupMenu);
 */
-
-  if(data->Pool != NULL)
-  {
-    #if defined(__amigaos4__)
-    FreeSysObject(ASOT_MEMPOOL, data->Pool);
-    #else
-    DeletePool(data->Pool);
-    #endif
-    data->Pool = NULL;
-  }
 
   if(data->locale != NULL)
   {
@@ -408,9 +388,9 @@ IPTR GoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
   DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 */
   if(data->Original != NULL)
-    MyFreePooled(data->Pool, (APTR)data->Original);
+    MyFreePooled(data->Original);
 
-  if((data->Original = (STRPTR)MyAllocPooled(data->Pool, strlen(data->Contents)+1)) != NULL)
+  if((data->Original = (STRPTR)MyAllocPooled(strlen(data->Contents)+1)) != NULL)
     strlcpy(data->Original, data->Contents, strlen(data->Contents+1));
 
   // select everything if this is necessary or requested
