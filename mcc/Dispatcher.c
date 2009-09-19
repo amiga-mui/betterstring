@@ -74,6 +74,7 @@ IPTR New(struct IClass *cl, Object *obj, struct opSet *msg)
     if((data->Pool = AllocSysObjectTags(ASOT_MEMPOOL, ASOPOOL_MFlags, MEMF_SHARED,
                                                       ASOPOOL_Puddle, 512,
                                                       ASOPOOL_Threshold, 256,
+                                                      ASOPOOL_Name, "BetterString.mcc pool",
                                                       TAG_DONE)) != NULL)
     #else
     if((data->Pool = CreatePool(MEMF_ANY, 512, 256)) != NULL)
