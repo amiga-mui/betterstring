@@ -293,7 +293,6 @@ static void CutBlock(struct InstData *data)
 
 static void Paste(struct InstData *data)
 {
-//  struct IFFHandle *iff;
   STRPTR str;
   LONG length;
 
@@ -316,7 +315,7 @@ static void Paste(struct InstData *data)
     memcpy(data->Contents + data->BufferPos, str, length);
     data->BufferPos += length;
 
-    FreeVec(str);
+    MyFreePooled(str);
   }
 
   LEAVE();
