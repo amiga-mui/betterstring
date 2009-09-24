@@ -92,14 +92,14 @@ static BOOL ClassInit(UNUSED struct Library *base)
         if((DiskfontBase = OpenLibrary("diskfont.library", 38)) &&
            GETINTERFACE(IDiskfont, struct DiskfontIFace *, DiskfontBase))
         {
-          if(MyCreatePool() == TRUE)
+          if(CreateSharedPool() == TRUE)
           {
             if(StartClipboardServer() == TRUE)
             {
               return(TRUE);
             }
 
-            MyDeletePool();
+            DeleteSharedPool();
           }
 
           DROPINTERFACE(IDiskfont);
@@ -130,7 +130,7 @@ static VOID ClassExpunge(UNUSED struct Library *base)
 {
   ShutdownClipboardServer();
 
-  MyDeletePool();
+  DeleteSharedPool();
 
   if(DiskfontBase)
   {

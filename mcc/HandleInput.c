@@ -73,9 +73,9 @@ static int STDARGS MySPrintf(const char *buf, const char *fmt, ...)
 static void AddToUndo(struct InstData *data)
 {
   if(data->Undo)
-    MyFreePooled(data->Undo);
+    SharedPoolFree(data->Undo);
 
-  if((data->Undo = (STRPTR)MyAllocPooled(strlen(data->Contents)+1)))
+  if((data->Undo = (STRPTR)SharedPoolAlloc(strlen(data->Contents)+1)))
   {
     strlcpy(data->Undo, data->Contents, strlen(data->Contents)+1);
     data->UndoPos = data->BufferPos;
@@ -310,12 +310,12 @@ static void Paste(struct InstData *data)
       length = data->MaxLength - 1 - strlen(data->Contents);
     }
 
-    data->Contents = (STRPTR)ExpandPool(data->Contents, length);
+    data->Contents = (STRPTR)SharedPoolExpand(data->Contents, length);
     strcpyback(data->Contents + data->BufferPos + length, data->Contents + data->BufferPos);
     memcpy(data->Contents + data->BufferPos, str, length);
     data->BufferPos += length;
 
-    MyFreePooled(str);
+    SharedPoolFree(str);
   }
 
   LEAVE();
@@ -922,7 +922,7 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                     if((data->MaxLength == 0 || (ULONG)data->MaxLength-1 > strlen(data->Contents)) &&
                        Accept(code, data->Accept) && Reject(code, data->Reject))
                     {
-                      data->Contents = (STRPTR)ExpandPool(data->Contents, 1);
+                      data->Contents = (STRPTR)SharedPoolExpand(data->Contents, 1);
                       strcpyback(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos);
                       *(data->Contents+data->BufferPos) = code;
                       data->BufferPos++;
@@ -1089,7 +1089,7 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           {
             fncframe = fncbuffer;
             fncbuffer = fncbuffer->next;
-            MyFreePooled(fncframe);
+            SharedPoolFree(fncframe);
           }
           data->FNCBuffer = NULL;
         }

@@ -243,7 +243,7 @@ static void ReadFromClipboard(STRPTR *str, LONG *length)
                 ULONG size = cn->cn_Size;
                 STRPTR buffer;
 
-                if((buffer = MyAllocPooled(size + 1)) != NULL)
+                if((buffer = SharedPoolAlloc(size + 1)) != NULL)
                 {
                   LONG readBytes;
 

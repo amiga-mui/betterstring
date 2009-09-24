@@ -56,7 +56,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   contents = data->Contents;
   StrLength = strlen(contents);
 
-  if(isFlagSet(data->Flags, FLG_Secret) && (fake_contents = (STRPTR)MyAllocPooled(StrLength+1)))
+  if(isFlagSet(data->Flags, FLG_Secret) && (fake_contents = (STRPTR)SharedPoolAlloc(StrLength+1)))
   {
     WORD strlength = StrLength;
 
@@ -210,7 +210,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   }
 
   if(fake_contents != NULL)
-    MyFreePooled(fake_contents);
+    SharedPoolFree(fake_contents);
 
   BltBitMapRastPort(data->rport.BitMap, x, y, muiRenderInfo(obj)->mri_RastPort, dst_x, dst_y, width, height, 0xc0);
 

@@ -205,11 +205,11 @@ IPTR Get(struct IClass *, Object *, struct opGet *);
 IPTR Set(struct IClass *, Object *, struct opSet *);
 IPTR mDoAction(struct IClass *, Object *, struct MUIP_BetterString_DoAction *);
 
-BOOL MyCreatePool(void);
-void MyDeletePool(void);
-APTR MyAllocPooled(ULONG);
-VOID MyFreePooled(APTR);
-APTR ExpandPool(APTR, ULONG);
+BOOL CreateSharedPool(void);
+void DeleteSharedPool(void);
+APTR SharedPoolAlloc(ULONG);
+VOID SharedPoolFree(APTR);
+APTR SharedPoolExpand(APTR, ULONG);
 
 VOID strcpyback(STRPTR, STRPTR);
 
