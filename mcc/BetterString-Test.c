@@ -100,11 +100,11 @@ int main(void)
     GETINTERFACE(IUtility, UtilityBase))
   if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
     GETINTERFACE(IMUIMaster, MUIMasterBase))
-  if(StartClipboardServer())
+  if(StartClipboardServer() == TRUE)
+  if(CreateSharedPool() == TRUE)
   {
     struct MUI_CustomClass *mcc;
     Object *a1, *a2, *app, *window, *bstring, *bstring2, *bpos, *ssize, *button, *numbutton;
-    Object *menu;
     const char *classes[] = {"BetterString.mcp", NULL};
 
     #if defined(DEBUG)
@@ -112,18 +112,6 @@ int main(void)
     #endif
 
     mcc = MUI_CreateCustomClass(NULL, "Area.mui", NULL, sizeof(struct InstData), ENTRY(_Dispatcher));
-
-    /*
-    menu = MenustripObject,
-            MUIA_Family_Child, MenuObject, MUIA_Menu_Title, "Test",
-              MUIA_Family_Child, MenuitemObject,
-                MUIA_Menuitem_Title,    "Dummy",
-                MUIA_Menuitem_Enabled,  TRUE,
-                MUIA_Menuitem_Shortcut, "V",
-              End,
-            End,
-           End,
-    */
 
     app =  ApplicationObject,
           MUIA_Application_Author,      "BetterString.mcc Open Source Team",
@@ -137,7 +125,6 @@ int main(void)
           MUIA_Application_Window, window = WindowObject,
             MUIA_Window_Title,  "BetterString-Test",
             MUIA_Window_ID,      MAKE_ID('M','A','I','N'),
-            //MUIA_Window_Menustrip, menu,
             MUIA_Window_RootObject, VGroup,
 
             Child, PopaslObject,
@@ -316,6 +303,7 @@ int main(void)
     MUIMasterBase = NULL;
   }
 
+  DeleteSharedPool();
   ShutdownClipboardServer();
 
   if(UtilityBase)

@@ -73,7 +73,7 @@ IPTR New(struct IClass *cl, Object *obj, struct opSet *msg)
 //    kprintf("OM_NEW by %s\n", FindTask(NULL)->tc_Node.ln_Name);
 
     data->locale = OpenLocale(NULL);
-    data->Contents = (STRPTR)MyAllocPooled(40);
+    data->Contents = (STRPTR)SharedPoolAlloc(40);
     *data->Contents = '\0';
 
 //    data->PopupMenu = MUI_MakeObject(MUIO_MenustripNM, PopupMenuData, NULL);
@@ -388,9 +388,9 @@ IPTR GoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
   DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 */
   if(data->Original != NULL)
-    MyFreePooled(data->Original);
+    SharedPoolFree(data->Original);
 
-  if((data->Original = (STRPTR)MyAllocPooled(strlen(data->Contents)+1)) != NULL)
+  if((data->Original = (STRPTR)SharedPoolAlloc(strlen(data->Contents)+1)) != NULL)
     strlcpy(data->Original, data->Contents, strlen(data->Contents+1));
 
   // select everything if this is necessary or requested

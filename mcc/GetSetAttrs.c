@@ -232,7 +232,7 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
             WORD extra = strlen(new_str)-strlen(data->Contents);
 
             if(extra > 0)
-              data->Contents = (STRPTR)ExpandPool(data->Contents, extra);
+              data->Contents = (STRPTR)SharedPoolExpand(data->Contents, extra);
 
             strcpy(data->Contents, new_str);
             data->BufferPos = strlen(data->Contents);
