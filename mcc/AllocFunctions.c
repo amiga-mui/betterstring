@@ -43,7 +43,7 @@ BOOL CreateSharedPool(void)
   sharedPool = AllocSysObjectTags(ASOT_MEMPOOL, ASOPOOL_MFlags, MEMF_SHARED,
                                                 ASOPOOL_Puddle, 512,
                                                 ASOPOOL_Threshold, 256,
-                                                ASOPOOL_Name, "BetterString.mcc shared sharedPool",
+                                                ASOPOOL_Name, "BetterString.mcc shared pool",
                                                 ASOPOOL_Protected, TRUE,
                                                 TAG_DONE);
   #elif defined(__MORPHOS__)
