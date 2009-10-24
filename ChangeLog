@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.17 RELEASE ###########################################################
+
+2009-10-24 Jens Langner <Jens.Langner@light-speed.de>
+
+  * misc: final 11.17 release preparations
+ 
 2009-09-24 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/misc: renamed all pool function to "*Shared*" as this describes what
