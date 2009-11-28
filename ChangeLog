@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2009-11-28 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/ClipboardServer.c: decreased the stack size from 16K to 8K as the server
+    process doesn't really need much stack.
+
 #### v11.17 RELEASE ###########################################################
 
 2009-10-24 Jens Langner <Jens.Langner@light-speed.de>
