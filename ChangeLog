@@ -5,6 +5,13 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-02-10 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/AllocBitMap.c: the CyberGraphics semaphore check was done without the
+    necessary Forbid()/Permit() pair. Although it is absolutely unlikely that
+    the semaphore will be removed it is better to follow the rules. This fixes
+    bug #2948533 of TextEditor.mcc.
+
 2009-11-28 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/ClipboardServer.c: decreased the stack size from 16K to 8K as the server
@@ -15,7 +22,7 @@ $URL$
 2009-10-24 Jens Langner <Jens.Langner@light-speed.de>
 
   * misc: final 11.17 release preparations
- 
+
 2009-09-24 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/misc: renamed all pool function to "*Shared*" as this describes what
