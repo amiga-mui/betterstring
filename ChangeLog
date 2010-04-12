@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-04-12 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcp/misc: added 32bit truecolor prefs image done by Martin 'Mason' Merz.
+    This requires at least MUI3.9 and AmigaOS 4.1.
+
 2010-02-10 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/AllocBitMap.c: the CyberGraphics semaphore check was done without the
