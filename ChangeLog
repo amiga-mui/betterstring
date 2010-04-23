@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-04-23 Pavel Fedin <pavel_fedin@mail.ru>
+
+  * include/mccinit.c: use NewStackSwap() under AROS, do not crash any more
+  * mcp/library.c: Fixed building on systems without PNG support in Bodychunk.mui
+
 2010-04-12 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcp/misc: added 32bit truecolor prefs image done by Martin 'Mason' Merz.
