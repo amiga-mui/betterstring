@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-04-23 Ilkka Lehtoranta <ilkleht@yahoo.com>
+
+  * mcp/misc: use bzip2 compressed 32bit prefs image on MorphOS 2.
+
 2010-04-23 Pavel Fedin <pavel_fedin@mail.ru>
 
   * include/mccinit.c: use NewStackSwap() under AROS, do not crash any more
