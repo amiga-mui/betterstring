@@ -73,6 +73,9 @@ static VOID ClassExpunge(UNUSED struct Library *base);
 #define USE_IMAGE_COLORS
 #define USE_IMAGE_BODY
 
+#include "icon.bh"
+#include "icon32.h"
+
 #ifdef MUIA_Bitmap_RawData
 
 #define PREFSIMAGEOBJECT \
@@ -109,8 +112,23 @@ static VOID ClassExpunge(UNUSED struct Library *base);
 
 #endif
 
-#include "icon.bh"
-#include "icon32.h"
+#if defined(__MORPHOS__)
+
+#include <mui/Rawimage_mcc.h>
+#include <proto/muimaster.h>
+
+static APTR get_prefs_image(void)
+{
+  APTR obj = RawimageObject, MUIA_Rawimage_Data, icondata, End;
+  if (!obj) obj = PREFSIMAGEOBJECT;
+  return obj;
+}
+
+#undef PREFSIMAGEOBJECT
+#define PREFSIMAGEOBJECT get_prefs_image()
+
+#endif
+
 #include "mccinit.c"
 
 /******************************************************************************/

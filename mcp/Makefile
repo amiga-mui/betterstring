@@ -180,6 +180,7 @@ COBJS = locale.o \
         Dispatcher.o \
         Debug.o \
         icon32.o \
+        iconraw.o \
         vastubs.o
 
 TOBJS = Preference.o
