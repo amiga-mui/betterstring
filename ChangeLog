@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-04-24 Thore Böckelmann <tboeckel@gmx.de>
+
+  * include/mccinit.c: replaced some #ifdef's by macros.
+
 2010-04-23 Ilkka Lehtoranta <ilkleht@yahoo.com>
 
   * mcp/misc: use bzip2 compressed 32bit prefs image on MorphOS 2.
