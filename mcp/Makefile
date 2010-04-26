@@ -179,8 +179,7 @@ COBJS = locale.o \
         CreatePrefsGroup.o \
         Dispatcher.o \
         Debug.o \
-        icon32.o \
-        iconraw.o \
+        icon.o \
         vastubs.o
 
 TOBJS = Preference.o
