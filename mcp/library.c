@@ -22,6 +22,7 @@
 
 #include <proto/exec.h>
 #include <proto/intuition.h>
+#include <proto/muimaster.h>
 
 /******************************************************************************/
 /*                                                                            */
@@ -75,27 +76,7 @@ static VOID ClassExpunge(UNUSED struct Library *base);
 
 #include "icon.h"
 
-#ifdef MUIA_Bitmap_RawData
-
-#define PREFSIMAGEOBJECT \
-  BodychunkObject,\
-    MUIA_FixWidth,              ICON8_WIDTH,\
-    MUIA_FixHeight,             ICON8_HEIGHT,\
-    MUIA_Bitmap_Width,          ICON8_WIDTH ,\
-    MUIA_Bitmap_Height,         ICON8_HEIGHT,\
-    MUIA_Bodychunk_Depth,       ICON8_DEPTH,\
-    MUIA_Bodychunk_Body,        (UBYTE *)icon8_body,\
-    MUIA_Bodychunk_Compression, ICON8_COMPRESSION,\
-    MUIA_Bodychunk_Masking,     ICON8_MASKING,\
-    MUIA_Bitmap_SourceColors,   (ULONG *)icon8_colors,\
-    MUIA_Bitmap_Transparent,    0,\
-    MUIA_Bitmap_RawData,        icon32,\
-    MUIA_Bitmap_RawDataFormat,  MUIV_Bitmap_RawDataFormat_ARGB32,\
-  End
-
-#else
-
-#define PREFSIMAGEOBJECT \
+#define ICON8OBJECT \
   BodychunkObject,\
     MUIA_FixWidth,              ICON8_WIDTH,\
     MUIA_FixHeight,             ICON8_HEIGHT,\
@@ -108,25 +89,37 @@ static VOID ClassExpunge(UNUSED struct Library *base);
     MUIA_Bitmap_SourceColors,   (ULONG *)icon8_colors,\
     MUIA_Bitmap_Transparent,    0,\
   End
-
-#endif
 
 #if defined(__MORPHOS__)
-
 #include <mui/Rawimage_mcc.h>
-#include <proto/muimaster.h>
+#endif
 
 static APTR get_prefs_image(void)
 {
-  APTR obj = RawimageObject, MUIA_Rawimage_Data, icon32, End;
-  if (!obj) obj = PREFSIMAGEOBJECT;
+  APTR obj = NULL;
+
+  #if defined(MUIA_Bitmap_RawData)
+  obj = BitmapObject,
+    MUIA_FixWidth,              ICON32_WIDTH,
+    MUIA_FixHeight,             ICON32_HEIGHT,
+    MUIA_Bitmap_Width,          ICON32_WIDTH ,
+    MUIA_Bitmap_Height,         ICON32_HEIGHT,
+    MUIA_Bitmap_RawData,        icon32,\
+    MUIA_Bitmap_RawDataFormat,  MUIV_Bitmap_RawDataFormat_ARGB32,
+  End;
+  #elif defined(__MORPHOS__)
+  obj = RawimageObject,
+    MUIA_Rawimage_Data, icon32,
+  End;
+  #endif
+
+  if(obj == NULL)
+    obj = ICON8OBJECT;
+
   return obj;
 }
 
-#undef PREFSIMAGEOBJECT
 #define PREFSIMAGEOBJECT get_prefs_image()
-
-#endif
 
 #include "mccinit.c"
 

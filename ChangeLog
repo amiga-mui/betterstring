@@ -9,6 +9,8 @@ $URL$
 
   * mcp/misc: merged all converted image data into one file, moved the image
     files to a separate subdirectory.
+  * mcp/library.c: combined then prefs icon generation for all platform into one
+    function.
 
 2010-04-24 Thore Böckelmann <tboeckel@gmx.de>
 
