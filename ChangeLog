@@ -5,9 +5,14 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-04-30 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcp/library.c: added version check for NBitmap.mcc. Only version V15.8+ can
+    handle raw image data.
+
 2010-04-27 Thore Böckelmann <tboeckel@gmx.de>
 
-  * mcp/library: all systems now try to create a truecolor prefs image using
+  * mcp/library.c: all systems now try to create a truecolor prefs image using
     Rawimage.mcc first before falling back to the old 8bit images.
 
 2010-04-26 Thore Böckelmann <tboeckel@gmx.de>
