@@ -173,7 +173,7 @@ static BOOL ClassInit(UNUSED struct Library *base)
     return TRUE;
   }
 
-  return FALSE ;
+  return FALSE;
 }
 
 
