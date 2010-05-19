@@ -42,8 +42,7 @@ make -C mcc release
 make -C mcc/hotkeystring release
 make -C mcp release
 
-#for os in os3 os4 mos aros-i386 aros-ppc aros-x86_64; do
-for os in os3 os4 mos; do
+for os in os3 os4 mos aros-i386 aros-ppc aros-x86_64; do
 	case $os in
 	    os3)         fullsys="AmigaOS3";;
 	    os4)         fullsys="AmigaOS4";;
@@ -53,25 +52,25 @@ for os in os3 os4 mos; do
 	    aros-x86_64) fullsys="AROS-x86_64";;
 	esac
 	mkdir -p "release/MCC_BetterString/Libs/MUI/$fullsys"
-	cp mcc/bin_$os/BetterString.mcc "release/MCC_BetterString/Libs/MUI/$fullsys/"
-	cp mcc/hotkeystring/bin_$os/HotkeyString.mcc "release/MCC_BetterString/Libs/MUI/$fullsys/"
-	cp mcp/bin_$os/BetterString.mcp "release/MCC_BetterString/Libs/MUI/$fullsys/"
+	cp -a mcc/bin_$os/BetterString.mcc "release/MCC_BetterString/Libs/MUI/$fullsys/"
+	cp -a mcc/hotkeystring/bin_$os/HotkeyString.mcc "release/MCC_BetterString/Libs/MUI/$fullsys/"
+	cp -a mcp/bin_$os/BetterString.mcp -a "release/MCC_BetterString/Libs/MUI/$fullsys/"
 done
 
 make -C mcp catalogs
 for language in czech danish french german russian swedish; do
 	mkdir -p "release/MCC_BetterString/Locale/Catalogs/$language"
-	cp mcp/locale/$language.catalog "release/MCC_BetterString/Locale/Catalogs/$language/BetterString_mcp.catalog"
+	cp -a mcp/locale/$language.catalog "release/MCC_BetterString/Locale/Catalogs/$language/BetterString_mcp.catalog"
 done
 
-cp -R dist/* "release/"
-cp AUTHORS ChangeLog COPYING "release/MCC_BetterString/"
-cp doc/MCC_BetterString.readme "release/MCC_BetterString/ReadMe"
-cp doc/MCC_BetterString.doc "release/MCC_BetterString/Developer/Autodocs/"
-cp doc/MCC_HotkeyString.doc "release/MCC_BetterString/Developer/Autodocs/"
-cp include/mui/BetterString_mcc.h "release/MCC_BetterString/Developer/C/include/mui/"
-cp include/mui/HotkeyString_mcc.h "release/MCC_BetterString/Developer/C/include/mui/"
-cp mcp/locale/BetterString_mcp.cd "release/MCC_BetterString/Locale/"
+cp -a -R dist/* "release/"
+cp -a AUTHORS ChangeLog COPYING "release/MCC_BetterString/"
+cp -a doc/MCC_BetterString.readme "release/MCC_BetterString/ReadMe"
+cp -a doc/MCC_BetterString.doc "release/MCC_BetterString/Developer/Autodocs/"
+cp -a doc/MCC_HotkeyString.doc "release/MCC_BetterString/Developer/Autodocs/"
+cp -a include/mui/BetterString_mcc.h "release/MCC_BetterString/Developer/C/include/mui/"
+cp -a include/mui/HotkeyString_mcc.h "release/MCC_BetterString/Developer/C/include/mui/"
+cp -a mcp/locale/BetterString_mcp.cd "release/MCC_BetterString/Locale/"
 
 releasever=`grep "#define LIB_VERSION" mcc/version.h | awk '{ print $3 }'`
 releaserev=`grep "#define LIB_REVISION" mcc/version.h | awk '{ print $3 }'`
