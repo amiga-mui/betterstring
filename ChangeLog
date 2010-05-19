@@ -8,6 +8,7 @@ $URL$
 2010-05-19 Thore Böckelmann <tboeckel@gmx.de>
 
  * misc: moved the public include files to the include/mui directory.
+ * added stuff for automated build of release archives.
 
 #### v11.18 RELEASE ###########################################################
 
