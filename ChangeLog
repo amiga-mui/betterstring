@@ -7,12 +7,15 @@ $URL$
 
 2010-05-19 Mariusz Danilewicz <mandi@interia.pl>
 
- * mcp/locale/polish.ct: first version of Polish translation 
+  * mcp/locale/polish.ct: first version of Polish translation
 
 2010-05-19 Thore Böckelmann <tboeckel@gmx.de>
 
- * misc: moved the public include files to the include/mui directory.
- * added stuff for automated build of release archives.
+  * misc: moved the public include files to the include/mui directory.
+  * added stuff for automated build of release archives.
+  * mcp/locale: slight correction for the polish catalog to generate a proper
+    AUTH chunk and set some properties. Also added new polish translation to the
+    catalog generation.
 
 #### v11.18 RELEASE ###########################################################
 

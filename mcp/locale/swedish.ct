@@ -1,6 +1,12 @@
 ## chunk AUTH Pär Boberg
 ## language svenska
 ## version $VER: BetterString_mcp.ct 2.2 (20.04.09)
+;
+;
+; BetterString_mcp.cd - BetterString MUI custom prefs catalog description file
+; $Id$
+;
+;
 MSG_Label_Active
 Aktiv:
 ;#DEF Active:

@@ -1,7 +1,12 @@
 ## version $VER: betterstring_mcp.catalog 2.0 (19.05.2010)
 ## language polski
 ## codeset 5
-## AUTH Mariusz Danilewicz <mandi@interia.pl>
+## chunk AUTH Mariusz Danilewicz <mandi@interia.pl>
+;
+;
+; BetterString_mcp.cd - BetterString MUI custom prefs catalog description file
+; $Id$
+;
 ;
 MSG_Label_Active
 Aktywny:
