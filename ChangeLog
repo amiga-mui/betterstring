@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-05-19 Thore Böckelmann <tboeckel@gmx.de>
+
+ * misc: moved the public include files to the include/mui directory.
+
 #### v11.18 RELEASE ###########################################################
 
 2010-05-01 Jens Langner <Jens.Langner@light-speed.de>

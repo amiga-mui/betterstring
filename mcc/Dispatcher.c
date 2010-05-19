@@ -30,7 +30,6 @@
 #include <proto/utility.h>
 #include <proto/locale.h>
 
-#include "BetterString_mcc.h"
 #include "private.h"
 
 /*
