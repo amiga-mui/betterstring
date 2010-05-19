@@ -4,10 +4,7 @@
 ;
 ;
 ; BetterString_mcp.cd - BetterString MUI custom prefs catalog description file
-; $Id: BetterString_mcp.cd 104 2007-08-29 08:19:24Z thboeckel $
-;
-;#version 2
-;#language english
+; $Id$
 ;
 ;
 MSG_Label_Active
