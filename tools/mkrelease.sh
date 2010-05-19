@@ -18,7 +18,7 @@
 #
 # BetterString class Support Site:  http://www.sf.net/projects/bstring-mcc/
 #
-# $Id: Makefile 183 2009-06-03 06:44:20Z damato $
+# $Id$
 #
 ############################################################################
 
