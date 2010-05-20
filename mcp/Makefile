@@ -179,8 +179,7 @@ COBJS = locale.o \
         CreatePrefsGroup.o \
         Dispatcher.o \
         Debug.o \
-        icon.o \
-        vastubs.o
+        icon.o
 
 TOBJS = Preference.o
 
@@ -239,6 +238,9 @@ ifeq ($(OS), os3)
   CFLAGS  += -noixemul -DNO_INLINE_STDARG
   LDFLAGS += -noixemul
   LDLIBS  += -ldebug -lmui
+
+  # additional object files required
+  COBJS += vastubs.o
 
 else
 ifeq ($(OS), mos)

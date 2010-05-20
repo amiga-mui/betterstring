@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-05-20 Thore Böckelmann <tboeckel@gmx.de>
+
+  * Makefiles: add varargs stubs only for those systems which really need it.
+
 2010-05-19 Mariusz Danilewicz <mandi@interia.pl>
 
   * mcp/locale/polish.ct: first version of Polish translation
