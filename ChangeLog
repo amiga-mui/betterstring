@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-05-25 Matthias Rustler <mrustler@gmx.de>
+
+  * mccinit.c: changes for AROS V1 API
+
 2010-05-20 Thore Böckelmann <tboeckel@gmx.de>
 
   * Makefiles: add varargs stubs only for those systems which really need it.
