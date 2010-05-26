@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-05-26 Thore Böckelmann <tboeckel@gmx.de>
+
+  * dist/Install-MCC: added the first version of a generic MCC Installer script.
+    To use this script for other classes only the name and the set of supported
+    languages needs to be adapted.
+
 2010-05-25 Matthias Rustler <mrustler@gmx.de>
 
   * mccinit.c: changes for AROS V1 API
