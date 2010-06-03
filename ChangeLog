@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-06-03 Thore Böckelmann <tboeckel@gmx.de>
+
+  * include/SDI_compiler.h: added SIPTR definition.
+
 2010-06-03 Matthias Rustler <mrustler@gmx.de>
 
   * Fixes for 64-bit AROS. Some ULONG to IPTR changes to get rid of warnings
