@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-06-11 Thore Böckelmann <tboeckel@gmx.de>
+
+  * Install-MCC: extended the final message that a reboot might be necessary to
+    be able to use the just installed version.
+
 2010-06-03 Thore Böckelmann <tboeckel@gmx.de>
 
   * include/SDI_compiler.h: added SIPTR definition.
@@ -14,7 +19,7 @@ $URL$
   * Fixes for 64-bit AROS. Some ULONG to IPTR changes to get rid of warnings
     about conversion from/to integer to/from pointer with different size.
   * mmakefile.src: Path to header fixed.
-  
+
 2010-05-27 Thore Böckelmann <tboeckel@gmx.de>
 
   * dist/Install-MCC: the supported languages are now collected dynamically
