@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-06-29 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcp/locale/swedish.ct: added ##codeset line.
+
 2010-06-11 Thore Böckelmann <tboeckel@gmx.de>
 
   * Install-MCC: extended the final message that a reboot might be necessary to
