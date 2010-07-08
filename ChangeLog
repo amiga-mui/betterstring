@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-07-08 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mccinit.c, Debug.c: updated to latest mccinit.c and added CleanupDebug()
+    function needed by mccinit.c.
+
 2010-06-29 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcp/locale/swedish.ct: added ##codeset line.
