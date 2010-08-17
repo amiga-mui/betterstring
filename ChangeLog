@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-08-17 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mccinit.c, SDI_compiler.h: updated to latest versions.
+
 2010-07-08 Thore Böckelmann <tboeckel@gmx.de>
 
   * mccinit.c, Debug.c: updated to latest mccinit.c and added CleanupDebug()
