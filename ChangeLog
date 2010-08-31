@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-08-31 Jens Langner <Jens.Langner@light-speed.de>
+
+  * Makefile: updated all makefiles to compile with -O2 for AROS
+  * mccinit.c, SDI-compiler.h: updated to latest versions
+
 2010-08-27 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcp/locale/italian.ct: updated italian translation provided by Samir

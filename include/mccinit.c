@@ -369,7 +369,8 @@ STATIC IPTR                   LIBFUNC MCC_Query  (REG(d0, LONG which));
  *
  */
 
-#if defined(__amigaos4__) || !defined(__mc68000__)
+#if defined(__amigaos4__) && !defined(__AROS__) && !defined(__MORPHOS__)
+#if !defined(__mc68000__)
 int32 _start(void)
 {
   return RETURN_FAIL;
@@ -381,6 +382,7 @@ asm(".text                    \n\
    _start:                    \n\
      moveq #0,d0              \n\
      rts");
+#endif
 #endif
 
 #if !defined(__amigaos4__)
@@ -1027,7 +1029,7 @@ STATIC BPTR LibExpunge(void)
   struct LibraryHeader *base = (struct LibraryHeader *)REG_A6;
 #elif defined(__AROS__)
 AROS_LH1 (BPTR, LibExpunge,
-    AROS_LHA(struct LibraryHeader *, extralh, D0),
+    AROS_LHA(UNUSED struct LibraryHeader *, extralh, D0),
     struct LibraryHeader *, base, 3, __MCC_
 )
 {
@@ -1094,7 +1096,7 @@ STATIC struct LibraryHeader *LibOpen(void)
   struct LibraryHeader *base = (struct LibraryHeader *)REG_A6;
 #elif defined(__AROS__)
 AROS_LH1 (struct LibraryHeader *, LibOpen,
-    AROS_LHA (ULONG, version, D0),
+    AROS_LHA (UNUSED ULONG, version, D0),
     struct LibraryHeader *, base, 1, __MCC_
 )
 {
@@ -1248,7 +1250,7 @@ STATIC IPTR MCC_Query(void)
 #elif defined(__AROS__)
 AROS_LH1(IPTR, MCC_Query,
          AROS_LHA(LONG, which, D0),
-         struct LibraryHeader *, base, 5, __MCC_
+         UNUSED struct LibraryHeader *, base, 5, __MCC_
 )
 {
     AROS_LIBFUNC_INIT
