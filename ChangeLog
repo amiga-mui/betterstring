@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.19 RELEASE ###########################################################
+
+2010-09-01 Jens Langner <Jens.Langner@light-speed.de>
+
+  * misc: final 11.19 release preparations
+
 2010-08-31 Jens Langner <Jens.Langner@light-speed.de>
 
   * Makefile: updated all makefiles to compile with -O2 for AROS
