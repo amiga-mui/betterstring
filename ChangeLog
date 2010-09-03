@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-09-03 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mccinit.c: clear the library semaphore before calling InitSemaphore(). This
+    fixes bug #3058668.
+
 #### v11.19 RELEASE ###########################################################
 
 2010-09-01 Jens Langner <Jens.Langner@light-speed.de>
