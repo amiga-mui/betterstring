@@ -7,6 +7,8 @@ $URL$
 
 2010-09-03 Thore Böckelmann <tboeckel@gmx.de>
 
+  * mcc/AllocFunctions.c, mcc/ClipboardServer.c: applied the same fix for the
+    semaphores.
   * mccinit.c: clear the library semaphore before calling InitSemaphore(). This
     fixes bug #3058668.
 
