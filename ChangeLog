@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2010-09-07 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mccinit.c: added missing #include <string.h> for memset().
+
 2010-09-03 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/AllocFunctions.c, mcc/ClipboardServer.c: applied the same fix for the
