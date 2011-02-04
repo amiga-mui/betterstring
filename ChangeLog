@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2011-01-04 Thore Böckelmann <tboeckel@gmx.de>
+
+  * all/Makefile: fixed the dependency generation to respect the system specific
+    object file path.
+
 2010-10-05 Thore Böckelmann <tboeckel@gmx.de>
 
   * include/mccinit.c: make sure that removing the library during LibClose()
