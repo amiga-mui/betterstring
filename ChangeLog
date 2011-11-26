@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.21 RELEASE ###########################################################
+
+2011-11-26 Jens Langner <Jens.Langner@light-speed.de>
+
+  * misc: final 11.21 release preparations
+
 2011-09-12 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/PrintString.c: fixed the slightly wrong background drawing when 
