@@ -16,7 +16,7 @@
 
  BetterString class Support Site:  http://www.sf.net/projects/bstring-mcc/
 
- $Id: private.h 15 2005-06-13 07:06:03Z damato $
+ $Id$
 
 ***************************************************************************/
 
