@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-03-29 Thore Böckelmann <tboeckel@gmx.de>
+
+  * Makefile: added __amigaos3__ symbol for the OS3 build.
+
 2012-01-29 Matthias Rustler <mrustler@gmx.de>
 
   * Backport of AROS fixes.
@@ -18,7 +22,7 @@ $URL$
 
 2011-09-12 Thore Böckelmann <tboeckel@gmx.de>
 
-  * mcc/PrintString.c: fixed the slightly wrong background drawing when 
+  * mcc/PrintString.c: fixed the slightly wrong background drawing when
     gradients are being used.
 
 2011-01-04 Thore Böckelmann <tboeckel@gmx.de>
