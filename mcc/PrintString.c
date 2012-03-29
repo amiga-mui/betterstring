@@ -27,6 +27,7 @@
 #include <graphics/gfxmacros.h>
 #include <proto/intuition.h>
 #include <proto/graphics.h>
+#include <proto/muimaster.h>
 
 #include "private.h"
 
@@ -213,6 +214,15 @@ VOID PrintString(struct IClass *cl, Object *obj)
     SharedPoolFree(fake_contents);
 
   BltBitMapRastPort(data->rport.BitMap, 0, 0, muiRenderInfo(obj)->mri_RastPort, dst_x, dst_y, width, height, 0xc0);
+
+  #if defined(__amigaos3__) || defined(__amigaos4__)
+  if(MUIMasterBase->lib_Version > 20 || (MUIMasterBase->lib_Version == 20 && MUIMasterBase->lib_Revision >= 5640))
+  {
+    // MUI 4.0 for AmigaOS4 does the disabled pattern drawing itself,
+    // no need to do this on our own
+    return;
+  }
+  #endif
 
   if(isFlagSet(data->Flags, FLG_Ghosted))
   {
