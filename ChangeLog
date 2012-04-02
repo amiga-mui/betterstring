@@ -12,6 +12,10 @@ $URL$
   * mcp/BetterString_mcp.h: fixed duplicate config ID for marked text color
     and select on activate items. This will require every user to check the
     settings and save them again, unfortunately.
+  * mcc/InitConfig.c: string pointers obtained from the MUI configuration must
+    be copied instead of rembembered directly. With MUI4's realtime prefs the
+    pointer might become invalid at any time and hence the class would operate
+    on invalid data after that.
 
 2012-03-29 Thore Böckelmann <tboeckel@gmx.de>
 

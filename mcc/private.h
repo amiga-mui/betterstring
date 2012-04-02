@@ -102,6 +102,9 @@ struct InstData
   BOOL    SelectOnActive;
   BOOL    SelectPointer;
 
+  char InactiveBackgroundBuffer[256];
+  char ActiveBackgroundBuffer[256];
+
   /* Edit hook */
   struct Hook *EditHook;
 };

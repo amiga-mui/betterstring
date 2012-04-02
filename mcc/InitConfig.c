@@ -62,12 +62,24 @@ void InitConfig(Object *obj, struct InstData *data)
   data->MarkedTextColor = GetCol(obj, MUICFG_BetterString_MarkedText, (struct MUI_PenSpec *)"m5");
 
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_InactiveBack, &setting))
-    data->InactiveBackground = (STRPTR)setting;
+  {
+    // don't remember the string from the configuration but copy it
+    // with MUI4's realtime prefs the configuration might change upon
+    // canceling MUI prefs and hence we would operate on invalid data.
+    strlcpy(data->InactiveBackgroundBuffer, (STRPTR)setting, sizeof(data->InactiveBackgroundBuffer));
+    data->InactiveBackground = data->InactiveBackgroundBuffer;
+  }
   else
     data->InactiveBackground = (STRPTR)MUII_BACKGROUND;
 
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_ActiveBack, &setting))
-    data->ActiveBackground = (STRPTR)setting;
+  {
+    // don't remember the string from the configuration but copy it
+    // with MUI4's realtime prefs the configuration might change upon
+    // canceling MUI prefs and hence we would operate on invalid data.
+    strlcpy(data->ActiveBackgroundBuffer, (STRPTR)setting, sizeof(data->ActiveBackgroundBuffer));
+    data->ActiveBackground = data->ActiveBackgroundBuffer;
+  }
   else
     data->ActiveBackground = (STRPTR)"2:m1";
 
