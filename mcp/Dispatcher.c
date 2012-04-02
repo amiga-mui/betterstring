@@ -44,17 +44,17 @@ struct PrefsExchangeData
 
 static struct PrefsExchangeData PrefsInfo[] =
 {
-  { ActiveBack,     MUIA_Imagedisplay_Spec,  MUICFG_BetterString_ActiveBack,     0, 64,           (APTR)"2:m1"    },
-  { ActiveText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_ActiveText,     0, 32,           (APTR)"m5"      },
-  { InactiveBack,   MUIA_Imagedisplay_Spec,  MUICFG_BetterString_InactiveBack,   0, 64,           (APTR)"2:m2"    },
-  { InactiveText,   MUIA_Pendisplay_Spec,    MUICFG_BetterString_InactiveText,   0, 32,           (APTR)"m4"      },
-  { Cursor,         MUIA_Pendisplay_Spec,    MUICFG_BetterString_Cursor,         0, 32,           (APTR)"m0"      },
-  { MarkedBack,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedBack,     0, 32,           (APTR)"m6"      },
-  { MarkedText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedText,     0, 32,           (APTR)"m5"      },
-  { Font,           MUIA_String_Contents,    MUICFG_BetterString_Font,           0,  0,           (APTR)""        },
-  { Frame,          MUIA_Framedisplay_Spec,  MUICFG_BetterString_Frame,          0, 32,           (APTR)"302211"  },
-  { SelectOnActive, MUIA_Selected,           MUICFG_BetterString_SelectOnActive, 1, sizeof(LONG), (APTR)0         },
-  { SelectPointer,  MUIA_Selected,           MUICFG_BetterString_SelectPointer,  1, sizeof(LONG), (APTR)1         }
+  { ActiveBack,     MUIA_Imagedisplay_Spec,  MUICFG_BetterString_ActiveBack,     0, 64,                         (APTR)"2:m1"    },
+  { ActiveText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_ActiveText,     0, sizeof(struct MUI_PenSpec), (APTR)"m5"      },
+  { InactiveBack,   MUIA_Imagedisplay_Spec,  MUICFG_BetterString_InactiveBack,   0, 64,                         (APTR)"2:m2"    },
+  { InactiveText,   MUIA_Pendisplay_Spec,    MUICFG_BetterString_InactiveText,   0, sizeof(struct MUI_PenSpec), (APTR)"m4"      },
+  { Cursor,         MUIA_Pendisplay_Spec,    MUICFG_BetterString_Cursor,         0, sizeof(struct MUI_PenSpec), (APTR)"m0"      },
+  { MarkedBack,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedBack,     0, sizeof(struct MUI_PenSpec), (APTR)"m6"      },
+  { MarkedText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedText,     0, sizeof(struct MUI_PenSpec), (APTR)"m5"      },
+  { Font,           MUIA_String_Contents,    MUICFG_BetterString_Font,           0, 0,                          (APTR)""        },
+  { Frame,          MUIA_Framedisplay_Spec,  MUICFG_BetterString_Frame,          0, sizeof(struct MUI_PenSpec), (APTR)"302211"  },
+  { SelectOnActive, MUIA_Selected,           MUICFG_BetterString_SelectOnActive, 1, sizeof(LONG),               (APTR)0         },
+  { SelectPointer,  MUIA_Selected,           MUICFG_BetterString_SelectPointer,  1, sizeof(LONG),               (APTR)1         }
 };
 
 DISPATCHER(_DispatcherP)
