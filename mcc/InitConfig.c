@@ -34,7 +34,7 @@
 
 #include "Debug.h"
 
-ULONG GetCol (Object *obj, ULONG item, struct MUI_PenSpec *defaultcol, UNUSED struct InstData *data)
+static ULONG GetCol(Object *obj, ULONG item, struct MUI_PenSpec *defaultcol)
 {
   ULONG res;
   struct MUI_PenSpec *spec;
@@ -46,7 +46,7 @@ ULONG GetCol (Object *obj, ULONG item, struct MUI_PenSpec *defaultcol, UNUSED st
   return res;
 }
 
-void InitConfig (Object *obj, struct InstData *data)
+void InitConfig(Object *obj, struct InstData *data)
 {
   IPTR setting;
 
@@ -55,11 +55,11 @@ void InitConfig (Object *obj, struct InstData *data)
   if(isFlagSet(data->Flags, FLG_SetFrame) && MUIMasterBase->lib_Version >= 20)
     set(obj, MUIA_Frame, DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Frame, &setting) ? (STRPTR)setting : (STRPTR)"302211");
 
-  data->InactiveText = GetCol(obj, MUICFG_BetterString_InactiveText, (struct MUI_PenSpec *)"m4", data);
-  data->ActiveText = GetCol(obj, MUICFG_BetterString_ActiveText, (struct MUI_PenSpec *)"m5", data);
-  data->CursorColor = GetCol(obj, MUICFG_BetterString_Cursor, (struct MUI_PenSpec *)"m0", data);
-  data->MarkedColor = GetCol(obj, MUICFG_BetterString_MarkedBack, (struct MUI_PenSpec *)"m6", data);
-  data->MarkedTextColor = GetCol(obj, MUICFG_BetterString_MarkedText, (struct MUI_PenSpec *)"m5", data);
+  data->InactiveText = GetCol(obj, MUICFG_BetterString_InactiveText, (struct MUI_PenSpec *)"m4");
+  data->ActiveText = GetCol(obj, MUICFG_BetterString_ActiveText, (struct MUI_PenSpec *)"m5");
+  data->CursorColor = GetCol(obj, MUICFG_BetterString_Cursor, (struct MUI_PenSpec *)"m0");
+  data->MarkedColor = GetCol(obj, MUICFG_BetterString_MarkedBack, (struct MUI_PenSpec *)"m6");
+  data->MarkedTextColor = GetCol(obj, MUICFG_BetterString_MarkedText, (struct MUI_PenSpec *)"m5");
 
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_InactiveBack, &setting))
     data->InactiveBackground = (STRPTR)setting;
@@ -114,7 +114,7 @@ void InitConfig (Object *obj, struct InstData *data)
   LEAVE();
 }
 
-VOID FreeConfig (struct MUI_RenderInfo *mri, struct InstData *data)
+VOID FreeConfig(struct MUI_RenderInfo *mri, struct InstData *data)
 {
   MUI_ReleasePen(mri, data->InactiveText);
   MUI_ReleasePen(mri, data->ActiveText);

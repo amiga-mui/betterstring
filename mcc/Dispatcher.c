@@ -159,21 +159,11 @@ IPTR Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 
   ENTER();
 
-  InitConfig(obj, data);
-
   if(DoSuperMethodA(cl, obj, (Msg)rinfo))
   {
-/*      ULONG color;
-    if(DoMethod(obj, MUIM_GetConfigItem, 132, &color))
-    {
-        UBYTE image[6];
+    InitConfig(obj, data);
 
-      strcpy(image, "2:");
-      strcat(image, (STRPTR)color);
-      set(obj, MUIA_Background, image);
-    }
-*/
-
+    // tell MUI we know how to indicate the active state
     _flags(obj) |= (1<<7);
 
     data->ehnode.ehn_Priority = 0;
