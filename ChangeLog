@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-04-02 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/Dispatcher.c: call InitConfig() after the superclass' MUIM_Setup
+    succeeded to avoid orphaned pen allocations.
+
 2012-03-29 Thore Böckelmann <tboeckel@gmx.de>
 
   * Makefile: added __amigaos3__ symbol for the OS3 build.
