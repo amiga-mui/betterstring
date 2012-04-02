@@ -67,7 +67,7 @@ extern "C" {
 #define MUICFG_BetterString_MarkedText      0xad000308UL
 #define MUICFG_BetterString_Font            0xad000306UL
 #define MUICFG_BetterString_Frame           0xad000307UL
-#define MUICFG_BetterString_SelectOnActive  0xad000308UL
+#define MUICFG_BetterString_SelectOnActive  0xad00030aUL
 #define MUICFG_BetterString_SelectPointer   0xad000309UL
 
 #if !defined(__AROS__) && defined(__PPC__)

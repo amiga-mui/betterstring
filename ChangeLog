@@ -9,6 +9,9 @@ $URL$
 
   * mcc/Dispatcher.c: call InitConfig() after the superclass' MUIM_Setup
     succeeded to avoid orphaned pen allocations.
+  * mcp/BetterString_mcp.h: fixed duplicate config ID for marked text color
+    and select on activate items. This will require every user to check the
+    settings and save them again, unfortunately.
 
 2012-03-29 Thore Böckelmann <tboeckel@gmx.de>
 
