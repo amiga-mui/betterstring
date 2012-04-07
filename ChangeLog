@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-04-07 Jens Langner <Jens.Langner@light-speed.de>
+
+  * Makefile: removed -funroll-loops as this option is potentially
+    dangerous.
+
 2012-04-02 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Dispatcher.c: call InitConfig() after the superclass' MUIM_Setup
