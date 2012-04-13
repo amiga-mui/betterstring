@@ -7,6 +7,8 @@ $URL$
 
 2012-04-13 Jens Langner <Jens.Langner@light-speed.de>
 
+  * mcp/CreatePrefsGroup.c: reordered the checkmark objects so that they are
+    horizontal aligned properly to the previous objects.
   * mcp/private.h: removed "Font" config object from object enum list or otherwise
     the .mcp crashes.
 

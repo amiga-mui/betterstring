@@ -233,19 +233,21 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
         MUIA_VertWeight,      0,
       End,
 
+      Child, HSpace(-1),
       Child, HGroup,
-	    MUIA_Weight, 0,
-        Child, HSpace(-1),
+	      MUIA_Weight, 0,
         Child, objs[SelectOnActive] = MUI_MakeObject(MUIO_Checkmark, NULL),
-      End,
-      Child, TxtLLabel(GetStr(MSG_SelectOnActive)),
-
-      Child, HGroup,
-	    MUIA_Weight, 0,
+        Child, TxtLLabel(GetStr(MSG_SelectOnActive)),
         Child, HSpace(-1),
-        Child, objs[SelectPointer] = MUI_MakeObject(MUIO_Checkmark, NULL),
       End,
-      Child, TxtLLabel(GetStr(MSG_SelectPointer)),
+
+      Child, HSpace(-1),
+      Child, HGroup,
+	      MUIA_Weight, 0,
+        Child, objs[SelectPointer] = MUI_MakeObject(MUIO_Checkmark, NULL),
+        Child, TxtLLabel(GetStr(MSG_SelectPointer)),
+        Child, HSpace(-1),
+      End,
 
     End,
 
