@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-04-13 Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcp/private.h: removed "Font" config object from object enum list or otherwise
+    the .mcp crashes.
+
 2012-04-13 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/PrintString.c: use MUIPEN() macro for all uses of pens allocated by MUI.
