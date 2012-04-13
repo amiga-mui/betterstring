@@ -8,6 +8,8 @@ $URL$
 2012-04-13 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/PrintString.c: use MUIPEN() macro for all uses of pens allocated by MUI.
+  * mcc/PrintString.c: replaced all direct peeking to public MUI structures by
+    the appropriate macro calls.
 
 2012-04-07 Jens Langner <Jens.Langner@light-speed.de>
 
