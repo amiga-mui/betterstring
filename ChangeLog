@@ -17,6 +17,8 @@ $URL$
     specs of MUI4 can only be applied if the font inheritance mechanism would be
     fully replicated in BetterString.
   * mcc/misc: removed the custom font support as stated above.
+  * mcc/InitConfig.c: fixed yet another possible invalid pointer value after a
+    configuration change.
 
 2012-04-07 Jens Langner <Jens.Langner@light-speed.de>
 
