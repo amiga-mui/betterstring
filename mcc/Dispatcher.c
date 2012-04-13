@@ -69,24 +69,14 @@ IPTR New(struct IClass *cl, Object *obj, struct opSet *msg)
   {
     struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-//    kprintf("OM_NEW by %s\n", FindTask(NULL)->tc_Node.ln_Name);
-
     data->locale = OpenLocale(NULL);
     data->Contents = (STRPTR)SharedPoolAlloc(40);
     *data->Contents = '\0';
 
-//    data->PopupMenu = MUI_MakeObject(MUIO_MenustripNM, PopupMenuData, NULL);
-    SetAttrs(obj,  MUIA_FillArea,    FALSE,
-//              MUIA_ContextMenu,  data->PopupMenu,
-//              MUIA_CustomBackfill, TRUE,
-              TAG_DONE );
-
-    if(FindTagItem(MUIA_Font, msg->ops_AttrList))
-      setFlag(data->Flags, FLG_OwnFont);
+    set(obj, MUIA_FillArea, FALSE);
 
     if(FindTagItem(MUIA_Background, msg->ops_AttrList))
       setFlag(data->Flags, FLG_OwnBackground);
-
     {
       struct TagItem *tag;
 
@@ -198,17 +188,6 @@ IPTR Cleanup(struct IClass *cl, Object *obj, Msg msg)
 
   DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
 
-  // make sure the gadget is being set to inactive state
-/*
-  if(isFlagSet(data->Flags, FLG_Active))
-  {
-    clearFlag(data->Flags, FLG_Active);
-    clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
-
-    if(isFlagClear(data->Flags, FLG_OwnBackground))
-      set(obj, MUIA_Background, data->InactiveBackground);
-  }
-*/
   FreeConfig(muiRenderInfo(obj), data);
 
   return(DoSuperMethodA(cl, obj, msg));
@@ -217,13 +196,11 @@ IPTR Cleanup(struct IClass *cl, Object *obj, Msg msg)
 IPTR AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-  struct TextFont *font;
   WORD Height;
 
   DoSuperMethodA(cl, obj, (Msg)msg);
 
-  font = data->Font ? data->Font : _font(obj);
-  Height = font->tf_YSize;
+  Height = _font(obj)->tf_YSize;
   msg->MinMaxInfo->MinHeight += Height;
   msg->MinMaxInfo->DefHeight += Height;
   msg->MinMaxInfo->MaxHeight += Height;
@@ -232,7 +209,7 @@ IPTR AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
   {
     ULONG width;
 
-    SetFont(&data->rport, font);
+    SetFont(&data->rport, _font(obj));
     width = data->Width * TextLength(&data->rport, "n", 1);
 
     msg->MinMaxInfo->MinWidth  += width;
@@ -254,17 +231,16 @@ IPTR Show(struct IClass *cl, Object *obj, Msg msg)
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct BitMap *friendBMp = _rp(obj)->BitMap;
   WORD  width, height, depth;
-  struct TextFont *font = data->Font ? data->Font : _font(obj);
 
   DoSuperMethodA(cl, obj, msg);
 
   width = _mwidth(obj);
-  height = font->tf_YSize;
+  height = _font(obj)->tf_YSize;
   depth = ((struct Library *)GfxBase)->lib_Version >= 39 ? GetBitMapAttr(friendBMp, BMA_DEPTH) : friendBMp->Depth;
 
   InitRastPort(&data->rport);
   data->rport.BitMap = MUIG_AllocBitMap(width+40, height, depth, 0, friendBMp);
-  SetFont(&data->rport, font);
+  SetFont(&data->rport, _font(obj));
   SetDrMd(&data->rport, JAM1);
 
   setFlag(data->Flags, FLG_Shown);
@@ -365,11 +341,7 @@ IPTR GoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
 
   setFlag(data->Flags, FLG_Active);
   setFlag(data->Flags, FLG_FreshActive);
-/*
-  DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-  setFlag(data->ehnode.ehn_Events, IDCMP_RAWKEY);
-  DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
-*/
+
   if(data->Original != NULL)
     SharedPoolFree(data->Original);
 
@@ -404,11 +376,6 @@ IPTR GoInactive(struct IClass *cl, Object *obj, UNUSED Msg msg)
   clearFlag(data->Flags, FLG_BlockEnabled);
   clearFlag(data->Flags, FLG_Active);
   clearFlag(data->Flags, FLG_FreshActive);
-/*
-  DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-  clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
-  DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
-*/
 
   if(isFlagClear(data->Flags, FLG_OwnBackground))
     set(obj, MUIA_Background, data->InactiveBackground);
@@ -529,17 +496,6 @@ DISPATCHER(_Dispatcher)
       result = mDoAction(cl, obj, (struct MUIP_BetterString_DoAction *)msg);
     break;
 
-
-/*
-    case MUIM_Backfill:
-    {
-      struct MUIP_Backfill *fill_msg = (struct MUIP_Backfill *)msg;
-
-      if(isFlagClear(data->Flags, FLG_Active))
-        DoMethod(obj, MUIM_DrawBackground, fill_msg->left, fill_msg->top, fill_msg->right-fill_msg->left+1, fill_msg->bottom-fill_msg->top+1, fill_msg->xoffset, fill_msg->yoffset);
-//      printf("%ld, %ld, %ld, %ld\n%ld, %ld\n", fill_msg->left, fill_msg->top, fill_msg->right, fill_msg->bottom, fill_msg->xoffset, fill_msg->yoffset);
-    }
-*/
     case MUIM_BetterString_FileNameStart:
       result = FileNameStart((struct MUIP_BetterString_FileNameStart *)msg);
     break;
