@@ -12,6 +12,10 @@ $URL$
     all direct peeking to public MUI structures by the appropriate macro calls.
   * mcc/PrintString.c: the background must be drawn with the object's left/top
     edge as offsets to let an inherited background be drawn correctly.
+  * mcp/CreatePrefsGroup.c: removed the custom font setting as BetterString
+    should behave like the built-in string class. Furthermore the advanced font
+    specs of MUI4 can only be applied if the font inheritance mechanism would be
+    fully replicated in BetterString.
 
 2012-04-07 Jens Langner <Jens.Langner@light-speed.de>
 

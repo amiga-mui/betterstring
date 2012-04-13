@@ -62,6 +62,16 @@ Object *TxtLabel(const char *text)
     End;
 }
 
+Object *TxtLLabel(const char *text)
+{
+  return TextObject, ImageButtonFrame,
+    MUIA_FramePhantomHoriz,    TRUE,
+    MUIA_Text_SetVMax,      FALSE,
+    MUIA_Text_Contents,      text,
+    MUIA_Weight,          0,
+    End;
+}
+
 HOOKPROTONH(DisplayCode, VOID, STRPTR* place, STRPTR *item)
 {
   *place++ = *item++;
@@ -145,119 +155,101 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
         End,
       End,
 
-    Child, RectangleObject,
-      MUIA_VertWeight, 10,
-      End,
+    Child, VSpace(4),
 
-    Child, HGroup,
-
-      Child, ColGroup(2),
-        Child, RectangleObject, End,
-        Child, HGroup,
-          MUIA_Group_SameWidth, TRUE,
-          Child, TextObject,
-            MUIA_Font,          MUIV_Font_Tiny,
-            MUIA_Text_Contents,  GetStr(MSG_Label_Background),
-            MUIA_Text_PreParse, "\33c",
-            End,
-          Child, TextObject,
-            MUIA_Font,          MUIV_Font_Tiny,
-            MUIA_Text_Contents,  GetStr(MSG_Label_Text),
-            MUIA_Text_PreParse, "\33c",
-            End,
+    Child, ColGroup(2),
+      Child, HSpace(-1),
+      Child, HGroup,
+        MUIA_Group_SameWidth, TRUE,
+        Child, TextObject,
+          MUIA_Font,          MUIV_Font_Tiny,
+          MUIA_Text_Contents,  GetStr(MSG_Label_Background),
+          MUIA_Text_PreParse, "\33c",
           End,
-
-        Child, TxtLabel(GetStr(MSG_Label_Inactive)),
-        Child, HGroup,
-          Child, objs[InactiveBack] = PopimageObject,
-            MUIA_Imageadjust_Type,  2,
-            MUIA_CycleChain,      TRUE,
-            End,
-          Child, objs[InactiveText] = PoppenObject,
-            MUIA_CycleChain,      TRUE,
-            End,
+        Child, TextObject,
+          MUIA_Font,          MUIV_Font_Tiny,
+          MUIA_Text_Contents,  GetStr(MSG_Label_Text),
+          MUIA_Text_PreParse, "\33c",
           End,
-
-        Child, TxtLabel(GetStr(MSG_Label_Active)),
-        Child, HGroup,
-          Child, objs[ActiveBack] = PopimageObject,
-            MUIA_Imageadjust_Type,  2,
-            MUIA_CycleChain,      TRUE,
-            End,
-          Child, objs[ActiveText] = PoppenObject,
-            MUIA_CycleChain,      TRUE,
-            End,
-          End,
-
-        Child, RectangleObject, End,
-        Child, RectangleObject,
-          MUIA_Rectangle_HBar,  TRUE,
-          MUIA_VertWeight,      5,
-          End,
-
-        Child, TxtLabel(GetStr(MSG_Label_Cursor)),
-        Child, objs[Cursor] = PoppenObject,
-          MUIA_CycleChain, TRUE,
-          End,
-
-        Child, TxtLabel(GetStr(MSG_Label_Marked)),
-        Child, HGroup,
-          Child, objs[MarkedBack] = PoppenObject,
-            MUIA_CycleChain, TRUE,
-            End,
-          Child, objs[MarkedText] = PoppenObject,
-            MUIA_CycleChain, TRUE,
-            End,
-          End,
-
-        Child, RectangleObject, End,
-        Child, RectangleObject,
-          MUIA_Rectangle_HBar,  TRUE,
-          MUIA_VertWeight,      5,
         End,
 
-        Child, TxtLabel(GetStr(MSG_SelectOnActive)),
-        Child, HGroup,
-          MUIA_ShortHelp, GetStr(MSG_HELP_SelectOnActive),
-          Child, objs[SelectOnActive] = MUI_MakeObject(MUIO_Checkmark, NULL),
-          Child, HSpace(0),
+      Child, TxtLabel(GetStr(MSG_Label_Inactive)),
+      Child, HGroup,
+        Child, objs[InactiveBack] = PopimageObject,
+          MUIA_Imageadjust_Type,  2,
+          MUIA_CycleChain,      TRUE,
+          End,
+        Child, objs[InactiveText] = PoppenObject,
+          MUIA_CycleChain,      TRUE,
+          End,
         End,
 
-        Child, TxtLabel(GetStr(MSG_SelectPointer)),
-        Child, HGroup,
-          MUIA_ShortHelp, GetStr(MSG_HELP_SelectPointer),
-          Child, objs[SelectPointer] = MUI_MakeObject(MUIO_Checkmark, NULL),
-          Child, HSpace(0),
+      Child, TxtLabel(GetStr(MSG_Label_Active)),
+      Child, HGroup,
+        Child, objs[ActiveBack] = PopimageObject,
+          MUIA_Imageadjust_Type,  2,
+          MUIA_CycleChain,      TRUE,
+          End,
+        Child, objs[ActiveText] = PoppenObject,
+          MUIA_CycleChain,      TRUE,
+          End,
         End,
 
-      End,
-
+      Child, HSpace(-1),
       Child, RectangleObject,
-        MUIA_Rectangle_VBar,  TRUE,
-        MUIA_HorizWeight,    10,
+        MUIA_Rectangle_HBar,  TRUE,
+        MUIA_VertWeight,      0,
         End,
 
-      Child, ColGroup(2),
-        Child, TxtLabel(GetStr(MSG_Label_Fonts)),
-        Child, PopaslObject,
-          MUIA_Popstring_String, objs[Font] = BetterStringObject, StringFrame,
-            MUIA_CycleChain, TRUE,
-            End,
-          MUIA_Popstring_Button,  MUI_MakeObject(MUIO_PopButton, MUII_PopUp),
-          MUIA_Popasl_Type,      ASL_FontRequest,
-          End,
+      Child, TxtLabel(GetStr(MSG_Label_Cursor)),
+      Child, objs[Cursor] = PoppenObject,
+        MUIA_CycleChain, TRUE,
+        End,
 
-        Child, TxtLabel(GetStr(MSG_Label_Frame)),
-        Child, objs[Frame] = PopframeObject,
+      Child, TxtLabel(GetStr(MSG_Label_Marked)),
+      Child, HGroup,
+        Child, objs[MarkedBack] = PoppenObject,
+          MUIA_CycleChain, TRUE,
+          End,
+        Child, objs[MarkedText] = PoppenObject,
           MUIA_CycleChain, TRUE,
           End,
         End,
 
+      Child, HSpace(-1),
+      Child, RectangleObject,
+        MUIA_Rectangle_HBar,  TRUE,
+        MUIA_VertWeight,      0,
       End,
 
-    Child, RectangleObject,
-      MUIA_VertWeight, 10,
+      Child, TxtLabel(GetStr(MSG_Label_Frame)),
+      Child, objs[Frame] = PopframeObject,
+        MUIA_CycleChain, TRUE,
+        End,
+
+      Child, HSpace(-1),
+      Child, RectangleObject,
+        MUIA_Rectangle_HBar,  TRUE,
+        MUIA_VertWeight,      0,
       End,
+
+      Child, HGroup,
+	    MUIA_Weight, 0,
+        Child, HSpace(-1),
+        Child, objs[SelectOnActive] = MUI_MakeObject(MUIO_Checkmark, NULL),
+      End,
+      Child, TxtLLabel(GetStr(MSG_SelectOnActive)),
+
+      Child, HGroup,
+	    MUIA_Weight, 0,
+        Child, HSpace(-1),
+        Child, objs[SelectPointer] = MUI_MakeObject(MUIO_Checkmark, NULL),
+      End,
+      Child, TxtLLabel(GetStr(MSG_SelectPointer)),
+
+    End,
+
+    Child, VSpace(0),
 
     Child, CrawlingObject,
       TextFrame,
@@ -277,7 +269,13 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
 
   End;
 
-  if(MUIMasterBase->lib_Version <= 19 && objs[Frame])
+  if(objs[SelectOnActive] != NULL)
+    set(objs[SelectOnActive], MUIA_ShortHelp, GetStr(MSG_HELP_SelectOnActive));
+
+  if(objs[SelectPointer] != NULL)
+    set(objs[SelectPointer], MUIA_ShortHelp, GetStr(MSG_HELP_SelectPointer));
+
+  if(MUIMasterBase->lib_Version <= 19 && objs[Frame] != NULL)
     set(objs[Frame], MUIA_Disabled, TRUE);
 
   return group;
