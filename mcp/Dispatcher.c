@@ -51,7 +51,7 @@ static struct PrefsExchangeData PrefsInfo[] =
   { Cursor,         MUIA_Pendisplay_Spec,    MUICFG_BetterString_Cursor,         0, sizeof(struct MUI_PenSpec), (APTR)"m0"      },
   { MarkedBack,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedBack,     0, sizeof(struct MUI_PenSpec), (APTR)"m6"      },
   { MarkedText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedText,     0, sizeof(struct MUI_PenSpec), (APTR)"m5"      },
-  { Font,           MUIA_String_Contents,    MUICFG_BetterString_Font,           0, 0,                          (APTR)""        },
+//{ Font,           MUIA_String_Contents,    MUICFG_BetterString_Font,           0, 0,                          (APTR)""        },
   { Frame,          MUIA_Framedisplay_Spec,  MUICFG_BetterString_Frame,          0, sizeof(struct MUI_PenSpec), (APTR)"302211"  },
   { SelectOnActive, MUIA_Selected,           MUICFG_BetterString_SelectOnActive, 1, sizeof(LONG),               (APTR)0         },
   { SelectPointer,  MUIA_Selected,           MUICFG_BetterString_SelectPointer,  1, sizeof(LONG),               (APTR)1         }
