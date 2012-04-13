@@ -33,25 +33,22 @@
 
 VOID PrintString(struct IClass *cl, Object *obj)
 {
-  struct InstData     *data     = (struct InstData *)INST_DATA(cl, obj);
-  struct RastPort   *oldrport = muiRenderInfo(obj)->mri_RastPort;
-  struct RastPort   *rport    = &data->rport;
-  struct MUI_AreaData *ad     = muiAreaData(obj);
-  struct TextFont   *font     = data->Font ? data->Font : ad->mad_Font;
+  struct InstData *data     = (struct InstData *)INST_DATA(cl, obj);
+  struct RastPort *oldrport = _rp(obj);
+  struct RastPort *rport    = &data->rport;
+  struct TextFont *font     = data->Font ? data->Font : _font(obj);
   struct TextExtent tExtend;
   STRPTR contents;
   WORD width, height;
   WORD crsr_x=0, crsr_width=0, crsr_color=0;
-  WORD dst_x, dst_y, length, offset = 0, StrLength;
+  WORD length, offset = 0, StrLength;
   STRPTR text;
   BOOL   BlockEnabled = (isFlagSet(data->Flags, FLG_BlockEnabled) && data->BlockStart != data->BlockStop);
   UWORD  Blk_Start=0, Blk_Width=0;
   STRPTR fake_contents = NULL;
   BOOL showInactiveContents = FALSE;
 
-  dst_x = ad->mad_Box.Left + ad->mad_addleft;
-  dst_y = ad->mad_Box.Top  + ad->mad_addtop;
-  width = ad->mad_Box.Width - ad->mad_subwidth;
+  width = _mwidth(obj);
   height = font->tf_YSize;
 
   contents = data->Contents;
@@ -137,9 +134,9 @@ VOID PrintString(struct IClass *cl, Object *obj)
     }
   }
 
-  muiRenderInfo(obj)->mri_RastPort = rport;
+  _rp(obj) = rport;
   DoMethod(obj, MUIM_DrawBackground, 0, 0, _mwidth(obj), _mheight(obj), 0, 0, 0L);
-  muiRenderInfo(obj)->mri_RastPort = oldrport;
+  _rp(obj) = oldrport;
 
   length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
   if(data->Alignment != MUIV_String_Format_Left)
@@ -213,7 +210,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   if(fake_contents != NULL)
     SharedPoolFree(fake_contents);
 
-  BltBitMapRastPort(data->rport.BitMap, 0, 0, muiRenderInfo(obj)->mri_RastPort, dst_x, dst_y, width, height, 0xc0);
+  BltBitMapRastPort(data->rport.BitMap, 0, 0, _rp(obj), _mleft(obj), _mtop(obj), width, height, 0xc0);
 
   #if defined(__amigaos3__) || defined(__amigaos4__)
   if(MUIMasterBase->lib_Version > 20 || (MUIMasterBase->lib_Version == 20 && MUIMasterBase->lib_Revision >= 5640))
@@ -231,7 +228,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
     SetAfPt(rport, GhostPattern, 1);
     SetAPen(rport, _pens(obj)[MPEN_SHADOW]);
-    RectFill(rport, ad->mad_Box.Left, ad->mad_Box.Top, ad->mad_Box.Left+ad->mad_Box.Width-1, ad->mad_Box.Top+ad->mad_Box.Height-1);
+    RectFill(rport, _left(obj), _top(obj), _left(obj)+_width(obj)-1, _top(obj)+_height(obj)-1);
     SetAfPt(rport, 0, 0);
   }
 }
