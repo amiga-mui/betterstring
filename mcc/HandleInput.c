@@ -85,9 +85,8 @@ static void AddToUndo(struct InstData *data)
 
 static WORD AlignOffset(Object *obj, struct InstData *data)
 {
-  struct MUI_AreaData  *ad  = muiAreaData(obj);
-  struct TextFont  *font  = data->Font ? data->Font : ad->mad_Font;
-  WORD   width = ad->mad_Box.Width - ad->mad_subwidth;
+  struct TextFont  *font  = data->Font ? data->Font : _font(obj);
+  WORD   width = _mwidth(obj);
   WORD   offset = 0;
 
   if(data->Alignment != MUIV_String_Format_Left)
@@ -696,8 +695,7 @@ IPTR mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction
 IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-  struct MUI_AreaData *ad = muiAreaData(obj);
-  struct TextFont *Font = data->Font ? data->Font : ad->mad_Font;
+  struct TextFont *Font = data->Font ? data->Font : _font(obj);
   IPTR  result = 0;
   BOOL  movement = FALSE;
   BOOL  edited = FALSE;
@@ -1226,9 +1224,9 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
         }
         else if(msg->imsg->Code == IECODE_LBUTTON)
         {
-          WORD x = ad->mad_Box.Left + ad->mad_addleft;
-          WORD y = ad->mad_Box.Top  + ad->mad_addtop;
-          WORD width = ad->mad_Box.Width - ad->mad_subwidth;
+          WORD x = _mleft(obj);
+          WORD y = _mtop(obj);
+          WORD width = _mwidth(obj);
           WORD height = Font->tf_YSize;
 
           // remember the pressed mouse button
@@ -1354,9 +1352,9 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           WORD x, width, mousex;
           struct TextExtent tExtend;
 
-          x = ad->mad_Box.Left + ad->mad_addleft;
+          x = _mleft(obj);
           mousex = msg->imsg->MouseX - AlignOffset(obj, data);
-          width = ad->mad_Box.Width - ad->mad_subwidth;
+          width = _mwidth(obj);
 
           SetFont(&data->rport, Font);
 
@@ -1377,7 +1375,7 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                   if(data->DisplayPos < StringLength)
                   {
                     data->DisplayPos++;
-                    data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, ad->mad_Box.Width - ad->mad_subwidth, Font->tf_YSize);
+                    data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, _mwidth(obj), Font->tf_YSize);
                   }
                   else
                   {

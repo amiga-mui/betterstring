@@ -222,7 +222,7 @@ IPTR AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 
   DoSuperMethodA(cl, obj, (Msg)msg);
 
-  font = data->Font ? data->Font : muiAreaData(obj)->mad_Font;
+  font = data->Font ? data->Font : _font(obj);
   Height = font->tf_YSize;
   msg->MinMaxInfo->MinHeight += Height;
   msg->MinMaxInfo->DefHeight += Height;
@@ -252,19 +252,18 @@ IPTR AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 IPTR Show(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-  struct MUI_AreaData *ad = muiAreaData(obj);
-  struct BitMap *friendBMp = muiRenderInfo(obj)->mri_RastPort->BitMap;
+  struct BitMap *friendBMp = _rp(obj)->BitMap;
   WORD  width, height, depth;
-  struct TextFont *font = data->Font ? data->Font : ad->mad_Font;
+  struct TextFont *font = data->Font ? data->Font : _font(obj);
 
   DoSuperMethodA(cl, obj, msg);
 
-  width = ad->mad_Box.Width - ad->mad_subwidth;
+  width = _mwidth(obj);
   height = font->tf_YSize;
   depth = ((struct Library *)GfxBase)->lib_Version >= 39 ? GetBitMapAttr(friendBMp, BMA_DEPTH) : friendBMp->Depth;
 
   InitRastPort(&data->rport);
-  data->rport.BitMap = MUIG_AllocBitMap(width+40, height, depth, (IPTR)NULL, friendBMp);
+  data->rport.BitMap = MUIG_AllocBitMap(width+40, height, depth, 0, friendBMp);
   SetFont(&data->rport, font);
   SetDrMd(&data->rport, JAM1);
 
