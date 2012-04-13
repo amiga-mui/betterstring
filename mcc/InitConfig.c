@@ -51,7 +51,18 @@ void InitConfig(Object *obj, struct InstData *data)
   ENTER();
 
   if(isFlagSet(data->Flags, FLG_SetFrame) && MUIMasterBase->lib_Version >= 20)
-    set(obj, MUIA_Frame, DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Frame, &setting) ? (STRPTR)setting : (STRPTR)"302211");
+  {
+    // don't remember the string from the configuration but copy it
+    // with MUI4's realtime prefs the configuration might change upon
+    // canceling MUI prefs and hence we would operate on invalid data.
+    if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Frame, &setting))
+    {
+      strlcpy(data->FrameBuffer, (STRPTR)setting, sizeof(data->FrameBuffer));
+      set(obj, MUIA_Frame, data->FrameBuffer);
+    }
+    else
+      set(obj, MUIA_Frame, "302211");
+  }
 
   data->InactiveText = GetCol(obj, MUICFG_BetterString_InactiveText, (struct MUI_PenSpec *)"m4");
   data->ActiveText = GetCol(obj, MUICFG_BetterString_ActiveText, (struct MUI_PenSpec *)"m5");
