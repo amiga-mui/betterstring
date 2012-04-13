@@ -56,12 +56,11 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
   if(isFlagSet(data->Flags, FLG_Secret) && (fake_contents = (STRPTR)SharedPoolAlloc(StrLength+1)))
   {
-    WORD strlength = StrLength;
-
+    // fill the secret copy of the string with '*' and terminate it with NUL
+    if(StrLength > 0)
+      memset(fake_contents, '*', StrLength);
+    fake_contents[StrLength] = '\0';
     contents = fake_contents;
-    contents[strlength] = '\0';
-    while(strlength--)
-      contents[strlength] = '*';
   }
 
   if(StrLength == 0 && isFlagClear(data->Flags, FLG_Active) && data->InactiveContents != NULL)
@@ -228,7 +227,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
     SetAfPt(rport, GhostPattern, 1);
     SetAPen(rport, _pens(obj)[MPEN_SHADOW]);
-    RectFill(rport, _left(obj), _top(obj), _left(obj)+_width(obj)-1, _top(obj)+_height(obj)-1);
+    RectFill(rport, _left(obj), _top(obj), _right(obj), _bottom(obj));
     SetAfPt(rport, 0, 0);
   }
 }

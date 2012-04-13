@@ -40,7 +40,7 @@ IPTR Get(struct IClass *cl, Object *obj, struct opGet *msg)
   switch(msg->opg_AttrID)
   {
     case MUIA_Font:
-      ti_Data = (IPTR)(data->Font ? data->Font : muiAreaData(obj)->mad_Font);
+      ti_Data = (IPTR)(data->Font ? data->Font : _font(obj));
     break;
 
     case MUIA_ControlChar:
