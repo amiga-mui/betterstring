@@ -176,14 +176,14 @@ VOID PrintString(struct IClass *cl, Object *obj)
   if(length)
   {
     UWORD newlength;
-    LONG textcolor = isFlagSet(data->Flags, FLG_Active) ? MUIPEN(data->ActiveText) : MUIPEN(data->InactiveText);
+    LONG textcolor = isFlagSet(data->Flags, FLG_Active) ? data->ActiveText : data->InactiveText;
 
     Move(rport, offset, font->tf_Baseline);
 
     if(BlockEnabled && textcolor != (LONG)data->MarkedTextColor)
     {
       newlength = Blk_Start-data->DisplayPos;
-      SetAPen(rport, textcolor);
+      SetAPen(rport, MUIPEN(textcolor));
       Text(rport, text, newlength);
       text += newlength;
 
@@ -202,7 +202,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
       textcolor = _pens(obj)[MPEN_SHADOW];
     }
 
-    SetAPen(rport, textcolor);
+    SetAPen(rport, MUIPEN(textcolor));
     Text(rport, text, length);
 
     // switch back to normal style
