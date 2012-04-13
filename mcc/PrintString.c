@@ -134,7 +134,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   }
 
   _rp(obj) = rport;
-  DoMethod(obj, MUIM_DrawBackground, 0, 0, _mwidth(obj), _mheight(obj), 0, 0, 0L);
+  DoMethod(obj, MUIM_DrawBackground, 0, 0, _mwidth(obj), _mheight(obj), _mleft(obj), _mtop(obj), 0L);
   _rp(obj) = oldrport;
 
   length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
