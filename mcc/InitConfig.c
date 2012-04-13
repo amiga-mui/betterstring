@@ -81,33 +81,6 @@ void InitConfig(Object *obj, struct InstData *data)
   else
     data->ActiveBackground = (STRPTR)"2:m1";
 
-  if(isFlagClear(data->Flags, FLG_OwnFont) && DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Font, &setting))
-  {
-    STRPTR src = (STRPTR)setting;
-
-    if(strlen(src) > 0)
-    {
-      char fontname[256];
-      struct TextAttr myfont = { fontname, 8, FS_NORMAL, 0 };
-      LONG c = 0;
-
-      while(src[c] != '/' && src[c] != '\0' && c < 255)
-      {
-        fontname[c] = src[c];
-        ++c;
-      }
-      strlcpy(&fontname[c], ".font", 256-c);
-      StrToLong(&src[c+1], &c);
-      myfont.ta_YSize = c;
-
-      data->Font = OpenDiskFont(&myfont);
-    }
-    else
-      data->Font = NULL;
-  }
-  else
-    data->Font = NULL;
-
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_SelectOnActive, &setting))
     data->SelectOnActive = *(IPTR*)setting;
   else
@@ -131,8 +104,5 @@ VOID FreeConfig(struct MUI_RenderInfo *mri, struct InstData *data)
   MUI_ReleasePen(mri, data->CursorColor);
   MUI_ReleasePen(mri, data->MarkedColor);
   MUI_ReleasePen(mri, data->MarkedTextColor);
-
-  if(data->Font)
-    CloseFont(data->Font);
 }
 

@@ -85,7 +85,6 @@ static void AddToUndo(struct InstData *data)
 
 static WORD AlignOffset(Object *obj, struct InstData *data)
 {
-  struct TextFont  *font  = data->Font ? data->Font : _font(obj);
   WORD   width = _mwidth(obj);
   WORD   offset = 0;
 
@@ -96,8 +95,8 @@ static WORD AlignOffset(Object *obj, struct InstData *data)
     UWORD  length, textlength, crsr_width;
     struct TextExtent tExtend;
 
-    SetFont(&data->rport, font);
-    length = TextFit(&data->rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
+    SetFont(&data->rport, _font(obj));
+    length = TextFit(&data->rport, text, StrLength, &tExtend, NULL, 1, width, _font(obj)->tf_YSize);
     textlength = TextLength(&data->rport, text, length);
 
     crsr_width = isFlagSet(data->Flags, FLG_Active) ? TextLength(&data->rport, (*(data->Contents+data->BufferPos) == '\0') ? (char *)"n" : (char *)(data->Contents+data->BufferPos), 1) : 0;
@@ -695,7 +694,6 @@ IPTR mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction
 IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-  struct TextFont *Font = data->Font ? data->Font : _font(obj);
   IPTR  result = 0;
   BOOL  movement = FALSE;
   BOOL  edited = FALSE;
@@ -1206,10 +1204,10 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             if(obj != active)
               E(DBF_STARTUP, "MUI error: %lx, %lx", active, obj);
 
-            WORD x = ad->mad_Box.Left + ad->mad_addleft;
-            WORD y = ad->mad_Box.Top  + ad->mad_addtop;
-            WORD width = ad->mad_Box.Width - ad->mad_subwidth;
-            WORD height = Font->tf_YSize;
+            WORD x = _mleft(obj);
+            WORD y = _mtop(obj);
+            WORD width = _mwidth(obj);
+            WORD height = _font(obj)->tf_YSize;
 
             if(!(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height))
             {
@@ -1227,7 +1225,7 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           WORD x = _mleft(obj);
           WORD y = _mtop(obj);
           WORD width = _mwidth(obj);
-          WORD height = Font->tf_YSize;
+          WORD height = _font(obj)->tf_YSize;
 
           // remember the pressed mouse button
           setFlag(data->Flags, FLG_MouseButtonDown);
@@ -1239,8 +1237,8 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
             offset -= AlignOffset(obj, data);
 
-            SetFont(&data->rport, Font);
-            data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
+            SetFont(&data->rport, _font(obj));
+            data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, _font(obj)->tf_YSize);
 
             if(data->BufferPos == data->BufferLastPos &&
                DoubleClick(data->StartSecs, data->StartMicros, msg->imsg->Seconds, msg->imsg->Micros))
@@ -1356,7 +1354,7 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           mousex = msg->imsg->MouseX - AlignOffset(obj, data);
           width = _mwidth(obj);
 
-          SetFont(&data->rport, Font);
+          SetFont(&data->rport, _font(obj));
 
           switch(data->ClickCount)
           {
@@ -1375,7 +1373,7 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                   if(data->DisplayPos < StringLength)
                   {
                     data->DisplayPos++;
-                    data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, _mwidth(obj), Font->tf_YSize);
+                    data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, _mwidth(obj), _font(obj)->tf_YSize);
                   }
                   else
                   {
@@ -1389,7 +1387,7 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 /*                  if(offset < 0)
                     data->BufferPos = 0;
                   else
-*/                  data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
+*/                  data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, _font(obj)->tf_YSize);
                 }
               }
               data->BlockStop = data->BufferPos;
@@ -1411,7 +1409,7 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               {
 //                offset -= AlignOffset(obj, data);
                 if(offset > 0)
-                  newpos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, Font->tf_YSize);
+                  newpos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, _font(obj)->tf_YSize);
               }
 
               if(newpos >= data->BlockStart)

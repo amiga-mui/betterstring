@@ -36,7 +36,6 @@ VOID PrintString(struct IClass *cl, Object *obj)
   struct InstData *data     = (struct InstData *)INST_DATA(cl, obj);
   struct RastPort *oldrport = _rp(obj);
   struct RastPort *rport    = &data->rport;
-  struct TextFont *font     = data->Font ? data->Font : _font(obj);
   struct TextExtent tExtend;
   STRPTR contents;
   WORD width, height;
@@ -49,7 +48,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   BOOL showInactiveContents = FALSE;
 
   width = _mwidth(obj);
-  height = font->tf_YSize;
+  height = _font(obj)->tf_YSize;
 
   contents = data->Contents;
   StrLength = strlen(contents);
@@ -70,7 +69,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
     showInactiveContents = TRUE;
   }
 
-  SetFont(rport, font);
+  SetFont(rport, _font(obj));
   if(isFlagSet(data->Flags, FLG_Active) && BlockEnabled == FALSE)
   {
     char *c;
@@ -92,7 +91,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
   if(StrLength)
   {
-    UWORD backdistance = TextFit(rport, contents+StrLength-1, StrLength, &tExtend, NULL, -1, width/*-crsr_width*/, font->tf_YSize);
+    UWORD backdistance = TextFit(rport, contents+StrLength-1, StrLength, &tExtend, NULL, -1, width/*-crsr_width*/, _font(obj)->tf_YSize);
 
     if(backdistance > StrLength-data->DisplayPos)
       data->DisplayPos = StrLength-backdistance;
@@ -100,7 +99,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
   if(data->BufferPos)
   {
-    UWORD distance = TextFit(rport, contents+data->BufferPos-1, data->BufferPos, &tExtend, NULL, -1, width-crsr_width, font->tf_YSize);
+    UWORD distance = TextFit(rport, contents+data->BufferPos-1, data->BufferPos, &tExtend, NULL, -1, width-crsr_width, _font(obj)->tf_YSize);
 
     if(distance < data->BufferPos-data->DisplayPos)
       data->DisplayPos = data->BufferPos - distance;
@@ -121,7 +120,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
     }
     crsr_x = TextLength(rport, text, Blk_Start-data->DisplayPos);
     crsr_width = TextLength(rport, contents+Blk_Start, Blk_Width);
-    crsr_color = MUIPEN(data->MarkedColor);
+    crsr_color = data->MarkedColor;
   }
   else
   {
@@ -129,7 +128,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
     if(isFlagSet(data->Flags, FLG_Active) && isFlagClear(data->Flags, FLG_NoInput))
     {
       crsr_x = TextLength(rport, text, data->BufferPos-data->DisplayPos);
-      crsr_color = MUIPEN(data->CursorColor);
+      crsr_color = data->CursorColor;
     }
   }
 
@@ -137,14 +136,14 @@ VOID PrintString(struct IClass *cl, Object *obj)
   DoMethod(obj, MUIM_DrawBackground, 0, 0, _mwidth(obj), _mheight(obj), _mleft(obj), _mtop(obj), 0L);
   _rp(obj) = oldrport;
 
-  length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width, font->tf_YSize);
+  length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width, _font(obj)->tf_YSize);
   if(data->Alignment != MUIV_String_Format_Left)
   {
     UWORD textlength = TextLength(rport, text, length);
 
     if(crsr_width && !BlockEnabled && data->BufferPos == data->DisplayPos+StrLength)
     {
-      length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width-crsr_width, font->tf_YSize);
+      length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width-crsr_width, _font(obj)->tf_YSize);
       textlength += crsr_width;
     }
 
@@ -161,12 +160,12 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
   if(crsr_width && crsr_x < width)
   {
-    SetAPen(rport, crsr_color);
+    SetAPen(rport, MUIPEN(crsr_color));
     if(crsr_x+crsr_width > width)
     {
       crsr_width = width-crsr_x;
     }
-    RectFill(rport, offset+crsr_x, 0, offset+crsr_x+crsr_width-1, font->tf_YSize-1);
+    RectFill(rport, offset+crsr_x, 0, offset+crsr_x+crsr_width-1, _font(obj)->tf_YSize-1);
   }
 
   if(length)
@@ -174,7 +173,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
     UWORD newlength;
     LONG textcolor = isFlagSet(data->Flags, FLG_Active) ? data->ActiveText : data->InactiveText;
 
-    Move(rport, offset, font->tf_Baseline);
+    Move(rport, offset, _font(obj)->tf_Baseline);
 
     if(BlockEnabled && textcolor != (LONG)data->MarkedTextColor)
     {
