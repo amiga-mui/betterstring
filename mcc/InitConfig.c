@@ -36,14 +36,12 @@
 
 static ULONG GetCol(Object *obj, ULONG item, struct MUI_PenSpec *defaultcol)
 {
-  ULONG res;
   struct MUI_PenSpec *spec;
 
-  if(DoMethod(obj, MUIM_GetConfigItem, item, &spec))
-      res = MUI_ObtainPen(muiRenderInfo(obj), spec, 0L);
-  else  res = MUI_ObtainPen(muiRenderInfo(obj), defaultcol, 0L);
+  if(DoMethod(obj, MUIM_GetConfigItem, item, &spec) == 0)
+    spec = defaultcol;
 
-  return res;
+  return MUI_ObtainPen(muiRenderInfo(obj), spec, 0L);
 }
 
 void InitConfig(Object *obj, struct InstData *data)
