@@ -125,7 +125,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
     }
     crsr_x = TextLength(rport, text, Blk_Start-data->DisplayPos);
     crsr_width = TextLength(rport, contents+Blk_Start, Blk_Width);
-    crsr_color = data->MarkedColor;
+    crsr_color = MUIPEN(data->MarkedColor);
   }
   else
   {
@@ -133,7 +133,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
     if(isFlagSet(data->Flags, FLG_Active) && isFlagClear(data->Flags, FLG_NoInput))
     {
       crsr_x = TextLength(rport, text, data->BufferPos-data->DisplayPos);
-      crsr_color = data->CursorColor;
+      crsr_color = MUIPEN(data->CursorColor);
     }
   }
 
@@ -176,7 +176,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   if(length)
   {
     UWORD newlength;
-    LONG textcolor= isFlagSet(data->Flags, FLG_Active) ? data->ActiveText : data->InactiveText;
+    LONG textcolor = isFlagSet(data->Flags, FLG_Active) ? MUIPEN(data->ActiveText) : MUIPEN(data->InactiveText);
 
     Move(rport, offset, font->tf_Baseline);
 
@@ -188,7 +188,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
       text += newlength;
 
       newlength = (((Blk_Start-data->DisplayPos) + Blk_Width) > length) ? length - (Blk_Start-data->DisplayPos) : Blk_Width;
-      SetAPen(rport, data->MarkedTextColor);
+      SetAPen(rport, MUIPEN(data->MarkedTextColor));
       Text(rport, text, newlength);
       text += newlength;
 
