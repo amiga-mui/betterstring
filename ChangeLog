@@ -5,6 +5,13 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-05-03 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/GetSetAttrs.c: fixed the OM_SET method to redraw the object only if
+    there is something to be redrawn due to modified attributes. Especially
+    setting the disabled state to the same value again will cause one redraw
+    event only instead of two.
+
 2012-04-13 Jens Langner <Jens.Langner@light-speed.de>
 
   * mcp/CreatePrefsGroup.c: reordered the checkmark objects so that they are

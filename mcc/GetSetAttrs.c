@@ -151,9 +151,11 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct TagItem *tags, *tag;
   char IntegerString[12];
-  IPTR ti_Data;
+  ULONG redrawFlags = MADF_DRAWUPDATE;
+  ULONG oldFlags;
+  BOOL redraw = FALSE;
 
-  struct TagItem boolMap[] =
+  const struct TagItem boolMap[] =
   {
     { MUIA_Disabled,                  FLG_Ghosted     },
     { MUIA_String_AdvanceOnCR,        FLG_AdvanceOnCr },
@@ -165,35 +167,56 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
   };
 
   tags = msg->ops_AttrList;
+  // remember the old flags before calculating the new once
+  oldFlags = data->Flags;
   data->Flags = PackBoolTags(data->Flags, tags, boolMap);
 
-  while((tag = NextTagItem((APTR)&tags)))
+  while((tag = NextTagItem((APTR)&tags)) != NULL)
   {
-    ti_Data = tag->ti_Data;
+    IPTR ti_Data = tag->ti_Data;
+
     switch(tag->ti_Tag)
     {
       case MUIA_Disabled:
-        MUI_Redraw(obj, MADF_DRAWOBJECT);
+      {
+        // redraw ourself only if the disabled state really changes
+        if((isFlagSet(oldFlags, FLG_Ghosted)   && isFlagClear(data->Flags, FLG_Ghosted)) ||
+           (isFlagClear(oldFlags, FLG_Ghosted) && isFlagSet(data->Flags, FLG_Ghosted)))
+        {
+          redrawFlags = MADF_DRAWOBJECT;
+          redraw = TRUE;
+        }
+      }
       break;
 
       case MUIA_String_AttachedList:
+      {
         data->ForwardObject = (Object *)ti_Data;
+      }
       break;
 
       case MUIA_String_Accept:
+      {
         data->Accept = (STRPTR)ti_Data;
+      }
       break;
 
       case MUIA_String_BufferPos:
+      {
         data->BufferPos = (UWORD)ti_Data;
         clearFlag(data->Flags, FLG_BlockEnabled);
+        redraw = TRUE;
+      }
       break;
 
       case MUIA_BetterString_Columns:
+      {
         data->Width = (UWORD)ti_Data;
+      }
       break;
 
       case MUIA_String_Integer:
+      {
         tag->ti_Tag = TAG_IGNORE;
 
         // we are using snprintf() here not only to be on the safe
@@ -201,8 +224,8 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
         // support it!
         snprintf(IntegerString, sizeof(IntegerString), "%d", (int)ti_Data);
         ti_Data = (IPTR)IntegerString;
-
-        // The missing break is intended!
+      }
+      // The missing break is intended!
 
       case MUIA_String_Contents:
       {
@@ -255,43 +278,65 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
 //        if(data->Contents != (STRPTR)ti_Data)
           tag->ti_Tag = TAG_IGNORE;
         }
+        redraw = TRUE;
       }
       break;
 
       case MUIA_ControlChar:
+      {
         data->CtrlChar = (UBYTE)ti_Data;
+      }
       break;
 
       case MUIA_String_DisplayPos:
+      {
         data->DisplayPos = (UWORD)ti_Data;
+        redraw = TRUE;
+      }
       break;
 
       case MUIA_String_Format:
+      {
         data->Alignment = (WORD)ti_Data;
+        redraw = TRUE;
+      }
       break;
 
       case MUIA_String_MaxLen:
+      {
         data->MaxLength = (UWORD)ti_Data;
+      }
       break;
 
       case MUIA_String_Reject:
+      {
         data->Reject = (STRPTR)ti_Data;
+      }
       break;
 
       case MUIA_String_EditHook:
+      {
         data->EditHook = (struct Hook *)ti_Data;
+      }
       break;
 
       case MUIA_BetterString_KeyUpFocus:
+      {
         data->KeyUpFocus = (Object *)ti_Data;
+      }
       break;
 
       case MUIA_BetterString_KeyDownFocus:
+      {
         data->KeyDownFocus = (Object *)ti_Data;
+      }
       break;
 
       case MUIA_BetterString_InactiveContents:
+      {
         data->InactiveContents = (STRPTR)ti_Data;
+        redraw = TRUE;
+      }
       break;
 
       case MUIA_BetterString_SelectSize:
@@ -306,34 +351,50 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
         if((ULONG)data->BlockStop > strlen(data->Contents))
           data->BlockStop = strlen(data->Contents);
+
+        redraw = TRUE;
       }
       break;
 
       case MUIA_BetterString_SelectOnActive:
       {
-         if(ti_Data == FALSE)
-         {
-            setFlag(data->Flags, FLG_ForceSelectOff);
-            clearFlag(data->Flags, FLG_ForceSelectOn);
-         }
-         else
-         {
-            setFlag(data->Flags, FLG_ForceSelectOn);
-            clearFlag(data->Flags, FLG_ForceSelectOff);
-         }
+        if(ti_Data == FALSE)
+        {
+          setFlag(data->Flags, FLG_ForceSelectOff);
+          clearFlag(data->Flags, FLG_ForceSelectOn);
+        }
+        else
+        {
+          setFlag(data->Flags, FLG_ForceSelectOn);
+          clearFlag(data->Flags, FLG_ForceSelectOff);
+        }
+
+        redraw = TRUE;
       }
       break;
 
       case 0x80420d71: /* MUIA_String_Popup */
+      {
         data->Popup = (Object *)ti_Data;
+      }
       break;
-
     }
   }
 
   if(data->BufferPos > strlen(data->Contents))
+  {
     data->BufferPos = strlen(data->Contents);
+    redraw = TRUE;
+  }
 
-  MUI_Redraw(obj, MADF_DRAWUPDATE);
+  if(oldFlags != data->Flags)
+  {
+    redraw = TRUE;
+  }
+
+  // redraw ourself only if something changed that affects the appearance
+  if(redraw == TRUE)
+    MUI_Redraw(obj, redrawFlags);
+
   return(0);
 }
