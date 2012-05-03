@@ -167,7 +167,7 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
   };
 
   tags = msg->ops_AttrList;
-  // remember the old flags before calculating the new once
+  // remember the old flags before calculating the new one
   oldFlags = data->Flags;
   data->Flags = PackBoolTags(data->Flags, tags, boolMap);
 
@@ -271,6 +271,8 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
             data->BlockStop = 0;
             data->BufferPos = 0;
             data->DisplayPos = 0;
+
+            redraw = TRUE;
           }
         }
         else
@@ -278,7 +280,6 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
 //        if(data->Contents != (STRPTR)ti_Data)
           tag->ti_Tag = TAG_IGNORE;
         }
-        redraw = TRUE;
       }
       break;
 
@@ -394,7 +395,9 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
   // redraw ourself only if something changed that affects the appearance
   if(redraw == TRUE)
+  {
     MUI_Redraw(obj, redrawFlags);
+  }
 
   return(0);
 }
