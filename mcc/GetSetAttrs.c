@@ -271,9 +271,9 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
             data->BlockStop = 0;
             data->BufferPos = 0;
             data->DisplayPos = 0;
-
-            redraw = TRUE;
           }
+
+          redraw = TRUE;
         }
         else
         {
