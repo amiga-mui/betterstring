@@ -179,7 +179,7 @@ VOID InsertFileName(UWORD namestart, struct InstData *data)
   LEAVE();
 }
 
-BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
+BOOL FileNameComplete(Object *obj, BOOL backwards, struct InstData *data)
 {
   BOOL edited = FALSE;
 
@@ -226,15 +226,15 @@ BOOL FileNameComplete (Object *obj, BOOL backwards, struct InstData *data)
           dl = LockDosList(LDF_READ|LDF_DEVICES|LDF_VOLUMES|LDF_ASSIGNS);
           while((dl = NextDosEntry(dl, LDF_READ|LDF_DEVICES|LDF_VOLUMES|LDF_ASSIGNS)) != NULL)
           {
-          #ifdef __AROS__
-              strlcpy(tmpBuffer, dl->dol_Ext.dol_AROS.dol_DevName, sizeof tmpBuffer);
-          #else
+            #ifdef __AROS__
+            strlcpy(tmpBuffer, dl->dol_Ext.dol_AROS.dol_DevName, sizeof tmpBuffer);
+            #else
             // dol_Name is a BSTR, we have to convert it to a regular C string
             char *bstr = BADDR(dl->dol_Name);
 
             // a BSTR cannot exceed 255 characters, hence the buffer size of 256 is enough in any case
             strlcpy(tmpBuffer, &bstr[1], (unsigned char)bstr[0]);
-          #endif
+            #endif
 
             if(Strnicmp(tmpBuffer, data->Contents+pos, cut) == 0)
             {
