@@ -489,6 +489,8 @@ DISPATCHER(_Dispatcher)
       Overwrite(ins_msg->text, pos, 0, data);
       clearFlag(data->Flags, FLG_BlockEnabled);
       MUI_Redraw(obj, MADF_DRAWUPDATE);
+      // trigger a notification as we just changed the contents
+      TriggerNotify(cl, obj);
     }
     break;
 

@@ -515,6 +515,25 @@ static BOOL DecToHex(struct InstData *data)
   return result;
 }
 
+void TriggerNotify(struct IClass *cl, Object *obj)
+{
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  struct TagItem tags[] =
+  {
+	{ MUIA_String_Contents, (IPTR)data->Contents },
+	{ TAG_DONE,             0                    }
+  };
+
+  ENTER();
+
+  // pass the attribute directly to our superclass as our own
+  // handling of OM_SET will suppress the notification in case
+  // the contents did not change
+  DoSuperMethod(cl, obj, OM_SET, tags, NULL);
+
+  LEAVE();
+}
+
 ULONG ConvertKey(struct IntuiMessage *imsg)
 {
   struct InputEvent  event;
@@ -674,18 +693,10 @@ IPTR mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction
     break;
   }
 
-  if(edited == TRUE)
-  {
-    struct TagItem tags[] =
-    {
-      { MUIA_String_Contents, (IPTR)data->Contents  },
-      { TAG_DONE,             0                     }
-    };
-
-    DoSuperMethod(cl, obj, OM_SET, tags, NULL);
-  }
-
   MUI_Redraw(obj, MADF_DRAWUPDATE);
+
+  if(edited == TRUE)
+    TriggerNotify(cl, obj);
 
   RETURN(result);
   return result;
@@ -1098,18 +1109,11 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
         if(isFlagSet(data->Flags, FLG_BlockEnabled))
           data->BlockStop = data->BufferPos;
 
-        if(edited)
-        {
-          struct TagItem tags[] =
-          {
-            { MUIA_String_Contents, (IPTR)data->Contents },
-            { TAG_DONE,             0                     }
-          };
-
-          DoSuperMethod(cl, obj, OM_SET, tags, NULL);
-        }
-
         MUI_Redraw(obj, MADF_DRAWUPDATE);
+
+        if(edited == TRUE)
+          TriggerNotify(cl, obj);
+
         result = MUI_EventHandlerRC_Eat;
       }
       else

@@ -199,6 +199,7 @@ struct InstData
 
 // our prototypes
 VOID PrintString(struct IClass *, Object *);
+void TriggerNotify(struct IClass *cl, Object *obj);
 IPTR HandleInput(struct IClass *, Object *, struct MUIP_HandleEvent *);
 ULONG ConvertKey(struct IntuiMessage *);
 VOID DeleteBlock(struct InstData *);

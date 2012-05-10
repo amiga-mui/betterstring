@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-05-10 Thore Böckelmann <tboeckel@gmx.de>
+
+  * Dispatcher.c, HandleInput.c: MUIM_BetterString_Insert will now correctly
+    trigger a notification of MUIA_String_Contents.
+
 2012-05-03 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/GetSetAttrs.c: fixed the OM_SET method to redraw the object only if
