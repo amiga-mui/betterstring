@@ -5,6 +5,16 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-05-10 Jens Langner <Jens.Langner@light-speed.de>
+
+  * GetSetAttr.c, HandleInput.c, private.h: implemented a new
+    MUIA_BetterString_NoNotify attribute which will allow to prevent
+    betterstring from sending out notifications on changes of the
+    MUIA_String_Contents attribute. This should help applications to
+    ensure that only one notification is triggered in case multiple
+    operations are performed in a row which change the content of the
+    string object.
+
 2012-05-10 Thore Böckelmann <tboeckel@gmx.de>
 
   * Dispatcher.c, HandleInput.c: MUIM_BetterString_Insert will now correctly

@@ -108,6 +108,10 @@ IPTR Get(struct IClass *cl, Object *obj, struct opGet *msg)
       ti_Data = isFlagSet(data->Flags, FLG_NoInput) ? TRUE : FALSE;
     break;
 
+    case MUIA_BetterString_NoNotify:
+      ti_Data = isFlagSet(data->Flags, FLG_NoNotify) ? TRUE : FALSE;
+    break;
+
     case MUIA_BetterString_InactiveContents:
       ti_Data = (IPTR)data->InactiveContents;
     break;
@@ -162,6 +166,7 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
     { MUIA_String_Secret,             FLG_Secret      },
     { MUIA_BetterString_StayActive,   FLG_StayActive  },
     { MUIA_BetterString_NoInput,      FLG_NoInput     },
+    { MUIA_BetterString_NoNotify,     FLG_NoNotify    },
     { MUIA_BetterString_NoShortcuts,  FLG_NoShortcuts },
     { TAG_DONE,                       0               }
   };
@@ -274,12 +279,18 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
           }
 
           redraw = TRUE;
+
+          // if the no notify flag is set we set the queued
+          // flag and set the tag to IGNORE so that the superclass
+          // ignores it and thus does not trigger a notify.
+          if(isFlagSet(data->Flags, FLG_NoNotify))
+          {
+            setFlag(data->Flags, FLG_NotifyQueued);
+            tag->ti_Tag = TAG_IGNORE;
+          }
         }
         else
-        {
-//        if(data->Contents != (STRPTR)ti_Data)
-          tag->ti_Tag = TAG_IGNORE;
-        }
+          tag->ti_Tag = TAG_IGNORE; // set Tag to IGNORE so that superclass ignores it
       }
       break;
 
@@ -371,6 +382,15 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
         }
 
         redraw = TRUE;
+      }
+      break;
+
+      case MUIA_BetterString_NoNotify:
+      {
+        // trigger only a notify if a notified had been queued
+        // already
+        if(isFlagSet(oldFlags, FLG_NotifyQueued))
+          TriggerNotify(cl, obj);
       }
       break;
 

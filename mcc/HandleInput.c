@@ -520,8 +520,8 @@ void TriggerNotify(struct IClass *cl, Object *obj)
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct TagItem tags[] =
   {
-	{ MUIA_String_Contents, (IPTR)data->Contents },
-	{ TAG_DONE,             0                    }
+    { MUIA_String_Contents, (IPTR)data->Contents },
+    { TAG_DONE,             0                    }
   };
 
   ENTER();
@@ -529,7 +529,13 @@ void TriggerNotify(struct IClass *cl, Object *obj)
   // pass the attribute directly to our superclass as our own
   // handling of OM_SET will suppress the notification in case
   // the contents did not change
-  DoSuperMethod(cl, obj, OM_SET, tags, NULL);
+  if(isFlagClear(data->Flags, FLG_NoNotify))
+  {
+    DoSuperMethod(cl, obj, OM_SET, tags, NULL);
+    clearFlag(data->Flags, FLG_NotifyQueued);
+  }
+  else
+    setFlag(data->Flags, FLG_NotifyQueued);
 
   LEAVE();
 }
