@@ -127,6 +127,8 @@ struct InstData
 #define FLG_ForceSelectOff  (1L << 16)
 #define FLG_FreshActive     (1L << 17)
 #define FLG_MouseButtonDown (1L << 18)
+#define FLG_NoNotify        (1L << 19)
+#define FLG_NotifyQueued    (1L << 20)
 
 // proper RAWKEY_ defines were first introduced in OS4 and MorphOS
 // and unfortunately they are also a bit different, so lets
