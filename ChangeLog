@@ -5,6 +5,15 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.22 RELEASE ###########################################################
+
+2012-05-12 Jens Langner <Jens.Langner@light-speed.de>
+
+  * misc: final 11.22 release preparations
+  * mcp/Makefile: readded -DNO_INLINE_STDARG for aros-ppc and aros-x86_64
+    target as otherwise the cross-compiler won't build for these targets and
+    raise some unterminated macros errors.
+
 2012-05-10 Jens Langner <Jens.Langner@light-speed.de>
 
   * GetSetAttr.c, HandleInput.c, private.h: implemented a new
