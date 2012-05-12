@@ -58,11 +58,7 @@ struct UtilityIFace *IUtility = NULL;
 struct KeymapIFace *IKeymap = NULL;
 #endif
 
-extern SAVEDS ASM ULONG _Dispatcher(REG(a0, struct IClass * cl), REG(a2, Object * obj), REG(a1, Msg msg));
-
-#ifdef __MORPHOS__
 DISPATCHERPROTO(_Dispatcher);
-#endif
 
 int main(void)
 {

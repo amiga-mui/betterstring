@@ -174,7 +174,7 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
   tags = msg->ops_AttrList;
   // remember the old flags before calculating the new one
   oldFlags = data->Flags;
-  data->Flags = PackBoolTags(data->Flags, tags, boolMap);
+  data->Flags = PackBoolTags(data->Flags, tags, (struct TagItem *)boolMap);
 
   while((tag = NextTagItem((APTR)&tags)) != NULL)
   {
