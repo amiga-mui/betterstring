@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-05-14 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcp/locale/italian.ct: updated italian translation kindly provided by Samir
+    Hawamdeh.
+
 #### v11.22 RELEASE ###########################################################
 
 2012-05-12 Jens Langner <Jens.Langner@light-speed.de>

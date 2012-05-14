@@ -1,11 +1,11 @@
-## version $VER: BetterString_mcp.catalog 2.3 (13.4.2012)
+## version $VER: BetterString_mcp.catalog 2.4 (13.05.2012)
 ## language italiano
 ## codeset 0
 ## chunk AUTH Translated by Samir Hawamdeh (http://www.betatesting.it/backforthefuture)
 ;
 ; BetterString_mcp.cd - Catalogo italiano delle preferenze BetterString MUI
 ; BetterString_mcp.cd - BetterString MUI custom prefs catalog description file
-; Compiled with FlexCat 2.7 PPC (AmigaOS4)
+; Compiled with FlexCat 2.9 PPC (AmigaOS4)
 ; $Id$
 ;
 MSG_Label_Active
@@ -21,7 +21,7 @@ Cursore:
 ; Cursor:
 ;
 MSG_Label_Frame
-Frame:
+Contorno:
 ; Frame:
 ;
 MSG_Label_Inactive
@@ -29,7 +29,7 @@ Inattivo:
 ; Inactive:
 ;
 MSG_Label_Marked
-Contrassegno:
+Marcato:
 ; Marked:
 ;
 MSG_Label_Text
@@ -41,7 +41,7 @@ Testa la potenza della BetterString qui!
 ; Test the power of BetterString here!
 ;
 MSG_Help_Copy
-Copia tutto o contrassegna testo
+Copia tutto o marca testo
 ; Copy all or marked text
 ;
 MSG_Help_Copy_Shortcut
@@ -49,7 +49,7 @@ Amiga + c
 ; Amiga + c
 ;
 MSG_Help_Cut
-Taglia tutto o contrassegna testo
+Taglia tutto o marca testo
 ; Cut all or marked text
 ;
 MSG_Help_Cut_Shortcut
@@ -89,7 +89,7 @@ Amiga + q
 ; Amiga + q
 ;
 MSG_Help_ToggleCaseChar
-Alterna minuscole sui caratteri
+Alterna maiuscole/minuscole sul carattere
 ; Toggle case on character
 ;
 MSG_Help_ToggleCaseChar_Shortcut
@@ -97,7 +97,7 @@ Amiga + g
 ; Amiga + g
 ;
 MSG_Help_ToggleCaseWord
-Alterna minuscole sulle parole
+Alterna maiuscole/minuscole sulla parola
 ; Toggle case on word
 ;
 MSG_Help_ToggleCaseWord_Shortcut
@@ -121,7 +121,7 @@ Amiga + d
 ; Amiga + d
 ;
 MSG_Help_HexToDecimal
-Hex su decimale
+Hex su Decimale
 ; Hex to Decimal
 ;
 MSG_Help_HexToDecimal_Shortcut
@@ -137,7 +137,7 @@ Amiga + $
 ; Amiga + $
 ;
 MSG_Help_FilenameCompletition
-Autocompletamento nomi dei file (SHIFT per tornare indietro)
+Auto-completamento del nome file (SHIFT per tornare indietro)
 ; Filenamecompletion (use SHIFT to cycle back)
 ;
 MSG_Help_FilenameCompletition_Shortcut
@@ -145,7 +145,7 @@ Amiga + TAB
 ; Amiga + TAB
 ;
 MSG_Help_Mark
-Contrassegna
+Marca
 ; Mark
 ;
 MSG_Help_Mark_Shortcut
@@ -181,7 +181,7 @@ Cancella la parola precedente/successiva
 ; Delete previous/next word
 ;
 MSG_Help_DeleteToPrevNextWord_Shortcut
-ALT + BACKSPACE/CANC
+ALT + SPAZIO/CANC
 ; ALT + BACKSPACE/DELETE
 ;
 MSG_SelectOnActive
@@ -189,16 +189,16 @@ Seleziona su attivo
 ; Select on Active
 ;
 MSG_HELP_SelectOnActive
-Seleziona automaticamente tutto il testo\n\
-qualora un oggetto di BetterString venga\n\
-attivato tramite il tasto TAB o con il mouse.
+Seleziona tutto il testo automaticamente\n\
+quando un oggetto BetterString è attivato\n\
+tramite il tasto TAB o con il mouse.
 ; Automatically select all text when a
 ; BetterString object gets activated
 ; via TAB cycling or mouse activation.
 ;
 MSG_SelectPointer
-Seleziona Puntatore:
-; Selection Pointer:
+Selezione puntatore
+; Selection Pointer
 ;
 MSG_HELP_SelectPointer
 Se attivato, una selezione predefinita del puntatore apparirà\n\
