@@ -45,6 +45,7 @@ BOOL CreateSharedPool(void)
                                                 ASOPOOL_Threshold, 256,
                                                 ASOPOOL_Name, "BetterString.mcc shared pool",
                                                 ASOPOOL_Protected, TRUE,
+                                                ASOPOOL_LockMem, FALSE,
                                                 TAG_DONE);
   #elif defined(__MORPHOS__)
   sharedPool = CreatePool(MEMF_SEM_PROTECTED, 512, 256);

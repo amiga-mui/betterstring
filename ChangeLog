@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-06-19 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/AllocFunctions.c: don't allocate locked memory.
+
 2012-05-14 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcp/Makefile: removed .catalog files in clean target.
