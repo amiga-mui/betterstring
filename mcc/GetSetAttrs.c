@@ -155,8 +155,8 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct TagItem *tags, *tag;
   char IntegerString[12];
-  ULONG redrawFlags = MADF_DRAWUPDATE;
   ULONG oldFlags;
+  ULONG newFlags;
   BOOL redraw = FALSE;
 
   const struct TagItem boolMap[] =
@@ -173,7 +173,7 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
   tags = msg->ops_AttrList;
   // remember the old flags before calculating the new one
-  oldFlags = data->Flags;
+  oldFlags = data->Flags & (FLG_Ghosted|FLG_Secret);
   data->Flags = PackBoolTags(data->Flags, tags, (struct TagItem *)boolMap);
 
   while((tag = NextTagItem((APTR)&tags)) != NULL)
@@ -182,18 +182,6 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
     switch(tag->ti_Tag)
     {
-      case MUIA_Disabled:
-      {
-        // redraw ourself only if the disabled state really changes
-        if((isFlagSet(oldFlags, FLG_Ghosted)   && isFlagClear(data->Flags, FLG_Ghosted)) ||
-           (isFlagClear(oldFlags, FLG_Ghosted) && isFlagSet(data->Flags, FLG_Ghosted)))
-        {
-          redrawFlags = MADF_DRAWOBJECT;
-          redraw = TRUE;
-        }
-      }
-      break;
-
       case MUIA_String_AttachedList:
       {
         data->ForwardObject = (Object *)ti_Data;
@@ -387,7 +375,7 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
       case MUIA_BetterString_NoNotify:
       {
-        // trigger only a notify if a notified had been queued
+        // trigger only a notify if a notification has been queued
         // already
         if(isFlagSet(oldFlags, FLG_NotifyQueued))
           TriggerNotify(cl, obj);
@@ -408,7 +396,9 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
     redraw = TRUE;
   }
 
-  if(oldFlags != data->Flags)
+  // check if some flags affecting the appearance have changed
+  newFlags = data->Flags & (FLG_Ghosted|FLG_Secret);
+  if(oldFlags != newFlags)
   {
     redraw = TRUE;
   }
@@ -416,7 +406,7 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
   // redraw ourself only if something changed that affects the appearance
   if(redraw == TRUE)
   {
-    MUI_Redraw(obj, redrawFlags);
+    MUI_Redraw(obj, MADF_DRAWOBJECT);
   }
 
   return(0);

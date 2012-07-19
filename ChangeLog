@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-07-19 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/GetSetAttrs.c: don't handle MUIA_Disabled twice in OM_SET. All the
+    necessary stuff is already done by recalculating the flags.
+
 2012-06-19 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/AllocFunctions.c: don't allocate locked memory.
