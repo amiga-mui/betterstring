@@ -711,25 +711,79 @@ IPTR mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction
 IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-  IPTR  result = 0;
-  BOOL  movement = FALSE;
-  BOOL  edited = FALSE;
-  BOOL  FNC = FALSE;
-  Object *focus = NULL;
+  IPTR result = 0;
+  BOOL movement = FALSE;
+  BOOL edited = FALSE;
+  BOOL FNC = FALSE;
 
   ENTER();
 
-  if(msg->muikey == MUIKEY_UP)
-    focus = data->KeyUpFocus;
-  else if(msg->muikey == MUIKEY_DOWN)
-    focus = data->KeyDownFocus;
-
-  if(focus && _win(obj))
+  // handle the standard MUI keys first
+  if(msg->muikey != MUIKEY_NONE)
   {
-    set(_win(obj), MUIA_Window_ActiveObject, focus);
-    result = MUI_EventHandlerRC_Eat;
+    switch(msg->muikey)
+    {
+      case MUIKEY_UP:
+      {
+        if(data->KeyUpFocus != NULL && _win(obj) != NULL)
+        {
+          set(_win(obj), MUIA_Window_ActiveObject, data->KeyUpFocus);
+          result = MUI_EventHandlerRC_Eat;
+        }
+      }
+      break;
+
+      case MUIKEY_DOWN:
+      {
+        if(data->KeyDownFocus != NULL && _win(obj) != NULL)
+        {
+          set(_win(obj), MUIA_Window_ActiveObject, data->KeyDownFocus);
+          result = MUI_EventHandlerRC_Eat;
+        }
+      }
+      break;
+
+      case MUIKEY_COPY:
+      {
+        CopyBlock(data);
+        result = MUI_EventHandlerRC_Eat;
+      }
+      break;
+
+      case MUIKEY_CUT:
+      {
+        CutBlock(data);
+        TriggerNotify(cl, obj);
+        result = MUI_EventHandlerRC_Eat;
+      }
+      break;
+
+      case MUIKEY_PASTE:
+      {
+        Paste(data);
+        TriggerNotify(cl, obj);
+        result = MUI_EventHandlerRC_Eat;
+      }
+      break;
+
+      case MUIKEY_UNDO:
+      case MUIKEY_REDO:
+      {
+        if(data->Undo && ((msg->muikey == MUIKEY_REDO && isFlagSet(data->Flags, FLG_RedoAvailable)) ||
+                          (msg->muikey == MUIKEY_UNDO && isFlagClear(data->Flags, FLG_RedoAvailable))))
+        {
+          UndoRedo(data);
+          TriggerNotify(cl, obj);
+          result = MUI_EventHandlerRC_Eat;
+        }
+        else
+          DisplayBeep(NULL);
+      }
+      break;
+    }
   }
-  else if(msg->imsg)
+
+  if(result == 0 && msg->imsg != NULL)
   {
     ULONG StringLength = strlen(data->Contents);
 
