@@ -103,12 +103,15 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
   static const char *key17[2];
   static const char *key18[2];
 
-  static const char infotext[] = "\033bBetterString.mcp " LIB_REV_STRING "\033n (" LIB_DATE ")\n"
-                                 "Copyright (c) 1997-2000 Allan Odgaard\n"
-                                 LIB_COPYRIGHT "\n\n"
-                                 "Distributed under the terms of the LGPL2.\n\n"
-                                 "For the latest version, check out:\n"
-                                 "http://www.sf.net/projects/bstring-mcc/\n\n";
+  static const char infotext1[] = "\033bBetterString.mcp " LIB_REV_STRING "\033n (" LIB_DATE ")\n"
+                                  "Copyright (C) 1997-2000 Allan Odgaard\n"
+                                  LIB_COPYRIGHT;
+  static const char infotext2[] = "\n"
+                                  "Distributed under the terms of the LGPL2.\n"
+                                  "\n"
+                                  "For the latest version, check out:\n"
+                                  "http://www.sf.net/projects/bstring-mcc/\n"
+                                  "\n";
 
   static const char **keyinfo[] =
   {
@@ -255,17 +258,25 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
 
     Child, CrawlingObject,
       TextFrame,
-      MUIA_FixHeightTxt, "\n\n",
+      MUIA_FixHeightTxt, infotext1,
       MUIA_Background,   "m1",
 
       Child, TextObject,
+        MUIA_Text_Copy, FALSE,
         MUIA_Text_PreParse, "\033c",
-        MUIA_Text_Contents, infotext,
+        MUIA_Text_Contents, infotext1,
       End,
 
       Child, TextObject,
+        MUIA_Text_Copy, FALSE,
         MUIA_Text_PreParse, "\033c",
-        MUIA_Text_Contents, infotext,
+        MUIA_Text_Contents, infotext2,
+      End,
+
+      Child, TextObject,
+        MUIA_Text_Copy, FALSE,
+        MUIA_Text_PreParse, "\033c",
+        MUIA_Text_Contents, infotext1,
       End,
     End,
 
