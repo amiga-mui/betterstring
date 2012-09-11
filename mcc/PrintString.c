@@ -38,7 +38,6 @@ VOID PrintString(struct IClass *cl, Object *obj)
   struct RastPort *rport    = &data->rport;
   struct TextExtent tExtend;
   STRPTR contents;
-  WORD width, height;
   WORD crsr_x=0, crsr_width=0, crsr_color=0;
   WORD length, offset = 0, StrLength;
   STRPTR text;
@@ -46,9 +45,6 @@ VOID PrintString(struct IClass *cl, Object *obj)
   UWORD  Blk_Start=0, Blk_Width=0;
   STRPTR fake_contents = NULL;
   BOOL showInactiveContents = FALSE;
-
-  width = _mwidth(obj);
-  height = _font(obj)->tf_YSize;
 
   contents = data->Contents;
   StrLength = strlen(contents);
@@ -91,7 +87,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
   if(StrLength)
   {
-    UWORD backdistance = TextFit(rport, contents+StrLength-1, StrLength, &tExtend, NULL, -1, width/*-crsr_width*/, _font(obj)->tf_YSize);
+    UWORD backdistance = TextFit(rport, contents+StrLength-1, StrLength, &tExtend, NULL, -1, _mwidth(obj)/*-crsr_width*/, _mheight(obj));
 
     if(backdistance > StrLength-data->DisplayPos)
       data->DisplayPos = StrLength-backdistance;
@@ -99,7 +95,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
   if(data->BufferPos)
   {
-    UWORD distance = TextFit(rport, contents+data->BufferPos-1, data->BufferPos, &tExtend, NULL, -1, width-crsr_width, _font(obj)->tf_YSize);
+    UWORD distance = TextFit(rport, contents+data->BufferPos-1, data->BufferPos, &tExtend, NULL, -1, _mwidth(obj)-crsr_width, _mheight(obj));
 
     if(distance < data->BufferPos-data->DisplayPos)
       data->DisplayPos = data->BufferPos - distance;
@@ -136,34 +132,34 @@ VOID PrintString(struct IClass *cl, Object *obj)
   DoMethod(obj, MUIM_DrawBackground, 0, 0, _mwidth(obj), _mheight(obj), _mleft(obj), _mtop(obj), 0L);
   _rp(obj) = oldrport;
 
-  length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width, _font(obj)->tf_YSize);
+  length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, _mwidth(obj), _mheight(obj));
   if(data->Alignment != MUIV_String_Format_Left)
   {
     UWORD textlength = TextLength(rport, text, length);
 
     if(crsr_width && !BlockEnabled && data->BufferPos == data->DisplayPos+StrLength)
     {
-      length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, width-crsr_width, _font(obj)->tf_YSize);
+      length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, _mwidth(obj)-crsr_width, _mheight(obj));
       textlength += crsr_width;
     }
 
     switch(data->Alignment)
     {
       case MUIV_String_Format_Center:
-        offset = (width - textlength)/2;
+        offset = (_mwidth(obj) - textlength)/2;
         break;
       case MUIV_String_Format_Right:
-        offset = (width - textlength);
+        offset = (_mwidth(obj) - textlength);
         break;
     }
   }
 
-  if(crsr_width && crsr_x < width)
+  if(crsr_width && crsr_x < _mwidth(obj))
   {
     SetAPen(rport, MUIPEN(crsr_color));
-    if(crsr_x+crsr_width > width)
+    if(crsr_x+crsr_width > _mwidth(obj))
     {
-      crsr_width = width-crsr_x;
+      crsr_width = _mwidth(obj)-crsr_x;
     }
     RectFill(rport, offset+crsr_x, 0, offset+crsr_x+crsr_width-1, _font(obj)->tf_YSize-1);
   }
@@ -208,7 +204,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   if(fake_contents != NULL)
     SharedPoolFree(fake_contents);
 
-  BltBitMapRastPort(data->rport.BitMap, 0, 0, _rp(obj), _mleft(obj), _mtop(obj), width, height, 0xc0);
+  BltBitMapRastPort(data->rport.BitMap, 0, 0, _rp(obj), _mleft(obj), _mtop(obj), _mwidth(obj), _mheight(obj), 0xc0);
 
   #if defined(__amigaos3__) || defined(__amigaos4__)
   if(MUIMasterBase->lib_Version > 20 || (MUIMasterBase->lib_Version == 20 && MUIMasterBase->lib_Revision >= 5640))
