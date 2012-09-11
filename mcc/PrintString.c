@@ -31,6 +31,16 @@
 
 #include "private.h"
 
+#if defined(__amigaos3__)
+// this single additional pixel is needed for certain fonts to be
+// displayed correctly when AfAOS is used.
+#define XOFF	1
+#define YOFF	0
+#else
+#define XOFF	0
+#define YOFF	0
+#endif
+
 VOID PrintString(struct IClass *cl, Object *obj)
 {
   struct InstData *data     = (struct InstData *)INST_DATA(cl, obj);
@@ -129,7 +139,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   }
 
   _rp(obj) = rport;
-  DoMethod(obj, MUIM_DrawBackground, 0, 0, _mwidth(obj), _mheight(obj), _mleft(obj), _mtop(obj), 0L);
+  DoMethod(obj, MUIM_DrawBackground, 0+XOFF, 0+YOFF, _mwidth(obj), _mheight(obj), _mleft(obj), _mtop(obj), 0L);
   _rp(obj) = oldrport;
 
   length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, _mwidth(obj), _mheight(obj));
@@ -161,7 +171,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
     {
       crsr_width = _mwidth(obj)-crsr_x;
     }
-    RectFill(rport, offset+crsr_x, 0, offset+crsr_x+crsr_width-1, _font(obj)->tf_YSize-1);
+    RectFill(rport, offset+crsr_x+XOFF, 0+YOFF, offset+crsr_x+crsr_width-1+XOFF, _font(obj)->tf_YSize-1+YOFF);
   }
 
   if(length)
@@ -169,7 +179,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
     UWORD newlength;
     LONG textcolor = isFlagSet(data->Flags, FLG_Active) ? data->ActiveText : data->InactiveText;
 
-    Move(rport, offset, _font(obj)->tf_Baseline);
+    Move(rport, offset+XOFF, _font(obj)->tf_Baseline+YOFF);
 
     if(BlockEnabled && textcolor != (LONG)data->MarkedTextColor)
     {
@@ -204,7 +214,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   if(fake_contents != NULL)
     SharedPoolFree(fake_contents);
 
-  BltBitMapRastPort(data->rport.BitMap, 0, 0, _rp(obj), _mleft(obj), _mtop(obj), _mwidth(obj), _mheight(obj), 0xc0);
+  BltBitMapRastPort(data->rport.BitMap, 0+XOFF, 0+YOFF, _rp(obj), _mleft(obj), _mtop(obj), _mwidth(obj), _mheight(obj), 0xc0);
 
   #if defined(__amigaos3__) || defined(__amigaos4__)
   if(MUIMasterBase->lib_Version > 20 || (MUIMasterBase->lib_Version == 20 && MUIMasterBase->lib_Revision >= 5640))
