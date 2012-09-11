@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-09-11 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/PrintString.c: use the normal object's dimensions when calculating the
+    amount of fitting characters instead of deriving the dimensions from some
+    other values.
+
 2012-08-28 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcp/CreatePrefsGroup.c: adjusted the crawling text to better match the
