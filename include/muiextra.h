@@ -28,3 +28,15 @@
 #ifndef CrawlingObject
 #define CrawlingObject MUI_NewObject("Crawling.mcc"
 #endif
+
+struct MUI_ImageSpec
+{
+  char buf[128];
+};
+
+#if !defined(__AROS__)
+struct MUI_FrameSpec
+{
+  char buf[128];
+};
+#endif
