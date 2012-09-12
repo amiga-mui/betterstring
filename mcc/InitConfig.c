@@ -56,10 +56,7 @@ void InitConfig(Object *obj, struct InstData *data)
     // with MUI4's realtime prefs the configuration might change upon
     // canceling MUI prefs and hence we would operate on invalid data.
     if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Frame, &setting))
-    {
-      strlcpy(data->FrameBuffer, (STRPTR)setting, sizeof(data->FrameBuffer));
-      set(obj, MUIA_Frame, data->FrameBuffer);
-    }
+      set(obj, MUIA_Frame, setting);
     else
       set(obj, MUIA_Frame, "302211");
   }
