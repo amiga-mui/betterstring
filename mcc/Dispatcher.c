@@ -149,10 +149,10 @@ IPTR Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 
   ENTER();
 
+  InitConfig(obj, data);
+
   if(DoSuperMethodA(cl, obj, (Msg)rinfo))
   {
-    InitConfig(obj, data);
-
     // tell MUI we know how to indicate the active state
     _flags(obj) |= (1<<7);
 
@@ -173,6 +173,10 @@ IPTR Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 
     RETURN(TRUE);
     return(TRUE);
+  }
+  else
+  {
+    FreeConfig(muiRenderInfo(obj), data);
   }
 
   RETURN(FALSE);

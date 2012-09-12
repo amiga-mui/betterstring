@@ -103,7 +103,6 @@ struct InstData
 
   char InactiveBackgroundBuffer[128];
   char ActiveBackgroundBuffer[128];
-  char FrameBuffer[128];
 
   /* Edit hook */
   struct Hook *EditHook;
