@@ -33,7 +33,10 @@
 
 #if defined(__amigaos3__)
 // this single additional pixel is needed for certain fonts to be
-// displayed correctly when AfAOS is used.
+// displayed correctly when AfAOS is used. These fonts seem to render
+// at negative corrdinates due to their kerning values and hence
+// AfAOS's Text() function will simply do nothing instead of clipping
+// the text.
 #define XOFF	1
 #define YOFF	0
 #else
