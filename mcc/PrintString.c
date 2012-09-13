@@ -31,18 +31,13 @@
 
 #include "private.h"
 
-#if defined(__amigaos3__)
-// this single additional pixel is needed for certain fonts to be
-// displayed correctly when AfAOS is used. These fonts seem to render
-// at negative corrdinates due to their kerning values and hence
-// AfAOS's Text() function will simply do nothing instead of clipping
-// the text.
-#define XOFF	1
+// This additional space is needed for certain fonts to be displayed
+// These fonts seem to render at negative corrdinates due to their
+// kerning values and hence the Text() function might trash innocent
+// memory, or in case of AfAOS' Text() replacement nothing will be
+// drawn at all.
+#define XOFF	10
 #define YOFF	0
-#else
-#define XOFF	0
-#define YOFF	0
-#endif
 
 VOID PrintString(struct IClass *cl, Object *obj)
 {

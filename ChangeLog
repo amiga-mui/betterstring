@@ -5,6 +5,13 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-09-13 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/PrintString.c: added the former X offset again when drawing the complete
+    imagery. AfAOS' Text() replacement seems to need this additional space to
+    correctly print texts starting with 'J' or '*' when certain fonts are used.
+    Other systems might trash innocent memory. So better put it back in.
+
 2012-09-12 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Dispatcher.c, mcc/InitConfig.c: apply the current configuration before
@@ -16,9 +23,6 @@ $URL$
   * mcc/PrintString.c: use the normal object's dimensions when calculating the
     amount of fitting characters instead of deriving the dimensions from some
     other values.
-  * mcc/PrintString.c: added the former X offset again when drawing the complete
-    imagery. AfAOS' Text() replacement seems to need this additional space to
-    correctly print texts starting with 'J' or '*' when certain fonts are used.
 
 2012-08-28 Thore Böckelmann <tboeckel@gmx.de>
 
