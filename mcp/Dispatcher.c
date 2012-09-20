@@ -106,13 +106,13 @@ DISPATCHER(_DispatcherP)
 
         if(PrefsInfo[i].Type == 0)
         {
-          W(DBF_STARTUP, "0 MUIM_Dataspace_Find[%ld]: %08lx : %lx / %lx", i, PrefsInfo[i].CfgItem, cfg_val, cfg_val ? cfg_val : PrefsInfo[i].DefValue);
+          D(DBF_STARTUP, "0 MUIM_Dataspace_Find[%ld]: %08lx : %lx / %lx", i, PrefsInfo[i].CfgItem, cfg_val, cfg_val ? cfg_val : PrefsInfo[i].DefValue);
 
           nnset(data->Objects[PrefsInfo[i].ObjIndex], PrefsInfo[i].Tag, cfg_val ? cfg_val : PrefsInfo[i].DefValue);
         }
         else
         {
-          W(DBF_STARTUP, "1 MUIM_Dataspace_Find[%ld]: %08lx : %P / %P", i, PrefsInfo[i].CfgItem, cfg_val, cfg_val ? *(IPTR *)cfg_val : (IPTR)PrefsInfo[i].DefValue);
+          D(DBF_STARTUP, "1 MUIM_Dataspace_Find[%ld]: %08lx : %P / %P", i, PrefsInfo[i].CfgItem, cfg_val, cfg_val ? *(IPTR *)cfg_val : (IPTR)PrefsInfo[i].DefValue);
 
           nnset(data->Objects[PrefsInfo[i].ObjIndex], PrefsInfo[i].Tag, cfg_val ? *(IPTR *)cfg_val : (IPTR)PrefsInfo[i].DefValue);
         }
@@ -133,13 +133,29 @@ DISPATCHER(_DispatcherP)
 
         if(PrefsInfo[i].Type == 0)
         {
-          W(DBF_STARTUP, "0 MUIM_Dataspace_Add[%ld]: %08lx : %lx", i, PrefsInfo[i].CfgItem, cfg_val);
-          DoMethod(configdata, MUIM_Dataspace_Add, cfg_val, strlen((char *)cfg_val)+1, PrefsInfo[i].CfgItem);
+          if(strcmp((char *)cfg_val, PrefsInfo[i].DefValue) != 0)
+          {
+            D(DBF_STARTUP, "0 MUIM_Dataspace_Add[%ld]: %08lx : %lx", i, PrefsInfo[i].CfgItem, cfg_val);
+            DoMethod(configdata, MUIM_Dataspace_Add, cfg_val, strlen((char *)cfg_val)+1, PrefsInfo[i].CfgItem);
+          }
+          else
+          {
+            D(DBF_STARTUP, "0 MUIM_Dataspace_Remove[%ld]: %08lx", i, PrefsInfo[i].CfgItem);
+            DoMethod(configdata, MUIM_Dataspace_Remove, PrefsInfo[i].CfgItem);
+          }
         }
         else
         {
-          W(DBF_STARTUP, "1 MUIM_Dataspace_Add[%ld]: %08lx : %lx / %lx", i, PrefsInfo[i].CfgItem, &cfg_val, cfg_val);
-          DoMethod(configdata, MUIM_Dataspace_Add, &cfg_val, sizeof(cfg_val), PrefsInfo[i].CfgItem);
+          if(cfg_val != (SIPTR)PrefsInfo[i].DefValue)
+          {
+            D(DBF_STARTUP, "1 MUIM_Dataspace_Add[%ld]: %08lx : %lx / %lx", i, PrefsInfo[i].CfgItem, &cfg_val, cfg_val);
+            DoMethod(configdata, MUIM_Dataspace_Add, &cfg_val, sizeof(cfg_val), PrefsInfo[i].CfgItem);
+          }
+          else
+          {
+            D(DBF_STARTUP, "1 MUIM_Dataspace_Remove[%ld]: %08lx", i, PrefsInfo[i].CfgItem);
+            DoMethod(configdata, MUIM_Dataspace_Remove, PrefsInfo[i].CfgItem);
+          }
         }
       }
     }

@@ -11,6 +11,8 @@ $URL$
     MUIM_Mccprefs_ConfigToGadgets.
   * mcp/Dispatcher.c: save strings with their real length only instead of their
     maximum length to assist MUI4's realtime prefs.
+  * mcp/Dispatcher.c: remove settings from the configuration if they match the
+    default value.
 
 2012-09-13 Thore Böckelmann <tboeckel@gmx.de>
 
