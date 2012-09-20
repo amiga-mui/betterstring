@@ -109,13 +109,13 @@ DISPATCHER(_DispatcherP)
         {
           W(DBF_STARTUP, "0 MUIM_Dataspace_Find[%ld]: %08lx : %lx / %lx", i, PrefsInfo[i].CfgItem, cfg_val, cfg_val ? cfg_val : PrefsInfo[i].DefValue);
 
-          set(data->Objects[PrefsInfo[i].ObjIndex], PrefsInfo[i].Tag, cfg_val ? cfg_val : PrefsInfo[i].DefValue);
+          nnset(data->Objects[PrefsInfo[i].ObjIndex], PrefsInfo[i].Tag, cfg_val ? cfg_val : PrefsInfo[i].DefValue);
         }
         else
         {
           W(DBF_STARTUP, "1 MUIM_Dataspace_Find[%ld]: %08lx : %P / %P", i, PrefsInfo[i].CfgItem, cfg_val, cfg_val ? *(IPTR *)cfg_val : (IPTR)PrefsInfo[i].DefValue);
 
-          set(data->Objects[PrefsInfo[i].ObjIndex], PrefsInfo[i].Tag, cfg_val ? *(IPTR *)cfg_val : (IPTR)PrefsInfo[i].DefValue);
+          nnset(data->Objects[PrefsInfo[i].ObjIndex], PrefsInfo[i].Tag, cfg_val ? *(IPTR *)cfg_val : (IPTR)PrefsInfo[i].DefValue);
         }
       }
     }
