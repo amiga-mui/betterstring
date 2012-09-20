@@ -38,23 +38,22 @@ struct PrefsExchangeData
   const ULONG Tag;
   const ULONG CfgItem;
   const ULONG Type;      // 0 = string, 1 = integer
-  const ULONG Length;
   const APTR  DefValue;
 };
 
 static const struct PrefsExchangeData PrefsInfo[] =
 {
-  { ActiveBack,     MUIA_Imagedisplay_Spec,  MUICFG_BetterString_ActiveBack,     0, sizeof(struct MUI_ImageSpec), (APTR)"2:m1"    },
-  { ActiveText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_ActiveText,     0, sizeof(struct MUI_PenSpec),   (APTR)"m5"      },
-  { InactiveBack,   MUIA_Imagedisplay_Spec,  MUICFG_BetterString_InactiveBack,   0, sizeof(struct MUI_ImageSpec), (APTR)"2:m2"    },
-  { InactiveText,   MUIA_Pendisplay_Spec,    MUICFG_BetterString_InactiveText,   0, sizeof(struct MUI_PenSpec),   (APTR)"m4"      },
-  { Cursor,         MUIA_Pendisplay_Spec,    MUICFG_BetterString_Cursor,         0, sizeof(struct MUI_PenSpec),   (APTR)"m0"      },
-  { MarkedBack,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedBack,     0, sizeof(struct MUI_PenSpec),   (APTR)"m6"      },
-  { MarkedText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedText,     0, sizeof(struct MUI_PenSpec),   (APTR)"m5"      },
-//{ Font,           MUIA_String_Contents,    MUICFG_BetterString_Font,           0, 0,                            (APTR)""        },
-  { Frame,          MUIA_Framedisplay_Spec,  MUICFG_BetterString_Frame,          0, sizeof(struct MUI_FrameSpec), (APTR)"302211"  },
-  { SelectOnActive, MUIA_Selected,           MUICFG_BetterString_SelectOnActive, 1, sizeof(LONG),                 (APTR)0         },
-  { SelectPointer,  MUIA_Selected,           MUICFG_BetterString_SelectPointer,  1, sizeof(LONG),                 (APTR)1         }
+  { ActiveBack,     MUIA_Imagedisplay_Spec,  MUICFG_BetterString_ActiveBack,     0, (APTR)"2:m1"    },
+  { ActiveText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_ActiveText,     0, (APTR)"m5"      },
+  { InactiveBack,   MUIA_Imagedisplay_Spec,  MUICFG_BetterString_InactiveBack,   0, (APTR)"2:m2"    },
+  { InactiveText,   MUIA_Pendisplay_Spec,    MUICFG_BetterString_InactiveText,   0, (APTR)"m4"      },
+  { Cursor,         MUIA_Pendisplay_Spec,    MUICFG_BetterString_Cursor,         0, (APTR)"m0"      },
+  { MarkedBack,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedBack,     0, (APTR)"m6"      },
+  { MarkedText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedText,     0, (APTR)"m5"      },
+//{ Font,           MUIA_String_Contents,    MUICFG_BetterString_Font,           0, (APTR)""        },
+  { Frame,          MUIA_Framedisplay_Spec,  MUICFG_BetterString_Frame,          0, (APTR)"302211"  },
+  { SelectOnActive, MUIA_Selected,           MUICFG_BetterString_SelectOnActive, 1, (APTR)0         },
+  { SelectPointer,  MUIA_Selected,           MUICFG_BetterString_SelectPointer,  1, (APTR)1         }
 };
 
 DISPATCHER(_DispatcherP)
@@ -129,20 +128,18 @@ DISPATCHER(_DispatcherP)
       for(i=0; i < NumberOfObject; i++)
       {
         SIPTR cfg_val;
-        ULONG len;
 
         cfg_val = xget(data->Objects[PrefsInfo[i].ObjIndex], PrefsInfo[i].Tag);
-        len = PrefsInfo[i].Length;
 
         if(PrefsInfo[i].Type == 0)
         {
           W(DBF_STARTUP, "0 MUIM_Dataspace_Add[%ld]: %08lx : %lx", i, PrefsInfo[i].CfgItem, cfg_val);
-          DoMethod(configdata, MUIM_Dataspace_Add, cfg_val, len > 0 ? len : strlen((char *)cfg_val)+1, PrefsInfo[i].CfgItem);
+          DoMethod(configdata, MUIM_Dataspace_Add, cfg_val, strlen((char *)cfg_val)+1, PrefsInfo[i].CfgItem);
         }
         else
         {
           W(DBF_STARTUP, "1 MUIM_Dataspace_Add[%ld]: %08lx : %lx / %lx", i, PrefsInfo[i].CfgItem, &cfg_val, cfg_val);
-          DoMethod(configdata, MUIM_Dataspace_Add, &cfg_val, len, PrefsInfo[i].CfgItem);
+          DoMethod(configdata, MUIM_Dataspace_Add, &cfg_val, sizeof(cfg_val), PrefsInfo[i].CfgItem);
         }
       }
     }
