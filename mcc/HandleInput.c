@@ -746,6 +746,8 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
       case MUIKEY_COPY:
       {
         CopyBlock(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+        MUI_Redraw(obj, MADF_DRAWUPDATE);
         result = MUI_EventHandlerRC_Eat;
       }
       break;
