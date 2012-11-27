@@ -753,6 +753,8 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
       case MUIKEY_CUT:
       {
         CutBlock(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+        MUI_Redraw(obj, MADF_DRAWUPDATE);
         TriggerNotify(cl, obj);
         result = MUI_EventHandlerRC_Eat;
       }
@@ -761,6 +763,8 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
       case MUIKEY_PASTE:
       {
         Paste(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+        MUI_Redraw(obj, MADF_DRAWUPDATE);
         TriggerNotify(cl, obj);
         result = MUI_EventHandlerRC_Eat;
       }
@@ -773,6 +777,8 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                           (msg->muikey == MUIKEY_UNDO && isFlagClear(data->Flags, FLG_RedoAvailable))))
         {
           UndoRedo(data);
+          clearFlag(data->Flags, FLG_BlockEnabled);
+          MUI_Redraw(obj, MADF_DRAWUPDATE);
           TriggerNotify(cl, obj);
           result = MUI_EventHandlerRC_Eat;
         }
@@ -788,7 +794,7 @@ IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
     ULONG StringLength = strlen(data->Contents);
 
     if(msg->imsg->Class == IDCMP_RAWKEY &&
-//       msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
+    // msg->imsg->Code >= IECODE_KEY_CODE_FIRST &&
        msg->imsg->Code <= IECODE_KEY_CODE_LAST)
     {
       if(isFlagSet(data->Flags, FLG_Active))

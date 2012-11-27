@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-11-27 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/HandleInput.c: added some missing redraw events in case BetterString.mcc
+    reacted on certain standard MUI key shortcuts.
+
 2012-11-19 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Pointer.c: make use of the standard mouse pointer images in the AmigaOS4
