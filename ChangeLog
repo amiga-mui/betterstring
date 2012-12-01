@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-12-01 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/GetSetAttrs.c: fixed a wrong handling of queued notifications.
+
 2012-11-27 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/HandleInput.c: added some missing redraw events in case BetterString.mcc
