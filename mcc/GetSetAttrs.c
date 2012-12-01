@@ -377,8 +377,10 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
       {
         // trigger only a notify if a notification has been queued
         // already
-        if(isFlagSet(oldFlags, FLG_NotifyQueued))
+        if(isFlagSet(data->Flags, FLG_NotifyQueued))
+        {
           TriggerNotify(cl, obj);
+        }
       }
       break;
 
