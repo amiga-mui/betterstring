@@ -13,6 +13,9 @@ $URL$
     and hence the object will go inactive and active again and thus select all
     its contents, even if this was not the case before. This fixes YAM ticket
     #360.
+  * mcc/GetSetAttrs.c: don't redraw the object if MUIA_BettString_SelectOnActive
+    is modified as this does not change anything visible unless the objects goes
+    active or inactive.
 
 2012-12-01 Thore Böckelmann <tboeckel@gmx.de>
 

@@ -368,8 +368,6 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
           setFlag(data->Flags, FLG_ForceSelectOn);
           clearFlag(data->Flags, FLG_ForceSelectOff);
         }
-
-        redraw = TRUE;
       }
       break;
 
