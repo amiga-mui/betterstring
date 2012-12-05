@@ -293,4 +293,8 @@ IPTR xget(Object *obj, const IPTR attr);
 #define MUIKEY_REDO 26
 #endif
 
+#ifndef MUIA_String_Popup
+#define MUIA_String_Popup 0x80420d71
+#endif
+
 #endif /* BETTERSTRING_MCC_PRIV_H */

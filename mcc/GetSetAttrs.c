@@ -320,6 +320,12 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
       }
       break;
 
+      case MUIA_String_Popup:
+      {
+        data->Popup = (Object *)ti_Data;
+      }
+      break;
+
       case MUIA_BetterString_KeyUpFocus:
       {
         data->KeyUpFocus = (Object *)ti_Data;
@@ -373,18 +379,11 @@ IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
 
       case MUIA_BetterString_NoNotify:
       {
-        // trigger only a notify if a notification has been queued
-        // already
+        // trigger a notify only if a notification has been queued already
         if(isFlagSet(data->Flags, FLG_NotifyQueued))
         {
           TriggerNotify(cl, obj);
         }
-      }
-      break;
-
-      case 0x80420d71: /* MUIA_String_Popup */
-      {
-        data->Popup = (Object *)ti_Data;
       }
       break;
     }
