@@ -5,6 +5,15 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-12-05 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/Dispatcher.c: added a notification for MUIA_Window_Sleep to be able to
+    deactivate the "select on active" feature until the window is woken up again.
+    This is necessary, because MUIA_Window_Sleep will modify the active object
+    and hence the object will go inactive and active again and thus select all
+    its contents, even if this was not the case before. This fixes YAM ticket
+    #360.
+
 2012-12-01 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/GetSetAttrs.c: fixed a wrong handling of queued notifications.
