@@ -5,6 +5,13 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-12-06 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/Dispatcher.c: add the notification for MUIA_Window_Sleep as well if the
+    "select on active" feature has been acivated by setting the attribue
+    MUIA_BettString_SelectOnActive to TRUE. This will be remembered until the
+    method MUIM_Cleanup finally removes the notification again.
+
 2012-12-05 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Dispatcher.c: added a notification for MUIA_Window_Sleep to be able to

@@ -171,7 +171,7 @@ IPTR Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 
     DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 
-    if(data->SelectOnActive == TRUE)
+    if(data->SelectOnActive == TRUE || isFlagSet(data->Flags, FLG_ForceSelectOn))
     {
       // if the "select on active" feature is active we must be notified in case our
       // window is put to sleep to be able to deactivate the feature, because waking
@@ -179,6 +179,7 @@ IPTR Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
       // complete content, even if it was not selected before. See YAM ticket #360
       // for details.
       DoMethod(_win(obj), MUIM_Notify, MUIA_Window_Sleep, MUIV_EveryTime, obj, 3, MUIM_Set, MUIA_BetterString_SelectOnActive, MUIV_NotTriggerValue);
+      data->WindowSleepNotifyAdded = TRUE;
     }
 
     RETURN(TRUE);
@@ -200,10 +201,11 @@ IPTR Cleanup(struct IClass *cl, Object *obj, Msg msg)
   // cleanup the selection pointer
   CleanupSelectPointer(data);
 
-  if(data->SelectOnActive == TRUE)
+  if(data->WindowSleepNotifyAdded == TRUE)
   {
     // remove the notify again
     DoMethod(_win(obj), MUIM_KillNotifyObj, MUIA_Window_Sleep, obj);
+    data->WindowSleepNotifyAdded = FALSE;
   }
 
   DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
