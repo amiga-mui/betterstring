@@ -100,6 +100,7 @@ struct InstData
   ULONG   MarkedTextColor;
   BOOL    SelectOnActive;
   BOOL    SelectPointer;
+  BOOL    WindowSleepNotifyAdded;
 
   char InactiveBackgroundBuffer[128];
   char ActiveBackgroundBuffer[128];
