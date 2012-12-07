@@ -12,8 +12,8 @@ $URL$
     This makes it possible to use the notification even if the feature is
     enabled by the application instead of the global/local configuration.
   * mcc/Dispatcher.c: added some more security checks before adding the notify
-    as the function might be called during OM_NEW and at that time accessing
-    _win(obj) is not yet allowed.
+    as the function might be called during OM_NEW and accessing _win(obj) is not
+    yet allowed at that time.
 
 2012-12-06 Thore Böckelmann <tboeckel@gmx.de>
 
