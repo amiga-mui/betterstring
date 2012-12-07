@@ -143,6 +143,37 @@ static IPTR mImport(UNUSED struct IClass *cl, Object *obj, struct MUIP_Import *m
   return 0;
 }
 
+void AddWindowSleepNotify(struct IClass *cl, Object *obj)
+{
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
+  if(data->WindowSleepNotifyAdded == FALSE && _win(obj) != NULL)
+  {
+    if(data->SelectOnActive == TRUE || isFlagSet(data->Flags, FLG_ForceSelectOn))
+    {
+      // if the "select on active" feature is active we must be notified in case our
+      // window is put to sleep to be able to deactivate the feature, because waking
+      // the window up again will let ourself go active again and we will select the
+      // complete content, even if it was not selected before. See YAM ticket #360
+      // for details.
+      DoMethod(_win(obj), MUIM_Notify, MUIA_Window_Sleep, MUIV_EveryTime, obj, 3, MUIM_Set, MUIA_BetterString_SelectOnActive, MUIV_NotTriggerValue);
+      data->WindowSleepNotifyAdded = TRUE;
+    }
+  }
+}
+
+void RemWindowSleepNotify(struct IClass *cl, Object *obj)
+{
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
+  if(data->WindowSleepNotifyAdded == TRUE && _win(obj) != NULL)
+  {
+    // remove the notify again
+    DoMethod(_win(obj), MUIM_KillNotifyObj, MUIA_Window_Sleep, obj);
+    data->WindowSleepNotifyAdded = FALSE;
+  }
+}
+
 static IPTR mSetup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
@@ -171,16 +202,7 @@ static IPTR mSetup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 
     DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 
-    if(data->SelectOnActive == TRUE || isFlagSet(data->Flags, FLG_ForceSelectOn))
-    {
-      // if the "select on active" feature is active we must be notified in case our
-      // window is put to sleep to be able to deactivate the feature, because waking
-      // the window up again will let ourself go active again and we will select the
-      // complete content, even if it was not selected before. See YAM ticket #360
-      // for details.
-      DoMethod(_win(obj), MUIM_Notify, MUIA_Window_Sleep, MUIV_EveryTime, obj, 3, MUIM_Set, MUIA_BetterString_SelectOnActive, MUIV_NotTriggerValue);
-      data->WindowSleepNotifyAdded = TRUE;
-    }
+    AddWindowSleepNotify(cl, obj);
 
     RETURN(TRUE);
     return(TRUE);
@@ -201,12 +223,7 @@ static IPTR mCleanup(struct IClass *cl, Object *obj, Msg msg)
   // cleanup the selection pointer
   CleanupSelectPointer(data);
 
-  if(data->WindowSleepNotifyAdded == TRUE)
-  {
-    // remove the notify again
-    DoMethod(_win(obj), MUIM_KillNotifyObj, MUIA_Window_Sleep, obj);
-    data->WindowSleepNotifyAdded = FALSE;
-  }
+  RemWindowSleepNotify(cl, obj);
 
   DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
 

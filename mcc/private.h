@@ -231,6 +231,10 @@ VOID FreeConfig(struct MUI_RenderInfo *, struct InstData *);
 struct BitMap * SAVEDS ASM MUIG_AllocBitMap(REG(d0, LONG), REG(d1, LONG), REG(d2, LONG), REG(d3, LONG flags), REG(a0, struct BitMap *));
 VOID SAVEDS ASM MUIG_FreeBitMap(REG(a0, struct BitMap *));
 
+// Dispatcher.c
+void AddWindowSleepNotify(struct IClass *cl, Object *obj);
+void RemWindowSleepNotify(struct IClass *cl, Object *obj);
+
 // Pointer.c
 void SetupSelectPointer(struct InstData *data);
 void CleanupSelectPointer(struct InstData *data);

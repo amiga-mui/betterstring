@@ -373,6 +373,8 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
         {
           setFlag(data->Flags, FLG_ForceSelectOn);
           clearFlag(data->Flags, FLG_ForceSelectOff);
+          // add notify for MUIA_Window_Sleep if "select on active" is enabled
+          AddWindowSleepNotify(cl, obj);
         }
       }
       break;
