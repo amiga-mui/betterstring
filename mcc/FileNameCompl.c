@@ -112,7 +112,7 @@ WORD VolumeStart(STRPTR text, WORD pos)
   return pos;
 }
 
-LONG FileNameStart(struct MUIP_BetterString_FileNameStart *msg)
+LONG mFileNameStart(struct MUIP_BetterString_FileNameStart *msg)
 {
   STRPTR buffer = msg->buffer;
   LONG pos = msg->pos;

@@ -202,12 +202,12 @@ struct InstData
 // our prototypes
 VOID PrintString(struct IClass *, Object *);
 void TriggerNotify(struct IClass *cl, Object *obj);
-IPTR HandleInput(struct IClass *, Object *, struct MUIP_HandleEvent *);
+IPTR mHandleInput(struct IClass *, Object *, struct MUIP_HandleEvent *);
 ULONG ConvertKey(struct IntuiMessage *);
 VOID DeleteBlock(struct InstData *);
 
-IPTR Get(struct IClass *, Object *, struct opGet *);
-IPTR Set(struct IClass *, Object *, struct opSet *);
+IPTR mGet(struct IClass *, Object *, struct opGet *);
+IPTR mSet(struct IClass *, Object *, struct opSet *);
 IPTR mDoAction(struct IClass *, Object *, struct MUIP_BetterString_DoAction *);
 
 BOOL CreateSharedPool(void);
@@ -221,7 +221,7 @@ VOID strcpyback(STRPTR, STRPTR);
 BOOL Overwrite(STRPTR, UWORD, UWORD, struct InstData *);
 BOOL OverwriteA(STRPTR, UWORD, UWORD, UWORD, struct InstData *);
 BOOL FileNameComplete(Object *, BOOL, struct InstData *);
-LONG FileNameStart(struct MUIP_BetterString_FileNameStart *msg);
+LONG mFileNameStart(struct MUIP_BetterString_FileNameStart *msg);
 
 WORD CmpStrings(REG(a0, STRPTR), REG(a1, STRPTR));
 

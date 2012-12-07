@@ -63,7 +63,7 @@ struct NewMenu PopupMenuData[] =
 //struct  MUIP_Backfill { ULONG MethodID; LONG left; LONG top; LONG right; LONG bottom; LONG xoffset; LONG yoffset; };
 //#endif
 
-IPTR New(struct IClass *cl, Object *obj, struct opSet *msg)
+static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
 {
   if((obj = (Object *)DoSuperMethodA(cl, obj, (Msg)msg)))
   {
@@ -88,7 +88,7 @@ IPTR New(struct IClass *cl, Object *obj, struct opSet *msg)
     }
 
     msg->MethodID = OM_SET;
-    Set(cl, obj, (struct opSet *)msg);
+    mSet(cl, obj, (struct opSet *)msg);
     msg->MethodID = OM_NEW;
     data->BufferPos = 0;
 
@@ -99,7 +99,7 @@ IPTR New(struct IClass *cl, Object *obj, struct opSet *msg)
   return(FALSE);
 }
 
-IPTR Dispose(struct IClass *cl, Object *obj, Msg msg)
+static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -117,7 +117,7 @@ IPTR Dispose(struct IClass *cl, Object *obj, Msg msg)
   return(DoSuperMethodA(cl, obj, msg));
 }
 
-IPTR Export(struct IClass *cl, Object *obj, struct MUIP_Export *msg)
+static IPTR mExport(struct IClass *cl, Object *obj, struct MUIP_Export *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   ULONG id;
@@ -128,7 +128,7 @@ IPTR Export(struct IClass *cl, Object *obj, struct MUIP_Export *msg)
   return 0;
 }
 
-IPTR Import(UNUSED struct IClass *cl, Object *obj, struct MUIP_Import *msg)
+static IPTR mImport(UNUSED struct IClass *cl, Object *obj, struct MUIP_Import *msg)
 {
   ULONG id;
 
@@ -143,7 +143,7 @@ IPTR Import(UNUSED struct IClass *cl, Object *obj, struct MUIP_Import *msg)
   return 0;
 }
 
-IPTR Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
+static IPTR mSetup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -194,7 +194,7 @@ IPTR Setup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
   return(FALSE);
 }
 
-IPTR Cleanup(struct IClass *cl, Object *obj, Msg msg)
+static IPTR mCleanup(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -215,7 +215,7 @@ IPTR Cleanup(struct IClass *cl, Object *obj, Msg msg)
   return(DoSuperMethodA(cl, obj, msg));
 }
 
-IPTR AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
+static IPTR mAskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   WORD Height;
@@ -248,7 +248,7 @@ IPTR AskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
   return(0);
 }
 
-IPTR Show(struct IClass *cl, Object *obj, Msg msg)
+static IPTR mShow(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct BitMap *friendBMp = _rp(obj)->BitMap;
@@ -270,7 +270,7 @@ IPTR Show(struct IClass *cl, Object *obj, Msg msg)
   return(TRUE);
 }
 
-IPTR Hide(struct IClass *cl, Object *obj, Msg msg)
+static IPTR mHide(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -284,7 +284,7 @@ IPTR Hide(struct IClass *cl, Object *obj, Msg msg)
   return(DoSuperMethodA(cl, obj, msg));
 }
 
-IPTR mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
+static IPTR mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
 {
   DoSuperMethodA(cl, obj, (Msg)msg);
 
@@ -296,7 +296,7 @@ IPTR mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
   return(0);
 }
 
-IPTR HandleEvent(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
+static IPTR mHandleEvent(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   IPTR result;
@@ -309,7 +309,7 @@ IPTR HandleEvent(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
   {
     ULONG display_pos = data->DisplayPos;
 
-    result = HandleInput(cl, obj, msg);
+    result = mHandleInput(cl, obj, msg);
     if(display_pos != data->DisplayPos)
       set(obj, MUIA_String_DisplayPos, data->DisplayPos);
 
@@ -355,7 +355,7 @@ IPTR HandleEvent(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
   return result;
 }
 
-IPTR GoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
+static IPTR mGoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -387,7 +387,7 @@ IPTR GoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
   return TRUE;
 }
 
-IPTR GoInactive(struct IClass *cl, Object *obj, UNUSED Msg msg)
+static IPTR mGoInactive(struct IClass *cl, Object *obj, UNUSED Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
@@ -416,19 +416,19 @@ DISPATCHER(_Dispatcher)
   switch(msg->MethodID)
   {
     case OM_NEW:
-      result = New(cl, obj, (struct opSet *)msg);
+      result = mNew(cl, obj, (struct opSet *)msg);
     break;
 
     case MUIM_Setup:
-      result = Setup(cl, obj, (struct MUI_RenderInfo *)msg);
+      result = mSetup(cl, obj, (struct MUI_RenderInfo *)msg);
     break;
 
     case MUIM_Show:
-      result = Show(cl, obj, msg);
+      result = mShow(cl, obj, msg);
     break;
 
     case MUIM_AskMinMax:
-      result = AskMinMax(cl, obj, (struct MUIP_AskMinMax *)msg);
+      result = mAskMinMax(cl, obj, (struct MUIP_AskMinMax *)msg);
     break;
 
     case MUIM_Draw:
@@ -436,44 +436,44 @@ DISPATCHER(_Dispatcher)
     break;
 
     case OM_GET:
-      result = Get(cl, obj, (struct opGet *)msg);
+      result = mGet(cl, obj, (struct opGet *)msg);
     break;
 
     case OM_SET:
-      Set(cl, obj, (struct opSet *)msg);
+      mSet(cl, obj, (struct opSet *)msg);
       result = DoSuperMethodA(cl, obj, msg);
     break;
 
     case MUIM_HandleEvent:
-      result = HandleEvent(cl, obj, (struct MUIP_HandleEvent *)msg);
+      result = mHandleEvent(cl, obj, (struct MUIP_HandleEvent *)msg);
     break;
 
     case MUIM_GoActive:
-      result = GoActive(cl, obj, msg);
+      result = mGoActive(cl, obj, msg);
     break;
 
     case MUIM_GoInactive:
-      result = GoInactive(cl, obj, msg);
+      result = mGoInactive(cl, obj, msg);
     break;
 
     case MUIM_Hide:
-      result = Hide(cl, obj, msg);
+      result = mHide(cl, obj, msg);
     break;
 
     case MUIM_Cleanup:
-      result = Cleanup(cl, obj, msg);
+      result = mCleanup(cl, obj, msg);
     break;
 
     case OM_DISPOSE:
-      result = Dispose(cl, obj, msg);
+      result = mDispose(cl, obj, msg);
     break;
 
     case MUIM_Export:
-      result = Export(cl, obj, (struct MUIP_Export *)msg);
+      result = mExport(cl, obj, (struct MUIP_Export *)msg);
     break;
 
     case MUIM_Import:
-      result = Import(cl, obj, (struct MUIP_Import *)msg);
+      result = mImport(cl, obj, (struct MUIP_Import *)msg);
     break;
 
     case MUIM_BetterString_ClearSelected:
@@ -521,7 +521,7 @@ DISPATCHER(_Dispatcher)
     break;
 
     case MUIM_BetterString_FileNameStart:
-      result = FileNameStart((struct MUIP_BetterString_FileNameStart *)msg);
+      result = mFileNameStart((struct MUIP_BetterString_FileNameStart *)msg);
     break;
 
     default:
