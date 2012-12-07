@@ -130,6 +130,9 @@ struct InstData
 #define FLG_NoNotify        (1L << 19)
 #define FLG_NotifyQueued    (1L << 20)
 
+// private attributes
+#define MUIA_BetterString_InternalSelectOnActive   0xad002000UL
+
 // proper RAWKEY_ defines were first introduced in OS4 and MorphOS
 // and unfortunately they are also a bit different, so lets
 // prepare an alternate table for it

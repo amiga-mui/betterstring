@@ -151,12 +151,14 @@ void AddWindowSleepNotify(struct IClass *cl, Object *obj)
   {
     if(data->SelectOnActive == TRUE || isFlagSet(data->Flags, FLG_ForceSelectOn))
     {
-      // if the "select on active" feature is active we must be notified in case our
+      // If the "select on active" feature is active we must be notified in case our
       // window is put to sleep to be able to deactivate the feature, because waking
       // the window up again will let ourself go active again and we will select the
       // complete content, even if it was not selected before. See YAM ticket #360
       // for details.
-      DoMethod(_win(obj), MUIM_Notify, MUIA_Window_Sleep, MUIV_EveryTime, obj, 3, MUIM_Set, MUIA_BetterString_SelectOnActive, MUIV_NotTriggerValue);
+      // We must use a private attribute here, because the public attribute will remove
+      // the notify again as soon as it is triggered.
+      DoMethod(_win(obj), MUIM_Notify, MUIA_Window_Sleep, MUIV_EveryTime, obj, 3, MUIM_Set, MUIA_BetterString_InternalSelectOnActive, MUIV_NotTriggerValue);
       data->WindowSleepNotifyAdded = TRUE;
     }
   }
