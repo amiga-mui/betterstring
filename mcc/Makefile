@@ -406,6 +406,7 @@ $(TESTTARGET): $(TESTOBJS)
 .PHONY: dump
 dump:
 	-$(OBJDUMP) --section-headers --all-headers --reloc --disassemble-all $(TARGET) > $(TARGET).dump
+	-$(OBJDUMP) --section-headers --all-headers --reloc --disassemble-all $(TESTTARGET) > $(TESTTARGET).dump
 
 .PHONY: clean
 clean:
