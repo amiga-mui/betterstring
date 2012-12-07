@@ -54,6 +54,8 @@ VOID PrintString(struct IClass *cl, Object *obj)
   STRPTR fake_contents = NULL;
   BOOL showInactiveContents = FALSE;
 
+  ENTER();
+
   contents = data->Contents;
   StrLength = strlen(contents);
 
@@ -233,4 +235,6 @@ VOID PrintString(struct IClass *cl, Object *obj)
     RectFill(rport, _left(obj), _top(obj), _right(obj), _bottom(obj));
     SetAfPt(rport, 0, 0);
   }
+
+  LEAVE();
 }
