@@ -103,10 +103,10 @@ static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-//  kprintf("OM_DISPOSE by %s\n", FindTask(NULL)->tc_Node.ln_Name);
-/*  if(data->PopupMenu)
-    MUI_DisposeObject(data->PopupMenu);
-*/
+  if(isFlagSet(data->Flags, FLG_WindowSleeNotifyAdded))
+  {
+    E(DBF_INPUT, "MUIA_Window_Sleep notify still active at OM_DISPOSE!!");
+  }
 
   if(data->locale != NULL)
   {
@@ -162,6 +162,7 @@ void AddWindowSleepNotify(struct IClass *cl, Object *obj)
       // the notify again as soon as it is triggered.
       DoMethod(_win(obj), MUIM_Notify, MUIA_Window_Sleep, MUIV_EveryTime, obj, 3, MUIM_Set, MUIA_BetterString_InternalSelectOnActive, MUIV_NotTriggerValue);
       setFlag(data->Flags, FLG_WindowSleeNotifyAdded);
+      D(DBF_INPUT, "added MUIA_Window_Sleep notify");
     }
   }
 }
@@ -177,12 +178,14 @@ void RemWindowSleepNotify(struct IClass *cl, Object *obj)
     // remove the notify again
     DoMethod(_win(obj), MUIM_KillNotifyObj, MUIA_Window_Sleep, obj);
     clearFlag(data->Flags, FLG_WindowSleeNotifyAdded);
+    D(DBF_INPUT, "removed MUIA_Window_Sleep notify");
   }
 }
 
 static IPTR mSetup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  IPTR rc = FALSE;
 
   ENTER();
 
@@ -213,16 +216,15 @@ static IPTR mSetup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 
     AddWindowSleepNotify(cl, obj);
 
-    RETURN(TRUE);
-    return(TRUE);
+    rc = TRUE;
   }
   else
   {
     FreeConfig(muiRenderInfo(obj), data);
   }
 
-  RETURN(FALSE);
-  return(FALSE);
+  RETURN(rc);
+  return rc;
 }
 
 static IPTR mCleanup(struct IClass *cl, Object *obj, Msg msg)
