@@ -163,8 +163,6 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
   ULONG newFlags;
   BOOL redraw = FALSE;
 
-  ENTER();
-
   const struct TagItem boolMap[] =
   {
     { MUIA_Disabled,                  FLG_Ghosted     },
@@ -176,6 +174,8 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
     { MUIA_BetterString_NoShortcuts,  FLG_NoShortcuts },
     { TAG_DONE,                       0               }
   };
+
+  ENTER();
 
   tags = msg->ops_AttrList;
   // remember the old flags before calculating the new one
