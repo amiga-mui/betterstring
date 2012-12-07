@@ -126,10 +126,10 @@ struct InstData
 #define FLG_ForceSelectOff        (1L << 16)
 #define FLG_FreshActive           (1L << 17)
 #define FLG_MouseButtonDown       (1L << 18)
-#define FLG_NoNotify              (1L << 19)
-#define FLG_NotifyQueued          (1L << 20)
-#define FLG_Setup                 (1L << 21)
-#define FLG_WindowSleeNotifyAdded (1L << 22)
+#define FLG_NoNotify              (1L << 19) // don't trigger notifications immediately but queue them instead
+#define FLG_NotifyQueued          (1L << 20) // there are notifications pending
+#define FLG_Setup                 (1L << 21) // successful MUIM_Setup
+#define FLG_WindowSleeNotifyAdded (1L << 22) // notify for MUIA_Window_Sleep was added
 
 // private attributes
 #define MUIA_BetterString_InternalSelectOnActive   0xad002000UL
