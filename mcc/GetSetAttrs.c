@@ -368,6 +368,8 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
         {
           setFlag(data->Flags, FLG_ForceSelectOff);
           clearFlag(data->Flags, FLG_ForceSelectOn);
+          // remove the notify
+          RemWindowSleepNotify(cl, obj);
         }
         else
         {
@@ -375,6 +377,23 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
           clearFlag(data->Flags, FLG_ForceSelectOff);
           // add notify for MUIA_Window_Sleep if "select on active" is enabled
           AddWindowSleepNotify(cl, obj);
+        }
+      }
+      break;
+
+      case MUIA_BetterString_InternalSelectOnActive:
+      {
+        // this is the same as MUIA_BetterString_SelectOnActive, but without
+        // adding/removing the notify
+        if(ti_Data == FALSE)
+        {
+          setFlag(data->Flags, FLG_ForceSelectOff);
+          clearFlag(data->Flags, FLG_ForceSelectOn);
+        }
+        else
+        {
+          setFlag(data->Flags, FLG_ForceSelectOn);
+          clearFlag(data->Flags, FLG_ForceSelectOff);
         }
       }
       break;
