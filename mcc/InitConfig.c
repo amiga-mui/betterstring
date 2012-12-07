@@ -107,10 +107,14 @@ void InitConfig(Object *obj, struct InstData *data)
 
 VOID FreeConfig(struct MUI_RenderInfo *mri, struct InstData *data)
 {
+  ENTER();
+
   MUI_ReleasePen(mri, data->InactiveText);
   MUI_ReleasePen(mri, data->ActiveText);
   MUI_ReleasePen(mri, data->CursorColor);
   MUI_ReleasePen(mri, data->MarkedColor);
   MUI_ReleasePen(mri, data->MarkedTextColor);
+
+  LEAVE();
 }
 

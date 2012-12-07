@@ -65,6 +65,8 @@ struct NewMenu PopupMenuData[] =
 
 static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
 {
+  ENTER();
+
   if((obj = (Object *)DoSuperMethodA(cl, obj, (Msg)msg)))
   {
     struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
@@ -91,17 +93,16 @@ static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
     mSet(cl, obj, (struct opSet *)msg);
     msg->MethodID = OM_NEW;
     data->BufferPos = 0;
-
-    return((IPTR)obj);
   }
-  CoerceMethod(cl, obj, OM_DISPOSE);
 
-  return(FALSE);
+  RETURN(obj);
+  return((IPTR)obj);
 }
 
 static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  ENTER();
 
   if(isFlagSet(data->Flags, FLG_WindowSleeNotifyAdded))
   {
@@ -114,7 +115,8 @@ static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
     data->locale = NULL;
   }
 
-  return(DoSuperMethodA(cl, obj, msg));
+  LEAVE();
+  return DoSuperMethodA(cl, obj, msg);
 }
 
 static IPTR mExport(struct IClass *cl, Object *obj, struct MUIP_Export *msg)
@@ -122,15 +124,20 @@ static IPTR mExport(struct IClass *cl, Object *obj, struct MUIP_Export *msg)
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   ULONG id;
 
+  ENTER();
+
   if((id = (muiNotifyData(obj)->mnd_ObjectID)) != 0)
     DoMethod(msg->dataspace, MUIM_Dataspace_Add, data->Contents, strlen(data->Contents)+1, id);
 
+  LEAVE();
   return 0;
 }
 
 static IPTR mImport(UNUSED struct IClass *cl, Object *obj, struct MUIP_Import *msg)
 {
   ULONG id;
+
+  ENTER();
 
   if((id = (muiNotifyData(obj)->mnd_ObjectID)) != 0)
   {
@@ -140,12 +147,15 @@ static IPTR mImport(UNUSED struct IClass *cl, Object *obj, struct MUIP_Import *m
       set(obj, MUIA_String_Contents, contents);
   }
 
+  LEAVE();
   return 0;
 }
 
 void AddWindowSleepNotify(struct IClass *cl, Object *obj)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
+  ENTER();
 
   // we must check for a successful MUIM_Setup, because this function might be called during
   // OM_NEW and _win(obj) is not yet valid at that time
@@ -165,11 +175,15 @@ void AddWindowSleepNotify(struct IClass *cl, Object *obj)
       D(DBF_INPUT, "added MUIA_Window_Sleep notify");
     }
   }
+
+  LEAVE();
 }
 
 void RemWindowSleepNotify(struct IClass *cl, Object *obj)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
+  ENTER();
 
   // we must check for a successful MUIM_Setup, because this function might be called during
   // OM_NEW and _win(obj) is not yet valid at that time
@@ -180,6 +194,8 @@ void RemWindowSleepNotify(struct IClass *cl, Object *obj)
     clearFlag(data->Flags, FLG_WindowSleeNotifyAdded);
     D(DBF_INPUT, "removed MUIA_Window_Sleep notify");
   }
+
+  LEAVE();
 }
 
 static IPTR mSetup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
@@ -231,6 +247,8 @@ static IPTR mCleanup(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
+  ENTER();
+
   // cleanup the selection pointer
   CleanupSelectPointer(data);
 
@@ -243,13 +261,16 @@ static IPTR mCleanup(struct IClass *cl, Object *obj, Msg msg)
   // forget that we went through MUIM_Setup
   clearFlag(data->Flags, FLG_Setup);
 
-  return(DoSuperMethodA(cl, obj, msg));
+  LEAVE();
+  return DoSuperMethodA(cl, obj, msg);
 }
 
 static IPTR mAskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-  WORD Height;
+  LONG Height;
+
+  ENTER();
 
   DoSuperMethodA(cl, obj, (Msg)msg);
 
@@ -276,7 +297,8 @@ static IPTR mAskMinMax(struct IClass *cl, Object *obj, struct MUIP_AskMinMax *ms
     msg->MinMaxInfo->MaxWidth  += MBQ_MUI_MAXMAX;
   }
 
-  return(0);
+  LEAVE();
+  return 0;
 }
 
 static IPTR mShow(struct IClass *cl, Object *obj, Msg msg)
@@ -284,6 +306,8 @@ static IPTR mShow(struct IClass *cl, Object *obj, Msg msg)
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct BitMap *friendBMp = _rp(obj)->BitMap;
   WORD  width, height, depth;
+
+  ENTER();
 
   DoSuperMethodA(cl, obj, msg);
 
@@ -298,12 +322,15 @@ static IPTR mShow(struct IClass *cl, Object *obj, Msg msg)
 
   setFlag(data->Flags, FLG_Shown);
 
-  return(TRUE);
+  RETURN(TRUE);
+  return TRUE;
 }
 
 static IPTR mHide(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
+  ENTER();
 
   clearFlag(data->Flags, FLG_Shown);
 
@@ -312,11 +339,14 @@ static IPTR mHide(struct IClass *cl, Object *obj, Msg msg)
 
   MUIG_FreeBitMap(data->rport.BitMap);
 
-  return(DoSuperMethodA(cl, obj, msg));
+  LEAVE();
+  return DoSuperMethodA(cl, obj, msg);
 }
 
 static IPTR mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
 {
+  ENTER();
+
   DoSuperMethodA(cl, obj, (Msg)msg);
 
   if(isFlagSet(msg->flags, MADF_DRAWUPDATE) || isFlagSet(msg->flags, MADF_DRAWOBJECT))
@@ -324,13 +354,16 @@ static IPTR mDraw(struct IClass *cl, Object *obj, struct MUIP_Draw *msg)
     PrintString(cl, obj);
   }
 
-  return(0);
+  LEAVE();
+  return 0;
 }
 
 static IPTR mHandleEvent(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   IPTR result;
+
+  ENTER();
 
   if(isFlagSet(data->Flags, FLG_Ghosted) || isFlagClear(data->Flags, FLG_Shown))
   {
@@ -383,12 +416,15 @@ static IPTR mHandleEvent(struct IClass *cl, Object *obj, struct MUIP_HandleEvent
     }
   }
 
+  RETURN(result);
   return result;
 }
 
 static IPTR mGoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
+  ENTER();
 
   D(DBF_INPUT, "GoActive: %08lx", obj);
 
@@ -415,12 +451,15 @@ static IPTR mGoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
   else
     MUI_Redraw(obj, MADF_DRAWUPDATE);
 
+  RETURN(TRUE);
   return TRUE;
 }
 
 static IPTR mGoInactive(struct IClass *cl, Object *obj, UNUSED Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
+  ENTER();
 
   D(DBF_INPUT, "GoInActive: %08lx", obj);
 
@@ -435,6 +474,7 @@ static IPTR mGoInactive(struct IClass *cl, Object *obj, UNUSED Msg msg)
   else
     MUI_Redraw(obj, MADF_DRAWUPDATE);
 
+  RETURN(true);
   return TRUE;
 }
 

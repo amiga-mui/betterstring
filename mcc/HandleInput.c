@@ -72,21 +72,27 @@ static int STDARGS MySPrintf(char *buf, const char *fmt, ...)
 
 static void AddToUndo(struct InstData *data)
 {
-  if(data->Undo)
+  ENTER();
+
+  if(data->Undo != NULL)
     SharedPoolFree(data->Undo);
 
-  if((data->Undo = (STRPTR)SharedPoolAlloc(strlen(data->Contents)+1)))
+  if((data->Undo = (STRPTR)SharedPoolAlloc(strlen(data->Contents)+1)) != NULL)
   {
     strlcpy(data->Undo, data->Contents, strlen(data->Contents)+1);
     data->UndoPos = data->BufferPos;
     clearFlag(data->Flags, FLG_RedoAvailable);
   }
+
+  LEAVE();
 }
 
 static WORD AlignOffset(Object *obj, struct InstData *data)
 {
   WORD   width = _mwidth(obj);
   WORD   offset = 0;
+
+  ENTER();
 
   if(data->Alignment != MUIV_String_Format_Left)
   {
@@ -115,20 +121,31 @@ static WORD AlignOffset(Object *obj, struct InstData *data)
         break;
     }
   }
-  return(offset);
+
+  RETURN(offset);
+  return offset;
 }
 
 static BOOL Reject(UBYTE code, STRPTR reject)
 {
-  if(reject)
+  BOOL rc = TRUE;
+
+  ENTER();
+
+  if(reject != NULL)
   {
-    while(*reject)
+    while(*reject != '\0')
     {
       if(code == *reject++)
-        return(FALSE);
+      {
+        rc = FALSE;
+        break;
+      }
     }
   }
-  return(TRUE);
+
+  RETURN(rc);
+  return rc;
 }
 
 static BOOL Accept(UBYTE code, STRPTR accept)
@@ -158,7 +175,9 @@ static BOOL IsHex(UBYTE code)
 
 static LONG FindDigit(struct InstData *data)
 {
-    WORD  pos = data->BufferPos;
+  WORD  pos = data->BufferPos;
+
+  ENTER();
 
   if(IsDigit(data->locale, *(data->Contents+pos)))
   {
@@ -185,22 +204,29 @@ static LONG FindDigit(struct InstData *data)
       pos = -1;
     }
   }
-  return(pos);
+
+  RETURN(pos);
+  return pos;
 }
 
 static UWORD NextWord(STRPTR text, UWORD x, struct Locale *locale)
 {
+  ENTER();
+
   while(IsAlNum(locale, (UBYTE)text[x]))
     x++;
 
   while(text[x] != '\0' && !IsAlNum(locale, (UBYTE)text[x]))
     x++;
 
-  return(x);
+  RETURN(x);
+  return x;
 }
 
 static UWORD PrevWord(STRPTR text, UWORD x, struct Locale *locale)
 {
+  ENTER();
+
   if(x)
     x--;
 
@@ -210,12 +236,15 @@ static UWORD PrevWord(STRPTR text, UWORD x, struct Locale *locale)
   while(x > 0 && IsAlNum(locale, (UBYTE)text[x-1]))
     x--;
 
-  return(x);
+  RETURN(x);
+  return x;
 }
 
 void strcpyback(STRPTR dest, STRPTR src)
 {
   UWORD  length;
+
+  ENTER();
 
   length = strlen(src)+1;
   dest = dest + length;
@@ -226,10 +255,14 @@ void strcpyback(STRPTR dest, STRPTR src)
   {
     *--dest = *--src;
   }
+
+  LEAVE();
 }
 
 void DeleteBlock(struct InstData *data)
 {
+  ENTER();
+
   AddToUndo(data);
 
   if(BlockEnabled(data) == TRUE)
@@ -240,6 +273,8 @@ void DeleteBlock(struct InstData *data)
     strcpy(data->Contents+Blk_Start, data->Contents+Blk_Start+Blk_Width);
     data->BufferPos = Blk_Start;
   }
+
+  LEAVE();
 }
 
 static void CopyBlock(struct InstData *data)
@@ -545,6 +580,8 @@ ULONG ConvertKey(struct IntuiMessage *imsg)
   struct InputEvent  event;
   unsigned char code = 0;
 
+  ENTER();
+
   event.ie_NextEvent      = NULL;
   event.ie_Class          = IECLASS_RAWKEY;
   event.ie_SubClass       = 0;
@@ -553,7 +590,9 @@ ULONG ConvertKey(struct IntuiMessage *imsg)
   event.ie_EventAddress   = (APTR *) *((IPTR *)imsg->IAddress);
 
   MapRawKey(&event, (STRPTR)&code, 1, NULL);
-  return(code);
+
+  RETURN(code);
+  return code;
 }
 
 IPTR mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction *msg)

@@ -37,6 +37,8 @@ IPTR mGet(struct IClass *cl, Object *obj, struct opGet *msg)
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   IPTR ti_Data;
 
+  ENTER();
+
   switch(msg->opg_AttrID)
   {
     case MUIA_ControlChar:
@@ -141,12 +143,14 @@ IPTR mGet(struct IClass *cl, Object *obj, struct opGet *msg)
     break;
 
     default:
+      LEAVE();
       return DoSuperMethodA(cl, obj, (Msg)msg);
     break;
   }
 
   *msg->opg_Storage = ti_Data;
 
+  LEAVE();
   return TRUE;
 }
 
@@ -158,6 +162,8 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
   ULONG oldFlags;
   ULONG newFlags;
   BOOL redraw = FALSE;
+
+  ENTER();
 
   const struct TagItem boolMap[] =
   {
@@ -429,5 +435,6 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
     MUI_Redraw(obj, MADF_DRAWOBJECT);
   }
 
-  return(0);
+  LEAVE();
+  return 0;
 }
