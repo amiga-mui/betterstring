@@ -708,7 +708,7 @@ IPTR mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction
   return result;
 }
 
-IPTR HandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
+IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   IPTR result = 0;

@@ -32,7 +32,7 @@
 #include "private.h"
 #include "version.h"
 
-IPTR Get(struct IClass *cl, Object *obj, struct opGet *msg)
+IPTR mGet(struct IClass *cl, Object *obj, struct opGet *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   IPTR ti_Data;
@@ -150,7 +150,7 @@ IPTR Get(struct IClass *cl, Object *obj, struct opGet *msg)
   return TRUE;
 }
 
-IPTR Set(struct IClass *cl, Object *obj, struct opSet *msg)
+IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   struct TagItem *tags, *tag;
