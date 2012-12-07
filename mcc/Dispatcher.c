@@ -474,7 +474,7 @@ static IPTR mGoInactive(struct IClass *cl, Object *obj, UNUSED Msg msg)
   else
     MUI_Redraw(obj, MADF_DRAWUPDATE);
 
-  RETURN(true);
+  RETURN(TRUE);
   return TRUE;
 }
 
