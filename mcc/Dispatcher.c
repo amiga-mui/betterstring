@@ -147,7 +147,9 @@ void AddWindowSleepNotify(struct IClass *cl, Object *obj)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-  if(data->WindowSleepNotifyAdded == FALSE && _win(obj) != NULL)
+  // we must check for a successful MUIM_Setup, because this function might be called during
+  // OM_NEW and _win(obj) is not yet valid at that time
+  if(isFlagClear(data->Flags, FLG_WindowSleeNotifyAdded) && isFlagSet(data->Flags, FLG_Setup) && _win(obj) != NULL)
   {
     if(data->SelectOnActive == TRUE || isFlagSet(data->Flags, FLG_ForceSelectOn))
     {
@@ -159,7 +161,7 @@ void AddWindowSleepNotify(struct IClass *cl, Object *obj)
       // We must use a private attribute here, because the public attribute will remove
       // the notify again as soon as it is triggered.
       DoMethod(_win(obj), MUIM_Notify, MUIA_Window_Sleep, MUIV_EveryTime, obj, 3, MUIM_Set, MUIA_BetterString_InternalSelectOnActive, MUIV_NotTriggerValue);
-      data->WindowSleepNotifyAdded = TRUE;
+      setFlag(data->Flags, FLG_WindowSleeNotifyAdded);
     }
   }
 }
@@ -168,11 +170,13 @@ void RemWindowSleepNotify(struct IClass *cl, Object *obj)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-  if(data->WindowSleepNotifyAdded == TRUE && _win(obj) != NULL)
+  // we must check for a successful MUIM_Setup, because this function might be called during
+  // OM_NEW and _win(obj) is not yet valid at that time
+  if(isFlagSet(data->Flags, FLG_WindowSleeNotifyAdded) && isFlagSet(data->Flags, FLG_Setup) && _win(obj) != NULL)
   {
     // remove the notify again
     DoMethod(_win(obj), MUIM_KillNotifyObj, MUIA_Window_Sleep, obj);
-    data->WindowSleepNotifyAdded = FALSE;
+    clearFlag(data->Flags, FLG_WindowSleeNotifyAdded);
   }
 }
 
@@ -188,6 +192,9 @@ static IPTR mSetup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
   {
     // tell MUI we know how to indicate the active state
     _flags(obj) |= (1<<7);
+
+    // remember that we went through MUIM_Setup
+    setFlag(data->Flags, FLG_Setup);
 
     data->ehnode.ehn_Priority = 0;
     data->ehnode.ehn_Flags    = MUI_EHF_GUIMODE;
@@ -230,6 +237,9 @@ static IPTR mCleanup(struct IClass *cl, Object *obj, Msg msg)
   DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
 
   FreeConfig(muiRenderInfo(obj), data);
+
+  // forget that we went through MUIM_Setup
+  clearFlag(data->Flags, FLG_Setup);
 
   return(DoSuperMethodA(cl, obj, msg));
 }
