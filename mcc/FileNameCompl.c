@@ -290,7 +290,7 @@ BOOL FileNameComplete(Object *obj, BOOL backwards, struct InstData *data)
           oldletter = data->Contents[namestart];
           data->Contents[namestart] = '\0';
 
-          if((fncbuffer = (struct FNCData *)SharedPoolAlloc(4100)))
+          if((fncbuffer = (struct FNCData *)SharedPoolAlloc(4100)) != NULL)
           {
             fncbuffer->next = NULL;
 
@@ -330,6 +330,11 @@ BOOL FileNameComplete(Object *obj, BOOL backwards, struct InstData *data)
                 }
                 UnLock(dirlock);
               }
+              else
+              {
+                SharedPoolFree(fncbuffer);
+              }
+
               FreeDosObject(DOS_EXALLCONTROL, (APTR)control);
             }
           }
