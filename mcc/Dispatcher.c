@@ -129,6 +129,18 @@ static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
     data->Original = NULL;
   }
 
+  if(data->Undo != NULL)
+  {
+    SharedPoolFree(data->Undo);
+    data->Undo = NULL;
+  }
+
+  if(data->FNCBuffer != NULL)
+  {
+    SharedPoolFree(data->FNCBuffer);
+    data->FNCBuffer = NULL;
+  }
+
   if(data->locale != NULL)
   {
     CloseLocale(data->locale);
