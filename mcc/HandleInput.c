@@ -240,25 +240,6 @@ static UWORD PrevWord(STRPTR text, UWORD x, struct Locale *locale)
   return x;
 }
 
-void strcpyback(STRPTR dest, STRPTR src)
-{
-  UWORD  length;
-
-  ENTER();
-
-  length = strlen(src)+1;
-  dest = dest + length;
-  src = src + length;
-
-  length++;
-  while(--length)
-  {
-    *--dest = *--src;
-  }
-
-  LEAVE();
-}
-
 void DeleteBlock(struct InstData *data)
 {
   ENTER();
@@ -268,9 +249,10 @@ void DeleteBlock(struct InstData *data)
   if(BlockEnabled(data) == TRUE)
   {
     UWORD Blk_Start, Blk_Width;
+
     Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
     Blk_Width = abs(data->BlockStop-data->BlockStart);
-    strcpy(data->Contents+Blk_Start, data->Contents+Blk_Start+Blk_Width);
+    strlcpy(data->Contents+Blk_Start, data->Contents+Blk_Start+Blk_Width, data->ContentsAllocSize-Blk_Start);
     data->BufferPos = Blk_Start;
   }
 
@@ -345,7 +327,7 @@ static void Paste(struct InstData *data)
 
     if(ExpandContents(data, length) == TRUE)
     {
-      strcpyback(data->Contents + data->BufferPos + length, data->Contents + data->BufferPos);
+      memmove(data->Contents + data->BufferPos + length, data->Contents + data->BufferPos, strlen(data->Contents + data->BufferPos)+1);
       memcpy(data->Contents + data->BufferPos, str, length);
       data->BufferPos += length;
     }
@@ -945,7 +927,7 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                   if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RSHIFT|IEQUALIFIER_LSHIFT|IEQUALIFIER_CONTROL))
                   {
                     AddToUndo(data);
-                    strcpy(data->Contents, data->Contents+data->BufferPos);
+                    memmove(data->Contents, data->Contents+data->BufferPos, strlen(data->Contents+data->BufferPos)+1);
                     data->BufferPos = 0;
                   }
                   else if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT|IEQUALIFIER_LALT))
@@ -953,12 +935,12 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                     UWORD NewPos = PrevWord(data->Contents, data->BufferPos, data->locale);
 
                     AddToUndo(data);
-                    strcpy(data->Contents+NewPos, data->Contents+data->BufferPos);
+                    memmove(data->Contents+NewPos, data->Contents+data->BufferPos, strlen(data->Contents+data->BufferPos)+1);
                     data->BufferPos = NewPos;
                   }
                   else
                   {
-                    strcpy(data->Contents+data->BufferPos-1, data->Contents+data->BufferPos);
+                    memmove(data->Contents+data->BufferPos-1, data->Contents+data->BufferPos, strlen(data->Contents+data->BufferPos)+1);
                     data->BufferPos--;
                   }
                 }
@@ -985,12 +967,14 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                   }
                   else if(isAnyFlagSet(msg->imsg->Qualifier, IEQUALIFIER_RALT|IEQUALIFIER_LALT))
                   {
+                    STRPTR start = data->Contents+NextWord(data->Contents, data->BufferPos, data->locale);
+
                     AddToUndo(data);
-                    strcpy(data->Contents+data->BufferPos, data->Contents+NextWord(data->Contents, data->BufferPos, data->locale));
+                    memmove(data->Contents+data->BufferPos, start, strlen(start)+1);
                   }
                   else
                   {
-                    strcpy(data->Contents+data->BufferPos, data->Contents+data->BufferPos+1);
+                    memmove(data->Contents+data->BufferPos, data->Contents+data->BufferPos+1, strlen(data->Contents+data->BufferPos+1)+1);
                   }
                 }
               }
@@ -1040,7 +1024,7 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                     {
                       if(ExpandContents(data, 1) == TRUE)
                       {
-                        strcpyback(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos);
+                        memmove(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos, strlen(data->Contents + data->BufferPos)+1);
                         *(data->Contents+data->BufferPos) = code;
                         data->BufferPos++;
                         edited = TRUE;

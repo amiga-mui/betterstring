@@ -51,13 +51,13 @@ BOOL OverwriteA(STRPTR text, UWORD x, UWORD length, UWORD ptrn_length, struct In
       result = FALSE;
     }
     if(ExpandContents(data, expand) == TRUE)
-      strcpyback(data->Contents+x+ptrn_length, data->Contents+x+length);
+      memmove(data->Contents+x+ptrn_length, data->Contents+x+length, strlen(data->Contents+x+length)+1);
     else
       E(DBF_ALWAYS, "content expansion by %ld bytes failed", expand);
   }
   else
   {
-    strcpy(data->Contents+x+ptrn_length, data->Contents+x+length);
+    memmove(data->Contents+x+ptrn_length, data->Contents+x+length, strlen(data->Contents+x+length)+1);
   }
   CopyMem(text, data->Contents+x, ptrn_length);
 

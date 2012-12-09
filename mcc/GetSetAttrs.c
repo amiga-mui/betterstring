@@ -255,7 +255,7 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
 
             if(ok == TRUE)
             {
-              strcpy(data->Contents, new_str);
+              strlcpy(data->Contents, new_str, data->ContentsAllocSize);
               data->BufferPos = strlen(data->Contents);
               data->DisplayPos = 0;
               if(data->MaxLength != 0 && data->BufferPos >= data->MaxLength)

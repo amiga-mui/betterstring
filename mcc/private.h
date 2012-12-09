@@ -221,8 +221,6 @@ APTR SharedPoolAlloc(ULONG);
 void SharedPoolFree(APTR);
 BOOL ExpandContents(struct InstData *data, ULONG extra);
 
-VOID strcpyback(STRPTR, STRPTR);
-
 BOOL Overwrite(STRPTR, UWORD, UWORD, struct InstData *);
 BOOL OverwriteA(STRPTR, UWORD, UWORD, UWORD, struct InstData *);
 BOOL FileNameComplete(Object *, BOOL, struct InstData *);
