@@ -221,6 +221,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   {
     // MUI 4.0 for AmigaOS4 does the disabled pattern drawing itself,
     // no need to do this on our own
+    LEAVE();
     return;
   }
   #endif
