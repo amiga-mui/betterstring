@@ -79,6 +79,28 @@ void DeleteSharedPool(void)
   LEAVE();
 }
 
+#if defined(__amigaos3__)
+static APTR AllocVecPooled(APTR poolHeader, ULONG memSize)
+{
+  ULONG *memory;
+
+  ENTER();
+
+  // add the number of bytes used to store the size information
+  memSize += sizeof(ULONG);
+
+  // allocate memory from the pool
+  if((memory = (ULONG *)AllocPooled(poolHeader, memSize)) != NULL)
+  {
+    // and finally store the size of the memory block, including the size itself
+    *memory++ = memSize;
+  }
+
+  RETURN(memory);
+  return memory;
+}
+#endif
+
 APTR SharedPoolAlloc(ULONG length)
 {
   ULONG *mem;
@@ -89,12 +111,7 @@ APTR SharedPoolAlloc(ULONG length)
   ObtainSemaphore(&sharedPoolSema);
   #endif
 
-  length = (length + sizeof(ULONG) + sizeof(ULONG) - 1) & ~(sizeof(ULONG)-1);
-  if((mem = AllocPooled(sharedPool, length)))
-  {
-    *mem = length;
-    mem += 1;
-  }
+  mem = AllocVecPooled(sharedPool, length);
 
   #if !defined(__amigaos4__) && !defined(__MORPHOS__)
   ReleaseSemaphore(&sharedPoolSema);
@@ -104,20 +121,33 @@ APTR SharedPoolAlloc(ULONG length)
   return mem;
 }
 
-VOID SharedPoolFree(APTR mem)
+#if defined(__amigaos3__)
+static void FreeVecPooled(APTR poolHeader, APTR memory)
 {
-  ULONG *memptr, length;
+  ULONG *mem = (ULONG *)memory;
+  ULONG memSize;
 
   ENTER();
 
-  memptr = &((ULONG *)mem)[-1];
-  length = *memptr;
+  // skip back over the stored size information
+  memSize = *(--mem);
+
+  // an return the memory block to the pool
+  FreePooled(poolHeader, mem, memSize);
+
+  LEAVE();
+}
+#endif
+
+void SharedPoolFree(APTR mem)
+{
+  ENTER();
 
   #if !defined(__amigaos4__) && !defined(__MORPHOS__)
   ObtainSemaphore(&sharedPoolSema);
   #endif
 
-  FreePooled(sharedPool, memptr, length);
+  FreeVecPooled(sharedPool, mem);
 
   #if !defined(__amigaos4__) && !defined(__MORPHOS__)
   ReleaseSemaphore(&sharedPoolSema);
