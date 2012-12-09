@@ -123,6 +123,12 @@ static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
     data->Contents = NULL;
   }
 
+  if(data->Original != NULL)
+  {
+    SharedPoolFree(data->Original);
+    data->Original = NULL;
+  }
+
   if(data->locale != NULL)
   {
     CloseLocale(data->locale);

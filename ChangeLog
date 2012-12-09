@@ -13,6 +13,8 @@ $URL$
   * mcc/misc: use memmove() instead of strcpy() to move characters within the
     contents string as strcpy() is not guarateed to handle overlapping copies
     correctly. Also replaced strcpyback() by memmove().
+  * mcc/Dispatcher.c: free the original string in OM_DISPOSE to avoid memory
+    leaks.
 
 2012-12-07 Thore Böckelmann <tboeckel@gmx.de>
 
