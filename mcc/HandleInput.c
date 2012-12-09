@@ -343,10 +343,12 @@ static void Paste(struct InstData *data)
       length = data->MaxLength - 1 - strlen(data->Contents);
     }
 
-    data->Contents = (STRPTR)SharedPoolExpand(data->Contents, length);
-    strcpyback(data->Contents + data->BufferPos + length, data->Contents + data->BufferPos);
-    memcpy(data->Contents + data->BufferPos, str, length);
-    data->BufferPos += length;
+    if(ExpandContents(data, length) == TRUE)
+    {
+      strcpyback(data->Contents + data->BufferPos + length, data->Contents + data->BufferPos);
+      memcpy(data->Contents + data->BufferPos, str, length);
+      data->BufferPos += length;
+    }
 
     SharedPoolFree(str);
   }
@@ -1036,11 +1038,17 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                     if((data->MaxLength == 0 || (ULONG)data->MaxLength-1 > strlen(data->Contents)) &&
                        Accept(code, data->Accept) && Reject(code, data->Reject))
                     {
-                      data->Contents = (STRPTR)SharedPoolExpand(data->Contents, 1);
-                      strcpyback(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos);
-                      *(data->Contents+data->BufferPos) = code;
-                      data->BufferPos++;
-                      edited = TRUE;
+                      if(ExpandContents(data, 1) == TRUE)
+                      {
+                        strcpyback(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos);
+                        *(data->Contents+data->BufferPos) = code;
+                        data->BufferPos++;
+                        edited = TRUE;
+                      }
+                      else
+                      {
+                        E(DBF_ALWAYS, "content expansion by %ld bytes failed", 1);
+                      }
                     }
                     else
                     {

@@ -71,28 +71,36 @@ static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
   {
     struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-    data->locale = OpenLocale(NULL);
-    data->Contents = (STRPTR)SharedPoolAlloc(40);
-    *data->Contents = '\0';
-
-    set(obj, MUIA_FillArea, FALSE);
-
-    if(FindTagItem(MUIA_Background, msg->ops_AttrList))
-      setFlag(data->Flags, FLG_OwnBackground);
+    if((data->Contents = SharedPoolAlloc(40)) != NULL)
     {
-      struct TagItem *tag;
+      *data->Contents = '\0';
+      data->ContentsAllocSize = 40;
+      data->locale = OpenLocale(NULL);
 
-      if((tag = FindTagItem(MUIA_Frame, msg->ops_AttrList)))
+      set(obj, MUIA_FillArea, FALSE);
+
+      if(FindTagItem(MUIA_Background, msg->ops_AttrList))
+        setFlag(data->Flags, FLG_OwnBackground);
       {
-        if(tag->ti_Data == MUIV_Frame_String)
-          setFlag(data->Flags, FLG_SetFrame);
-      }
-    }
+        struct TagItem *tag;
 
-    msg->MethodID = OM_SET;
-    mSet(cl, obj, (struct opSet *)msg);
-    msg->MethodID = OM_NEW;
-    data->BufferPos = 0;
+        if((tag = FindTagItem(MUIA_Frame, msg->ops_AttrList)))
+        {
+          if(tag->ti_Data == MUIV_Frame_String)
+            setFlag(data->Flags, FLG_SetFrame);
+        }
+      }
+
+      msg->MethodID = OM_SET;
+      mSet(cl, obj, (struct opSet *)msg);
+      msg->MethodID = OM_NEW;
+      data->BufferPos = 0;
+    }
+    else
+    {
+      CoerceMethod(cl, obj, OM_DISPOSE);
+      obj = NULL;
+    }
   }
 
   RETURN(obj);
@@ -107,6 +115,12 @@ static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
   if(isFlagSet(data->Flags, FLG_WindowSleeNotifyAdded))
   {
     E(DBF_INPUT, "MUIA_Window_Sleep notify still active at OM_DISPOSE!!");
+  }
+
+  if(data->Contents != NULL)
+  {
+    SharedPoolFree(data->Contents);
+    data->Contents = NULL;
   }
 
   if(data->locale != NULL)

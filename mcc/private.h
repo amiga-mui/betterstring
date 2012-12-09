@@ -52,6 +52,7 @@ struct InstData
   STRPTR  Reject;
   Object  *ForwardObject;
   Object  *Popup;     /* ctrl-p popup object */
+  ULONG   ContentsAllocSize;
   UWORD   DisplayPos;
   UWORD   BufferPos;
   UWORD   BufferLastPos;
@@ -217,8 +218,8 @@ IPTR mDoAction(struct IClass *, Object *, struct MUIP_BetterString_DoAction *);
 BOOL CreateSharedPool(void);
 void DeleteSharedPool(void);
 APTR SharedPoolAlloc(ULONG);
-VOID SharedPoolFree(APTR);
-APTR SharedPoolExpand(APTR, ULONG);
+void SharedPoolFree(APTR);
+BOOL ExpandContents(struct InstData *data, ULONG extra);
 
 VOID strcpyback(STRPTR, STRPTR);
 

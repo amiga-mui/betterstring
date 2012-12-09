@@ -156,23 +156,37 @@ void SharedPoolFree(APTR mem)
   LEAVE();
 }
 
-APTR SharedPoolExpand(APTR mem, ULONG extra)
+BOOL ExpandContents(struct InstData *data, ULONG extra)
 {
-  ULONG length = ((ULONG *)mem)[-1] - sizeof(ULONG);
-  ULONG sz = strlen((char *)mem) + extra;
+  BOOL success = FALSE;
+  ULONG sz = strlen(data->Contents) + 1 + extra;
 
   ENTER();
 
-  if(length <= sz)
+  // check if we have to expand our contents string
+  if(data->ContentsAllocSize <= sz)
   {
-    APTR new_mem = SharedPoolAlloc(sz + 20);
+    STRPTR newContents;
 
-    CopyMem(mem, new_mem, length);
-    SharedPoolFree(mem);
+    // add another 32 bytes for less expansions in the future
+    sz += 32;
+    if((newContents = SharedPoolAlloc(sz)) != NULL)
+    {
+      strlcpy(newContents, data->Contents, sz);
+      SharedPoolFree(data->Contents);
 
-    mem = new_mem;
+      data->Contents = newContents;
+      data->ContentsAllocSize = sz;
+
+      success = TRUE;
+    }
+  }
+  else
+  {
+    // no expansion necessary, instant success
+    success = TRUE;
   }
 
-  RETURN(mem);
-  return mem;
+  RETURN(success);
+  return success;
 }
