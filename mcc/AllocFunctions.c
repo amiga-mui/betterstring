@@ -164,7 +164,7 @@ BOOL ExpandContents(struct InstData *data, ULONG extra)
   ENTER();
 
   // check if we have to expand our contents string
-  if(data->ContentsAllocSize <= sz)
+  if(data->ContentsAllocSize < sz)
   {
     STRPTR newContents;
 
