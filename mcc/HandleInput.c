@@ -252,7 +252,7 @@ void DeleteBlock(struct InstData *data)
 
     Blk_Start = (data->BlockStart < data->BlockStop) ? data->BlockStart : data->BlockStop;
     Blk_Width = abs(data->BlockStop-data->BlockStart);
-    strlcpy(data->Contents+Blk_Start, data->Contents+Blk_Start+Blk_Width, data->ContentsAllocSize-Blk_Start);
+    memmove(data->Contents+Blk_Start, data->Contents+Blk_Start+Blk_Width, strlen(data->Contents+Blk_Start+Blk_Width)+1);
     data->BufferPos = Blk_Start;
   }
 
