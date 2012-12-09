@@ -42,7 +42,7 @@ BOOL OverwriteA(STRPTR text, UWORD x, UWORD length, UWORD ptrn_length, struct In
 
   if(length < ptrn_length)
   {
-    UWORD expand = ptrn_length-length;
+    ULONG expand = ptrn_length-length;
 
     if(data->MaxLength && strlen(data->Contents)+expand > (unsigned int)(data->MaxLength-1))
     {
@@ -50,8 +50,10 @@ BOOL OverwriteA(STRPTR text, UWORD x, UWORD length, UWORD ptrn_length, struct In
       ptrn_length += (data->MaxLength-1)-strlen(data->Contents);
       result = FALSE;
     }
-    data->Contents = (STRPTR)SharedPoolExpand(data->Contents, expand);
-    strcpyback(data->Contents+x+ptrn_length, data->Contents+x+length);
+    if(ExpandContents(data, expand) == TRUE)
+      strcpyback(data->Contents+x+ptrn_length, data->Contents+x+length);
+    else
+      E(DBF_ALWAYS, "content expansion by %ld bytes failed", expand);
   }
   else
   {

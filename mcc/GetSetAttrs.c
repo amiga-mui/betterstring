@@ -245,23 +245,33 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
 
           if(new_str != NULL)
           {
-            WORD extra = strlen(new_str)-strlen(data->Contents);
+            LONG extra = strlen(new_str)-strlen(data->Contents);
+            BOOL ok;
 
             if(extra > 0)
-              data->Contents = (STRPTR)SharedPoolExpand(data->Contents, extra);
+              ok = ExpandContents(data, extra);
+            else
+              ok = TRUE;
 
-            strcpy(data->Contents, new_str);
-            data->BufferPos = strlen(data->Contents);
-            data->DisplayPos = 0;
-            if(data->MaxLength != 0 && data->BufferPos >= data->MaxLength)
+            if(ok == TRUE)
             {
-              data->Contents[data->MaxLength-1] = '\0';
-              data->BufferPos = data->MaxLength-1;
-            }
+              strcpy(data->Contents, new_str);
+              data->BufferPos = strlen(data->Contents);
+              data->DisplayPos = 0;
+              if(data->MaxLength != 0 && data->BufferPos >= data->MaxLength)
+              {
+                data->Contents[data->MaxLength-1] = '\0';
+                data->BufferPos = data->MaxLength-1;
+              }
 
-            // the start of a block cannot be behind the last character
-            if(data->BlockStart > strlen(data->Contents))
-              data->BlockStart = strlen(data->Contents);
+              // the start of a block cannot be behind the last character
+              if(data->BlockStart > strlen(data->Contents))
+                data->BlockStart = strlen(data->Contents);
+            }
+            else
+            {
+              E(DBF_ALWAYS, "content expansion by %ld bytes failed", extra);
+            }
           }
           else
           {
