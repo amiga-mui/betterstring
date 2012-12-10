@@ -481,7 +481,7 @@ static IPTR mGoInactive(struct IClass *cl, Object *obj, UNUSED Msg msg)
 
 DISPATCHER(_Dispatcher)
 {
-  IPTR result = TRUE;
+  IPTR result;
 
   ENTER();
 
@@ -553,39 +553,12 @@ DISPATCHER(_Dispatcher)
       // forward the clear request to our new DoAction method
       // which in fact will do the very same, but a bit more clever
       DoMethod(obj, MUIM_BetterString_DoAction, MUIV_BetterString_DoAction_Delete);
+      result = TRUE;
     }
     break;
 
     case MUIM_BetterString_Insert:
-    {
-      struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
-      struct MUIP_BetterString_Insert *ins_msg = (struct MUIP_BetterString_Insert *)msg;
-      UWORD pos;
-
-      switch(ins_msg->pos)
-      {
-/*        case MUIV_BetterString_Insert_StartOfString:
-          pos = 0;
-          break;
-*/
-        case MUIV_BetterString_Insert_EndOfString:
-          pos = strlen(data->Contents);
-          break;
-
-        case MUIV_BetterString_Insert_BufferPos:
-          pos = data->BufferPos;
-          break;
-
-        default:
-          pos = ins_msg->pos;
-          break;
-      }
-      Overwrite(ins_msg->text, pos, 0, data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-      MUI_Redraw(obj, MADF_DRAWUPDATE);
-      // trigger a notification as we just changed the contents
-      TriggerNotify(cl, obj);
-    }
+      result = mInsert(cl, obj, (struct MUIP_BetterString_Insert *)msg);
     break;
 
     case MUIM_BetterString_DoAction:
