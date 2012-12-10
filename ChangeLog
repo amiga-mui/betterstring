@@ -9,6 +9,8 @@ $URL$
 
   * mcc/ClipboardServer.c: changed the ClipboardToString() functions to return
     a boolean value to indicate success and  to avoid memory leaks.
+  * mcc/HandleInput.c: clear the selection only if reading from clipboard was
+    successful.
 
 2012-12-09 Thore Böckelmann <tboeckel@gmx.de>
 

@@ -313,11 +313,11 @@ static void Paste(struct InstData *data)
 
   ENTER();
 
-  // clear the selection
-  DeleteBlock(data);
-
   if(ClipboardToString(&str, &length) == TRUE)
   {
+    // clear the selection
+    DeleteBlock(data);
+
     if(data->MaxLength != 0 && strlen(data->Contents) + length > (ULONG)data->MaxLength - 1)
     {
       DisplayBeep(NULL);
