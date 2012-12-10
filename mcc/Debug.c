@@ -168,6 +168,10 @@ void SetupDebug(void)
         break;
     }
   }
+  else
+  {
+    kprintf("GetVar(\"betterstring.mcc.debug\") failed, error %ld\n", IoErr());
+  }
 
   kprintf("set debug classes/flags (env:betterstring.mcc.debug): %08lx/%08lx\n", debug_classes, debug_flags);
   kprintf("** Normal processing follows ***************************************\n");
