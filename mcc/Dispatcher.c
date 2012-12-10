@@ -81,7 +81,7 @@ static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
   ENTER();
 
-  if(isFlagSet(data->Flags, FLG_WindowSleeNotifyAdded))
+  if(isFlagSet(data->Flags, FLG_WindowSleepNotifyAdded))
   {
     E(DBF_INPUT, "MUIA_Window_Sleep notify still active at OM_DISPOSE!!");
   }
@@ -160,7 +160,7 @@ void AddWindowSleepNotify(struct IClass *cl, Object *obj)
 
   // we must check for a successful MUIM_Setup, because this function might be called during
   // OM_NEW and _win(obj) is not yet valid at that time
-  if(isFlagClear(data->Flags, FLG_WindowSleeNotifyAdded) && isFlagSet(data->Flags, FLG_Setup) && _win(obj) != NULL)
+  if(isFlagClear(data->Flags, FLG_WindowSleepNotifyAdded) && isFlagSet(data->Flags, FLG_Setup) && _win(obj) != NULL)
   {
     if(data->SelectOnActive == TRUE || isFlagSet(data->Flags, FLG_ForceSelectOn))
     {
@@ -172,7 +172,7 @@ void AddWindowSleepNotify(struct IClass *cl, Object *obj)
       // We must use a private attribute here, because the public attribute will remove
       // the notify again as soon as it is triggered.
       DoMethod(_win(obj), MUIM_Notify, MUIA_Window_Sleep, MUIV_EveryTime, obj, 3, MUIM_Set, MUIA_BetterString_InternalSelectOnActive, MUIV_NotTriggerValue);
-      setFlag(data->Flags, FLG_WindowSleeNotifyAdded);
+      setFlag(data->Flags, FLG_WindowSleepNotifyAdded);
       D(DBF_INPUT, "added MUIA_Window_Sleep notify");
     }
   }
@@ -188,13 +188,13 @@ void RemWindowSleepNotify(struct IClass *cl, Object *obj)
 
   // we must check for a successful MUIM_Setup, because this function might be called during
   // OM_NEW and _win(obj) is not yet valid at that time
-  if(isFlagSet(data->Flags, FLG_WindowSleeNotifyAdded) && isFlagSet(data->Flags, FLG_Setup) && _win(obj) != NULL)
+  if(isFlagSet(data->Flags, FLG_WindowSleepNotifyAdded) && isFlagSet(data->Flags, FLG_Setup) && _win(obj) != NULL)
   {
     // remove the notify again
     D(DBF_INPUT, "remove MUIA_Window_Sleep notify");
     if(DoMethod(_win(obj), MUIM_KillNotifyObj, MUIA_Window_Sleep, obj) == 0)
       E(DBF_INPUT, "removing MUIA_Window_Sleep notify failed?");
-    clearFlag(data->Flags, FLG_WindowSleeNotifyAdded);
+    clearFlag(data->Flags, FLG_WindowSleepNotifyAdded);
   }
 
   LEAVE();
