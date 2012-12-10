@@ -191,9 +191,10 @@ void RemWindowSleepNotify(struct IClass *cl, Object *obj)
   if(isFlagSet(data->Flags, FLG_WindowSleeNotifyAdded) && isFlagSet(data->Flags, FLG_Setup) && _win(obj) != NULL)
   {
     // remove the notify again
-    DoMethod(_win(obj), MUIM_KillNotifyObj, MUIA_Window_Sleep, obj);
+    D(DBF_INPUT, "remove MUIA_Window_Sleep notify");
+    if(DoMethod(_win(obj), MUIM_KillNotifyObj, MUIA_Window_Sleep, obj) == 0)
+      E(DBF_INPUT, "removing MUIA_Window_Sleep notify failed?");
     clearFlag(data->Flags, FLG_WindowSleeNotifyAdded);
-    D(DBF_INPUT, "removed MUIA_Window_Sleep notify");
   }
 
   LEAVE();
