@@ -66,9 +66,9 @@ struct InstData
   struct  RastPort            rport;
   struct  Locale            *locale;
   ULONG   Flags;
-  Object  *PopupMenu;
 
-  Object  *KeyUpFocus, *KeyDownFocus;
+  Object  *KeyUpFocus;
+  Object  *KeyDownFocus;
 
   // the selection pointer Object
   Object  *PointerObj;
