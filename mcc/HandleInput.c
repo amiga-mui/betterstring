@@ -330,6 +330,10 @@ static void Paste(struct InstData *data)
       memcpy(data->Contents + data->BufferPos, str, length);
       data->BufferPos += length;
     }
+    else
+    {
+      E(DBF_ALWAYS, "content expansion by %ld bytes failed", length);
+    }
 
     SharedPoolFree(str);
   }
