@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-12-10 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/ClipboardServer.c: changed the ClipboardToString() functions to return
+    a boolean value to indicate success and  to avoid memory leaks.
+
 2012-12-09 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/AllocFunctions.c: use Alloc/FreeVecPooled instead of Alloc/FreePooled.

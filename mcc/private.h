@@ -248,7 +248,7 @@ void HideSelectPointer(Object *obj, struct InstData *data);
 BOOL StartClipboardServer(void);
 void ShutdownClipboardServer(void);
 void StringToClipboard(STRPTR str, LONG length);
-void ClipboardToString(STRPTR *str, LONG *length);
+BOOL ClipboardToString(STRPTR *str, LONG *length);
 
 #define setFlag(mask, flag)             (mask) |= (flag)
 #define clearFlag(mask, flag)           (mask) &= ~(flag)
