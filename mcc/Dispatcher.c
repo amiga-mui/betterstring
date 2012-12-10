@@ -32,37 +32,6 @@
 
 #include "private.h"
 
-/*
-struct NewMenu PopupMenuData[] =
-{
-  NM_TITLE, "Stringgadget",       NULL, 0L, 0, (APTR)0,
-  NM_ITEM,  "Cut",                NULL, 0L, 0, (APTR)1,
-  NM_ITEM,  "Copy",               NULL, 0L, 0, (APTR)2,
-  NM_ITEM,  "Paste",              NULL, 0L, 0, (APTR)3,
-  NM_ITEM,  NM_BARLABEL,          NULL, 0L, 0, (APTR)0,
-  NM_ITEM,  "Undo",               NULL, 0L, 0, (APTR)4,
-  NM_ITEM,  "Redo",               NULL, 0L, 0, (APTR)5,
-  NM_ITEM,  "Original",           NULL, 0L, 0, (APTR)6,
-  NM_ITEM,  NM_BARLABEL,          NULL, 0L, 0, (APTR)0,
-  NM_ITEM,  "Complete path",      NULL, 0L, 0, (APTR)7,
-  NM_ITEM,  "Toggle case",        NULL, 0L, 0, (APTR)0,
-  NM_SUB,   "Character",          NULL, 0L, 0, (APTR)8,
-  NM_SUB,   "Word",               NULL, 0L, 0, (APTR)9,
-  NM_ITEM,  "Arithmetic",         NULL, 0L, 0, (APTR)0,
-  NM_SUB,   "Increase",           NULL, 0L, 0, (APTR)10,
-  NM_SUB,   "Decrease",           NULL, 0L, 0, (APTR)11,
-  NM_SUB,   "To decimal",         NULL, 0L, 0, (APTR)12,
-  NM_SUB,   "To hexadecimal",     NULL, 0L, 0, (APTR)13,
-  NM_END,   NULL,                 NULL, 0L, 0, (APTR)0
-};
-*/
-
-//#ifndef MUIM_Backfill
-//#define MUIA_CustomBackfill                 0x80420a63
-//#define MUIM_Backfill                       0x80428d73
-//struct  MUIP_Backfill { ULONG MethodID; LONG left; LONG top; LONG right; LONG bottom; LONG xoffset; LONG yoffset; };
-//#endif
-
 static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
 {
   ENTER();
