@@ -1541,3 +1541,41 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
   RETURN(result);
   return result;
 }
+
+IPTR mInsert(struct IClass *cl, Object *obj, struct MUIP_BetterString_Insert *msg)
+{
+  struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+  UWORD pos;
+
+  ENTER();
+
+  switch(msg->pos)
+  {
+/*
+    case MUIV_BetterString_Insert_StartOfString:
+      pos = 0;
+    break;
+*/
+
+    case MUIV_BetterString_Insert_EndOfString:
+      pos = strlen(data->Contents);
+    break;
+
+    case MUIV_BetterString_Insert_BufferPos:
+      pos = data->BufferPos;
+    break;
+
+    default:
+      pos = msg->pos;
+    break;
+  }
+
+  Overwrite(msg->text, pos, 0, data);
+  clearFlag(data->Flags, FLG_BlockEnabled);
+  MUI_Redraw(obj, MADF_DRAWUPDATE);
+  // trigger a notification as we just changed the contents
+  TriggerNotify(cl, obj);
+
+  RETURN(TRUE);
+  return TRUE;
+}

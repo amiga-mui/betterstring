@@ -207,14 +207,19 @@ struct InstData
 // our prototypes
 VOID PrintString(struct IClass *, Object *);
 void TriggerNotify(struct IClass *cl, Object *obj);
-IPTR mHandleInput(struct IClass *, Object *, struct MUIP_HandleEvent *);
 ULONG ConvertKey(struct IntuiMessage *);
 VOID DeleteBlock(struct InstData *);
 
+// HandleInput.c
+IPTR mDoAction(struct IClass *, Object *, struct MUIP_BetterString_DoAction *);
+IPTR mHandleInput(struct IClass *, Object *, struct MUIP_HandleEvent *);
+IPTR mInsert(struct IClass *cl, Object *obj, struct MUIP_BetterString_Insert *msg);
+
+// GetSetAttrs.c
 IPTR mGet(struct IClass *, Object *, struct opGet *);
 IPTR mSet(struct IClass *, Object *, struct opSet *);
-IPTR mDoAction(struct IClass *, Object *, struct MUIP_BetterString_DoAction *);
 
+// AllocFunctions.c
 BOOL CreateSharedPool(void);
 void DeleteSharedPool(void);
 APTR SharedPoolAlloc(ULONG);
