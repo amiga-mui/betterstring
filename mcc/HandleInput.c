@@ -316,8 +316,7 @@ static void Paste(struct InstData *data)
   // clear the selection
   DeleteBlock(data);
 
-  ClipboardToString(&str, &length);
-  if(str != NULL && length > 0)
+  if(ClipboardToString(&str, &length) == TRUE)
   {
     if(data->MaxLength != 0 && strlen(data->Contents) + length > (ULONG)data->MaxLength - 1)
     {
