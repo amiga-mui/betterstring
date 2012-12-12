@@ -5,6 +5,14 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-12-12 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/Dispatcher.c: added a workaround for an old and ancient MUI bug when
+    having to deal with removed notifications while causing further set()
+    operations which trigger nested notification checks. Thanks for Steffen
+    Gutmann for all the hints regarding this issue, as MUIbase was the only
+    known affected application so far.
+
 2012-12-10 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/ClipboardServer.c: changed the ClipboardToString() functions to return

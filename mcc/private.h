@@ -131,9 +131,11 @@ struct InstData
 #define FLG_NotifyQueued           (1L << 20) // there are notifications pending
 #define FLG_Setup                  (1L << 21) // successful MUIM_Setup
 #define FLG_WindowSleepNotifyAdded (1L << 22) // notify for MUIA_Window_Sleep was added
+#define FLG_DummyNotifyAdded       (1L << 23) // dummy notify was added
 
 // private attributes
 #define MUIA_BetterString_InternalSelectOnActive   0xad002000UL
+#define MUIA_BetterString_Nop                      0xad002001UL
 
 // proper RAWKEY_ defines were first introduced in OS4 and MorphOS
 // and unfortunately they are also a bit different, so lets

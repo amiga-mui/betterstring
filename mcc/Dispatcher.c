@@ -164,6 +164,50 @@ void AddWindowSleepNotify(struct IClass *cl, Object *obj)
   {
     if(data->SelectOnActive == TRUE || isFlagSet(data->Flags, FLG_ForceSelectOn))
     {
+      // !!! CAUTION !!!
+      // Ugly workaround for an ancient bug in MUI
+      // MUIbase <= 2.11 adds some notifies for certain attributes which in turn
+      // modify MUIA_Window_Sleep and hence trigger our own notify for this
+      // attribute.
+      // Removing our own notify will not remove it immediately but mark it as
+      // "killed" only by MUI. The removal happens when the notifies are checked
+      // for triggers. The problem arises if executing one notify triggers yet
+      // another notification handling on the same object. In this case the nested
+      // call will do the same removal as the first call is about to do next. This
+      // will cause a double Remove() and double free of memory later in the first
+      // call as here the pointer to the next notify to be handled has already been
+      // obtained and will be used without further checks in the next iteration.
+      // All this only happens if the removed notify directly follows the notify
+      // which causes the removal. Thus we add a dummy notify to produce a "hole"
+      // in the notify list and to let the nested notification check do its
+      // removal work without causing a bad impact on the first check. This "hole"
+      // just consists of another notify which never gets triggered. And even if
+      // it would get triggered it will not cause a nested notify check. Thus the
+      // first check will see this "hole" first before finally skipping the just
+      // removed notify.
+      // NOTE: this is neither a bug in MUIbase nor in BetterString but an ancient
+      // bug in MUI itself as it does not take into account that a set() may cause
+      // nested notifications which in turn may be removed inbetween!
+      BOOL addDummyNotify = FALSE;
+
+      #if defined(__amigaos4__)
+      // MUI 4.x for AmigaOS4 is no longer affected since V20.5824
+      addDummyNotify = (LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 5824) == FALSE);
+      #else
+      // all other systems need this workaround
+      addDummyNotify = TRUE;
+      #endif
+
+      // add the dummy notify only once
+      if(addDummyNotify == TRUE && isFlagClear(data->Flags, FLG_DummyNotifyAdded))
+      {
+        // add a notify for an attribute which will *NEVER* be modified, thus the
+        // trigger action will never be executed as well
+        DoMethod(_win(obj), MUIM_Notify, MUIA_BetterString_Nop, MUIV_EveryTime, obj, 5, MUIM_Set, MUIA_NoNotify, TRUE, MUIA_BetterString_Nop, MUIV_TriggerValue);
+        setFlag(data->Flags, FLG_DummyNotifyAdded);
+        D(DBF_INPUT, "added dummy notify");
+	  }
+
       // If the "select on active" feature is active we must be notified in case our
       // window is put to sleep to be able to deactivate the feature, because waking
       // the window up again will let ourself go active again and we will select the

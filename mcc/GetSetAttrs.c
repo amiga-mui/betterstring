@@ -414,6 +414,12 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
       }
       break;
 
+      case MUIA_BetterString_Nop:
+      {
+	    // as the name suggests, do nothing
+	  }
+	  break;
+
       case MUIA_BetterString_NoNotify:
       {
         // trigger a notify only if a notification has been queued already
