@@ -5,6 +5,17 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-12-13 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/Dispatcher.c, mcc/HandleInput.c: don't perform the "select all"
+    operation immediately if the "select on active" feature is enabled and the
+    object becomes active, but defer this a bit. This makes it possible to
+    activate the object with the mouse and start to mark a section while the
+    mouse button is still pressed. And this also fixes the issue that keeping
+    the mouse button pressed always started a selection from the beginning of
+    the contents instead of the current position. Thanks to Christoph Pölzl for
+    the hint.
+
 2012-12-12 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Dispatcher.c: added a workaround for an old and ancient MUI bug when

@@ -472,7 +472,7 @@ static IPTR mGoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
 
   ENTER();
 
-  D(DBF_INPUT, "GoActive: %08lx", obj);
+  D(DBF_INPUT, "GoActive: %08lx %08lx", obj, data->Flags);
 
   setFlag(data->Flags, FLG_Active);
   setFlag(data->Flags, FLG_FreshActive);
@@ -484,12 +484,16 @@ static IPTR mGoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
     strlcpy(data->Original, data->Contents, strlen(data->Contents+1));
 
   // select everything if this is necessary or requested
-  if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_MouseButtonDown) && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
+  if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
      isFlagSet(data->Flags, FLG_ForceSelectOn))
   {
-    data->BlockStart = 0;
-    data->BlockStop = strlen(data->Contents);
-    setFlag(data->Flags, FLG_BlockEnabled);
+    // Don't mark the contents immediately, but defer this a bit.
+    // Otherwise keeping the mouse button pressed will always start a selection
+    // from the contents beginning instead of the clicked position. Furthermore
+    // the "select all" action will be applied upon the release of the mouse
+    // button only. Finally this still call is still necessary if this method
+    // was called because the object was activated by the keyboard.
+    DoMethod(_app(obj), MUIM_Application_PushMethod, obj, 2, MUIM_BetterString_DoAction, MUIV_BetterString_DoAction_SelectAll);
   }
 
   if(isFlagClear(data->Flags, FLG_OwnBackground))
