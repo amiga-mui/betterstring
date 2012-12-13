@@ -592,143 +592,148 @@ IPTR mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction
 
   D(DBF_INPUT, "DoAction(%ld)", msg->action);
 
-  switch(msg->action)
+  if(isFlagClear(data->Flags, FLG_MouseButtonDown))
   {
-    case MUIV_BetterString_DoAction_Cut:
+    switch(msg->action)
     {
-      CutBlock(data);
-      edited = TRUE;
-      result = TRUE;
-    }
-    break;
-
-    case MUIV_BetterString_DoAction_Copy:
-    {
-      CopyBlock(data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-      result = TRUE;
-    }
-    break;
-
-    case MUIV_BetterString_DoAction_Paste:
-    {
-      Paste(data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-      edited = TRUE;
-      result = TRUE;
-    }
-    break;
-
-    case MUIV_BetterString_DoAction_Delete:
-    {
-      DeleteBlock(data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-      edited = TRUE;
-      result = TRUE;
-    }
-    break;
-
-    case MUIV_BetterString_DoAction_SelectAll:
-    {
-      data->BlockStart = 0;
-      data->BlockStop = strlen(data->Contents);
-      setFlag(data->Flags, FLG_BlockEnabled);
-      result = TRUE;
-    }
-    break;
-
-    case MUIV_BetterString_DoAction_SelectNone:
-    {
-      clearFlag(data->Flags, FLG_BlockEnabled);
-      result = TRUE;
-    }
-    break;
-
-    case MUIV_BetterString_DoAction_Undo:
-    case MUIV_BetterString_DoAction_Redo:
-    {
-      if(data->Undo &&
-         (((msg->action == MUIV_BetterString_DoAction_Redo) && isFlagSet(data->Flags, FLG_RedoAvailable)) ||
-          ((msg->action == MUIV_BetterString_DoAction_Undo) && isFlagClear(data->Flags, FLG_RedoAvailable))))
+      case MUIV_BetterString_DoAction_Cut:
       {
-        UndoRedo(data);
+        CutBlock(data);
+        edited = TRUE;
+        result = TRUE;
+      }
+      break;
+
+      case MUIV_BetterString_DoAction_Copy:
+      {
+        CopyBlock(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+        result = TRUE;
+      }
+      break;
+
+      case MUIV_BetterString_DoAction_Paste:
+      {
+        Paste(data);
         clearFlag(data->Flags, FLG_BlockEnabled);
         edited = TRUE;
         result = TRUE;
       }
-    }
-    break;
+      break;
 
-    case MUIV_BetterString_DoAction_Revert:
-    {
-      RevertToOriginal(data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-      edited = TRUE;
-      result = TRUE;
-    }
-    break;
+      case MUIV_BetterString_DoAction_Delete:
+      {
+        DeleteBlock(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+        edited = TRUE;
+        result = TRUE;
+      }
+      break;
 
-    case MUIV_BetterString_DoAction_ToggleCase:
-    {
-      edited = result = ToggleCaseChar(data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-    }
-    break;
+      case MUIV_BetterString_DoAction_SelectAll:
+      {
+        data->BlockStart = 0;
+        data->BlockStop = strlen(data->Contents);
+        setFlag(data->Flags, FLG_BlockEnabled);
+        result = TRUE;
+      }
+      break;
 
-    case MUIV_BetterString_DoAction_ToggleCaseWord:
-    {
-      edited = result = ToggleCaseWord(data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-    }
-    break;
+      case MUIV_BetterString_DoAction_SelectNone:
+      {
+        clearFlag(data->Flags, FLG_BlockEnabled);
+        result = TRUE;
+      }
+      break;
 
-    case MUIV_BetterString_DoAction_IncreaseNum:
-    {
-      edited = result = IncreaseNearNumber(data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-    }
-    break;
+      case MUIV_BetterString_DoAction_Undo:
+      case MUIV_BetterString_DoAction_Redo:
+      {
+        if(data->Undo &&
+           (((msg->action == MUIV_BetterString_DoAction_Redo) && isFlagSet(data->Flags, FLG_RedoAvailable)) ||
+            ((msg->action == MUIV_BetterString_DoAction_Undo) && isFlagClear(data->Flags, FLG_RedoAvailable))))
+        {
+          UndoRedo(data);
+          clearFlag(data->Flags, FLG_BlockEnabled);
+          edited = TRUE;
+          result = TRUE;
+        }
+      }
+      break;
 
-    case MUIV_BetterString_DoAction_DecreaseNum:
-    {
-      edited = result = DecreaseNearNumber(data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-    }
-    break;
+      case MUIV_BetterString_DoAction_Revert:
+      {
+        RevertToOriginal(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+        edited = TRUE;
+        result = TRUE;
+      }
+      break;
 
-    case MUIV_BetterString_DoAction_HexToDec:
-    {
-      edited = result = HexToDec(data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-    }
-    break;
+      case MUIV_BetterString_DoAction_ToggleCase:
+      {
+        edited = result = ToggleCaseChar(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+      }
+      break;
 
-    case MUIV_BetterString_DoAction_DecToHex:
-    {
-      edited = result = DecToHex(data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-    }
-    break;
+      case MUIV_BetterString_DoAction_ToggleCaseWord:
+      {
+        edited = result = ToggleCaseWord(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+      }
+      break;
 
-    case MUIV_BetterString_DoAction_NextFileComp:
-    {
-      edited = result = FileNameComplete(obj, FALSE, data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
-    }
-    break;
+      case MUIV_BetterString_DoAction_IncreaseNum:
+      {
+        edited = result = IncreaseNearNumber(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+      }
+      break;
 
-    case MUIV_BetterString_DoAction_PrevFileComp:
-    {
-      edited = result = FileNameComplete(obj, TRUE, data);
-      clearFlag(data->Flags, FLG_BlockEnabled);
+      case MUIV_BetterString_DoAction_DecreaseNum:
+      {
+        edited = result = DecreaseNearNumber(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+      }
+      break;
+
+      case MUIV_BetterString_DoAction_HexToDec:
+      {
+        edited = result = HexToDec(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+      }
+      break;
+
+      case MUIV_BetterString_DoAction_DecToHex:
+      {
+        edited = result = DecToHex(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+      }
+      break;
+
+      case MUIV_BetterString_DoAction_NextFileComp:
+      {
+        edited = result = FileNameComplete(obj, FALSE, data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+      }
+      break;
+
+      case MUIV_BetterString_DoAction_PrevFileComp:
+      {
+        edited = result = FileNameComplete(obj, TRUE, data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+      }
+      break;
     }
-    break;
+
+    MUI_Redraw(obj, MADF_DRAWUPDATE);
+
+    if(edited == TRUE)
+      TriggerNotify(cl, obj);
   }
-
-  MUI_Redraw(obj, MADF_DRAWUPDATE);
-
-  if(edited == TRUE)
-    TriggerNotify(cl, obj);
+  else
+    W(DBF_INPUT, "mouse button is pressed, action %ld not executed", msg->action);
 
   RETURN(result);
   return result;
