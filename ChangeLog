@@ -9,9 +9,7 @@ $URL$
 
   * mcc/Dispatcher.c, mcc/HandleInput.c: fixed a selection issue triggered by
     YAM which was caused by the last change. Thanks to Christoph Pölzl for the
-    hint. Unfortunately it is currently not possible to start a selection right
-    with the first click within the object if the "select on active" feature is
-    enabled.
+    hint.
 
 2012-12-13 Thore Böckelmann <tboeckel@gmx.de>
 
