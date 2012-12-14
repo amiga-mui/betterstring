@@ -1338,91 +1338,88 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
           if(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height)
           {
-            BOOL handleClick = TRUE;
+            WORD offset = msg->imsg->MouseX - x;
+            struct TextExtent tExtend;
 
-            if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
-               isFlagSet(data->Flags, FLG_ForceSelectOn))
+            offset -= AlignOffset(obj, data);
+
+            SetFont(&data->rport, _font(obj));
+            data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, _font(obj)->tf_YSize);
+
+            if(data->BufferPos == data->BufferLastPos &&
+               DoubleClick(data->StartSecs, data->StartMicros, msg->imsg->Seconds, msg->imsg->Micros))
             {
-              handleClick = isFlagSet(data->Flags, FLG_Active) && isFlagClear(data->Flags, FLG_FreshActive);
-              if(handleClick == FALSE)
-                D(DBF_INPUT, "select on active enabled", data->Flags);
-            }
-
-            if(handleClick == TRUE)
-            {
-              WORD offset = msg->imsg->MouseX - x;
-              struct TextExtent tExtend;
-
-              offset -= AlignOffset(obj, data);
-
-              SetFont(&data->rport, _font(obj));
-              data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, _font(obj)->tf_YSize);
-
-              if(data->BufferPos == data->BufferLastPos &&
-                 DoubleClick(data->StartSecs, data->StartMicros, msg->imsg->Seconds, msg->imsg->Micros))
-              {
-                // on a secret gadget we skip clickcount step 1 as
-                // it might be misused to guess the words in the gadget.
-                if(isFlagSet(data->Flags, FLG_Secret) && data->ClickCount == 0)
-                  data->ClickCount++;
-
+              // on a secret gadget we skip clickcount step 1 as
+              // it might be misused to guess the words in the gadget.
+              if(isFlagSet(data->Flags, FLG_Secret) && data->ClickCount == 0)
                 data->ClickCount++;
-              }
-              else
-                data->ClickCount = 0;
 
-              // lets save the current bufferpos to the lastpos variable
-              data->BufferLastPos = data->BufferPos;
-
-              data->StartSecs  = msg->imsg->Seconds;
-              data->StartMicros  = msg->imsg->Micros;
-
-              switch(data->ClickCount)
-              {
-                case 0:
-                {
-                  if(isFlagClear(data->Flags, FLG_BlockEnabled) || isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
-                    data->BlockStart = data->BufferPos;
-                }
-                break;
-
-                case 1:
-                {
-                  if(data->Contents[data->BufferPos] != '\0')
-                  {
-                    UWORD start = data->BufferPos;
-                    UWORD stop  = data->BufferPos;
-                    ULONG alpha = IsAlNum(data->locale, (UBYTE)*(data->Contents+data->BufferPos));
-
-                    while(start > 0 && alpha == (ULONG)IsAlNum(data->locale, (UBYTE)*(data->Contents+start-1)))
-                      start--;
-
-                    while(alpha == (ULONG)IsAlNum(data->locale, (UBYTE)*(data->Contents+stop)) && *(data->Contents+stop) != '\0')
-                      stop++;
-
-                    data->BlockStart = start;
-                    data->BufferPos = stop;
-                  }
-                }
-                break;
-
-                case 2:
-                {
-                  data->BlockStart = 0;
-                  data->BufferPos = strlen(data->Contents);
-                }
-                break;
-
-                case 3:
-                {
-                  data->BlockStart = data->BufferPos;
-                  data->ClickCount = 0;
-                }
-                break;
-              }
-              data->BlockStop = data->BufferPos;
-              setFlag(data->Flags, FLG_BlockEnabled);
+              data->ClickCount++;
             }
+            else if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
+                    isFlagSet(data->Flags, FLG_ForceSelectOn))
+            {
+              // special handling for the "select on active" feature
+              // this makes it possible to start a selection upon the first click within
+              // the object *and* a full selection
+              data->ClickCount = 3;
+            }
+            else
+            {
+              data->ClickCount = 0;
+            }
+
+            // lets save the current bufferpos to the lastpos variable
+            data->BufferLastPos = data->BufferPos;
+
+            data->StartSecs  = msg->imsg->Seconds;
+            data->StartMicros  = msg->imsg->Micros;
+
+            switch(data->ClickCount)
+            {
+              case 0:
+              {
+                if(isFlagClear(data->Flags, FLG_BlockEnabled) || isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
+                  data->BlockStart = data->BufferPos;
+              }
+              break;
+
+              case 1:
+              {
+                if(data->Contents[data->BufferPos] != '\0')
+                {
+                  UWORD start = data->BufferPos;
+                  UWORD stop  = data->BufferPos;
+                  ULONG alpha = IsAlNum(data->locale, (UBYTE)*(data->Contents+data->BufferPos));
+
+                  while(start > 0 && alpha == (ULONG)IsAlNum(data->locale, (UBYTE)*(data->Contents+start-1)))
+                    start--;
+
+                  while(alpha == (ULONG)IsAlNum(data->locale, (UBYTE)*(data->Contents+stop)) && *(data->Contents+stop) != '\0')
+                    stop++;
+
+                  data->BlockStart = start;
+                  data->BufferPos = stop;
+                }
+              }
+              break;
+
+              case 2:
+              {
+                data->BlockStart = 0;
+                data->BufferPos = strlen(data->Contents);
+              }
+              break;
+
+              case 3:
+              {
+                data->BlockStart = data->BufferPos;
+                data->ClickCount = 0;
+              }
+              break;
+            }
+            data->BlockStop = data->BufferPos;
+            setFlag(data->Flags, FLG_BlockEnabled);
 
             DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
          // setFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
