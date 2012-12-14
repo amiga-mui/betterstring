@@ -5,6 +5,14 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-12-14 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/Dispatcher.c, mcc/HandleInput.c: fixed a selection issue triggered by
+    YAM which was caused by the last change. Thanks to Christoph Pölzl for the
+    hint. Unfortunately it is currently not possible to start a selection right
+    with the first click within the object if the "select on active" feature is
+    enabled.
+
 2012-12-13 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Dispatcher.c, mcc/HandleInput.c: don't perform the "select all"
