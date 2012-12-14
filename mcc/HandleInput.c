@@ -590,150 +590,145 @@ IPTR mDoAction(struct IClass *cl, Object *obj, struct MUIP_BetterString_DoAction
 
   ENTER();
 
-  D(DBF_INPUT, "DoAction(%ld)", msg->action);
+  D(DBF_INPUT, "DoAction(%ld)");
 
-  if(isFlagClear(data->Flags, FLG_MouseButtonDown))
+  switch(msg->action)
   {
-    switch(msg->action)
+    case MUIV_BetterString_DoAction_Cut:
     {
-      case MUIV_BetterString_DoAction_Cut:
-      {
-        CutBlock(data);
-        edited = TRUE;
-        result = TRUE;
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_Copy:
-      {
-        CopyBlock(data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-        result = TRUE;
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_Paste:
-      {
-        Paste(data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-        edited = TRUE;
-        result = TRUE;
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_Delete:
-      {
-        DeleteBlock(data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-        edited = TRUE;
-        result = TRUE;
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_SelectAll:
-      {
-        data->BlockStart = 0;
-        data->BlockStop = strlen(data->Contents);
-        setFlag(data->Flags, FLG_BlockEnabled);
-        result = TRUE;
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_SelectNone:
-      {
-        clearFlag(data->Flags, FLG_BlockEnabled);
-        result = TRUE;
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_Undo:
-      case MUIV_BetterString_DoAction_Redo:
-      {
-        if(data->Undo &&
-           (((msg->action == MUIV_BetterString_DoAction_Redo) && isFlagSet(data->Flags, FLG_RedoAvailable)) ||
-            ((msg->action == MUIV_BetterString_DoAction_Undo) && isFlagClear(data->Flags, FLG_RedoAvailable))))
-        {
-          UndoRedo(data);
-          clearFlag(data->Flags, FLG_BlockEnabled);
-          edited = TRUE;
-          result = TRUE;
-        }
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_Revert:
-      {
-        RevertToOriginal(data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-        edited = TRUE;
-        result = TRUE;
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_ToggleCase:
-      {
-        edited = result = ToggleCaseChar(data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_ToggleCaseWord:
-      {
-        edited = result = ToggleCaseWord(data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_IncreaseNum:
-      {
-        edited = result = IncreaseNearNumber(data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_DecreaseNum:
-      {
-        edited = result = DecreaseNearNumber(data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_HexToDec:
-      {
-        edited = result = HexToDec(data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_DecToHex:
-      {
-        edited = result = DecToHex(data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_NextFileComp:
-      {
-        edited = result = FileNameComplete(obj, FALSE, data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-      }
-      break;
-
-      case MUIV_BetterString_DoAction_PrevFileComp:
-      {
-        edited = result = FileNameComplete(obj, TRUE, data);
-        clearFlag(data->Flags, FLG_BlockEnabled);
-      }
-      break;
+      CutBlock(data);
+      edited = TRUE;
+      result = TRUE;
     }
+    break;
 
-    MUI_Redraw(obj, MADF_DRAWUPDATE);
+    case MUIV_BetterString_DoAction_Copy:
+    {
+      CopyBlock(data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+      result = TRUE;
+    }
+    break;
 
-    if(edited == TRUE)
-      TriggerNotify(cl, obj);
+    case MUIV_BetterString_DoAction_Paste:
+    {
+      Paste(data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+      edited = TRUE;
+      result = TRUE;
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_Delete:
+    {
+      DeleteBlock(data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+      edited = TRUE;
+      result = TRUE;
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_SelectAll:
+    {
+      data->BlockStart = 0;
+      data->BlockStop = strlen(data->Contents);
+      setFlag(data->Flags, FLG_BlockEnabled);
+      result = TRUE;
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_SelectNone:
+    {
+      clearFlag(data->Flags, FLG_BlockEnabled);
+      result = TRUE;
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_Undo:
+    case MUIV_BetterString_DoAction_Redo:
+    {
+      if(data->Undo &&
+         (((msg->action == MUIV_BetterString_DoAction_Redo) && isFlagSet(data->Flags, FLG_RedoAvailable)) ||
+          ((msg->action == MUIV_BetterString_DoAction_Undo) && isFlagClear(data->Flags, FLG_RedoAvailable))))
+      {
+        UndoRedo(data);
+        clearFlag(data->Flags, FLG_BlockEnabled);
+        edited = TRUE;
+        result = TRUE;
+      }
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_Revert:
+    {
+      RevertToOriginal(data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+      edited = TRUE;
+      result = TRUE;
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_ToggleCase:
+    {
+      edited = result = ToggleCaseChar(data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_ToggleCaseWord:
+    {
+      edited = result = ToggleCaseWord(data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_IncreaseNum:
+    {
+      edited = result = IncreaseNearNumber(data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_DecreaseNum:
+    {
+      edited = result = DecreaseNearNumber(data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_HexToDec:
+    {
+      edited = result = HexToDec(data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_DecToHex:
+    {
+      edited = result = DecToHex(data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_NextFileComp:
+    {
+      edited = result = FileNameComplete(obj, FALSE, data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+    }
+    break;
+
+    case MUIV_BetterString_DoAction_PrevFileComp:
+    {
+      edited = result = FileNameComplete(obj, TRUE, data);
+      clearFlag(data->Flags, FLG_BlockEnabled);
+    }
+    break;
   }
-  else
-    W(DBF_INPUT, "mouse button is pressed, action %ld not executed", msg->action);
+
+  MUI_Redraw(obj, MADF_DRAWUPDATE);
+
+  if(edited == TRUE)
+    TriggerNotify(cl, obj);
 
   RETURN(result);
   return result;
@@ -1294,13 +1289,13 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           if(isAnyFlagSet(data->ehnode.ehn_Events, /*IDCMP_MOUSEMOVE|*/IDCMP_INTUITICKS))
           {
             DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-//            clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
+         // clearFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
             clearFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
             DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
           }
 
-          // make sure to select the whole betterstring content in case
-          // the objec was freshly active and the user pressed the mousebutton
+          // make sure to select the whole content in case the object was freshly activated
+          // and the user just released the mousebutton (no matter if inside or outside)
           if(isFlagSet(data->Flags, FLG_FreshActive) && BlockEnabled(data) == FALSE &&
              ((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) || isFlagSet(data->Flags, FLG_ForceSelectOn)))
           {
@@ -1343,88 +1338,107 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
           if(msg->imsg->MouseX >= x && msg->imsg->MouseX < x+width && msg->imsg->MouseY >= y && msg->imsg->MouseY < y+height)
           {
-            WORD offset = msg->imsg->MouseX - x;
-            struct TextExtent tExtend;
+            BOOL handleClick = TRUE;
 
-            offset -= AlignOffset(obj, data);
-
-            SetFont(&data->rport, _font(obj));
-            data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, _font(obj)->tf_YSize);
-
-            if(data->BufferPos == data->BufferLastPos &&
-               DoubleClick(data->StartSecs, data->StartMicros, msg->imsg->Seconds, msg->imsg->Micros))
+            if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
+               isFlagSet(data->Flags, FLG_ForceSelectOn))
             {
-              // on a secret gadget we skip clickcount step 1 as
-              // it might be misused to guess the words in the gadget.
-              if(isFlagSet(data->Flags, FLG_Secret) && data->ClickCount == 0)
+              handleClick = isFlagSet(data->Flags, FLG_Active) && isFlagClear(data->Flags, FLG_FreshActive);
+              if(handleClick == FALSE)
+                D(DBF_INPUT, "select on active enabled", data->Flags);
+            }
+
+            if(handleClick == TRUE)
+            {
+              WORD offset = msg->imsg->MouseX - x;
+              struct TextExtent tExtend;
+
+              offset -= AlignOffset(obj, data);
+
+              SetFont(&data->rport, _font(obj));
+              data->BufferPos = data->DisplayPos + TextFit(&data->rport, data->Contents+data->DisplayPos, StringLength-data->DisplayPos, &tExtend, NULL, 1, offset+1, _font(obj)->tf_YSize);
+
+              if(data->BufferPos == data->BufferLastPos &&
+                 DoubleClick(data->StartSecs, data->StartMicros, msg->imsg->Seconds, msg->imsg->Micros))
+              {
+                // on a secret gadget we skip clickcount step 1 as
+                // it might be misused to guess the words in the gadget.
+                if(isFlagSet(data->Flags, FLG_Secret) && data->ClickCount == 0)
+                  data->ClickCount++;
+
                 data->ClickCount++;
-
-              data->ClickCount++;
-            }
-            else
-              data->ClickCount = 0;
-
-            // lets save the current bufferpos to the lastpos variable
-            data->BufferLastPos = data->BufferPos;
-
-            data->StartSecs  = msg->imsg->Seconds;
-            data->StartMicros  = msg->imsg->Micros;
-
-            switch(data->ClickCount)
-            {
-              case 0:
-              {
-                if(isFlagClear(data->Flags, FLG_BlockEnabled) || isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
-                  data->BlockStart = data->BufferPos;
               }
-              break;
-
-              case 1:
-              {
-                if(data->Contents[data->BufferPos] != '\0')
-                {
-                  UWORD start = data->BufferPos;
-                  UWORD stop  = data->BufferPos;
-                  ULONG alpha = IsAlNum(data->locale, (UBYTE)*(data->Contents+data->BufferPos));
-
-                  while(start > 0 && alpha == (ULONG)IsAlNum(data->locale, (UBYTE)*(data->Contents+start-1)))
-                    start--;
-
-                  while(alpha == (ULONG)IsAlNum(data->locale, (UBYTE)*(data->Contents+stop)) && *(data->Contents+stop) != '\0')
-                    stop++;
-
-                  data->BlockStart = start;
-                  data->BufferPos = stop;
-                }
-              }
-              break;
-
-              case 2:
-              {
-                data->BlockStart = 0;
-                data->BufferPos = strlen(data->Contents);
-              }
-              break;
-
-              case 3:
-              {
-                data->BlockStart = data->BufferPos;
+              else
                 data->ClickCount = 0;
+
+              // lets save the current bufferpos to the lastpos variable
+              data->BufferLastPos = data->BufferPos;
+
+              data->StartSecs  = msg->imsg->Seconds;
+              data->StartMicros  = msg->imsg->Micros;
+
+              switch(data->ClickCount)
+              {
+                case 0:
+                {
+                  if(isFlagClear(data->Flags, FLG_BlockEnabled) || isFlagClear(msg->imsg->Qualifier, IEQUALIFIER_CONTROL))
+                    data->BlockStart = data->BufferPos;
+                }
+                break;
+
+                case 1:
+                {
+                  if(data->Contents[data->BufferPos] != '\0')
+                  {
+                    UWORD start = data->BufferPos;
+                    UWORD stop  = data->BufferPos;
+                    ULONG alpha = IsAlNum(data->locale, (UBYTE)*(data->Contents+data->BufferPos));
+
+                    while(start > 0 && alpha == (ULONG)IsAlNum(data->locale, (UBYTE)*(data->Contents+start-1)))
+                      start--;
+
+                    while(alpha == (ULONG)IsAlNum(data->locale, (UBYTE)*(data->Contents+stop)) && *(data->Contents+stop) != '\0')
+                      stop++;
+
+                    data->BlockStart = start;
+                    data->BufferPos = stop;
+                  }
+                }
+                break;
+
+                case 2:
+                {
+                  data->BlockStart = 0;
+                  data->BufferPos = strlen(data->Contents);
+                }
+                break;
+
+                case 3:
+                {
+                  data->BlockStart = data->BufferPos;
+                  data->ClickCount = 0;
+                }
+                break;
               }
-              break;
+              data->BlockStop = data->BufferPos;
+              setFlag(data->Flags, FLG_BlockEnabled);
             }
-            data->BlockStop = data->BufferPos;
-            setFlag(data->Flags, FLG_BlockEnabled);
 
             DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-//            setFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
+         // setFlag(data->ehnode.ehn_Events, IDCMP_MOUSEMOVE);
             setFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
             DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 
             if(isFlagSet(data->Flags, FLG_Active))
               MUI_Redraw(obj, MADF_DRAWUPDATE);
             else
+            {
+              // set the active flag now already
+              // this will be checked in MUIM_GoActive to distinguish between
+              // activation by mouse and by keyboard/application
+              setFlag(data->Flags, FLG_Active);
               set(_win(obj), MUIA_Window_ActiveObject, obj);
+            }
 
             result = MUI_EventHandlerRC_Eat;
           }
@@ -1437,9 +1451,9 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
               D(DBF_STARTUP, "Clicked outside gadget");
               setFlag(data->Flags, FLG_DragOutside);
 
-              DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
-//              data->ehnode.ehn_Events |= IDCMP_MOUSEMOVE;
-              DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
+           // DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
+           // data->ehnode.ehn_Events |= IDCMP_MOUSEMOVE;
+           // DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
 #else
               set(_win(obj), MUIA_Window_ActiveObject, MUIV_Window_ActiveObject_None);
 #endif

@@ -474,9 +474,6 @@ static IPTR mGoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
 
   D(DBF_INPUT, "GoActive: %08lx %08lx", obj, data->Flags);
 
-  setFlag(data->Flags, FLG_Active);
-  setFlag(data->Flags, FLG_FreshActive);
-
   if(data->Original != NULL)
     SharedPoolFree(data->Original);
 
@@ -487,14 +484,18 @@ static IPTR mGoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
   if((data->SelectOnActive == TRUE && isFlagClear(data->Flags, FLG_ForceSelectOff)) ||
      isFlagSet(data->Flags, FLG_ForceSelectOn))
   {
-    // Don't mark the contents immediately, but defer this a bit.
-    // Otherwise keeping the mouse button pressed will always start a selection
-    // from the contents beginning instead of the clicked position. Furthermore
-    // the "select all" action will be applied upon the release of the mouse
-    // button only. Finally this still call is still necessary if this method
-    // was called because the object was activated by the keyboard.
-    DoMethod(_app(obj), MUIM_Application_PushMethod, obj, 2, MUIM_BetterString_DoAction, MUIV_BetterString_DoAction_SelectAll);
+    // If the active flag is still clear we have been activated by keyboard or by
+    // the application. Otherwise this method is called due to activation by mouse
+    // and we must skip the "select on active" stuff as this has been done already.
+    if(isFlagClear(data->Flags, FLG_Active))
+    {
+      DoMethod(obj, MUIM_BetterString_DoAction, MUIV_BetterString_DoAction_SelectAll);
+    }
   }
+
+  //  now declare ourself as active
+  setFlag(data->Flags, FLG_Active);
+  setFlag(data->Flags, FLG_FreshActive);
 
   if(isFlagClear(data->Flags, FLG_OwnBackground))
     set(obj, MUIA_Background, data->ActiveBackground);
