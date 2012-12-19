@@ -58,14 +58,14 @@ void InitConfig(Object *obj, struct InstData *data)
     if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Frame, &setting))
       set(obj, MUIA_Frame, setting);
     else
-      set(obj, MUIA_Frame, "302211");
+      set(obj, MUIA_Frame, CFG_BetterString_Frame_Def);
   }
 
-  data->InactiveText = GetCol(obj, MUICFG_BetterString_InactiveText, (struct MUI_PenSpec *)"m4");
-  data->ActiveText = GetCol(obj, MUICFG_BetterString_ActiveText, (struct MUI_PenSpec *)"m5");
-  data->CursorColor = GetCol(obj, MUICFG_BetterString_Cursor, (struct MUI_PenSpec *)"m0");
-  data->MarkedColor = GetCol(obj, MUICFG_BetterString_MarkedBack, (struct MUI_PenSpec *)"m6");
-  data->MarkedTextColor = GetCol(obj, MUICFG_BetterString_MarkedText, (struct MUI_PenSpec *)"m5");
+  data->InactiveText = GetCol(obj, MUICFG_BetterString_InactiveText, (struct MUI_PenSpec *)CFG_BetterString_InactiveText_Def);
+  data->ActiveText = GetCol(obj, MUICFG_BetterString_ActiveText, (struct MUI_PenSpec *)CFG_BetterString_ActiveText_Def);
+  data->CursorColor = GetCol(obj, MUICFG_BetterString_Cursor, (struct MUI_PenSpec *)CFG_BetterString_Cursor_Def);
+  data->MarkedColor = GetCol(obj, MUICFG_BetterString_MarkedBack, (struct MUI_PenSpec *)CFG_BetterString_MarkedBack_Def);
+  data->MarkedTextColor = GetCol(obj, MUICFG_BetterString_MarkedText, (struct MUI_PenSpec *)CFG_BetterString_MarkedText_Def);
 
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_InactiveBack, &setting))
   {
@@ -76,7 +76,7 @@ void InitConfig(Object *obj, struct InstData *data)
     data->InactiveBackground = data->InactiveBackgroundBuffer;
   }
   else
-    data->InactiveBackground = (STRPTR)MUII_BACKGROUND;
+    data->InactiveBackground = (STRPTR)CFG_BetterString_InactiveBack_Def;
 
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_ActiveBack, &setting))
   {
@@ -87,17 +87,17 @@ void InitConfig(Object *obj, struct InstData *data)
     data->ActiveBackground = data->ActiveBackgroundBuffer;
   }
   else
-    data->ActiveBackground = (STRPTR)"2:m1";
+    data->ActiveBackground = (STRPTR)CFG_BetterString_ActiveBack_Def;
 
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_SelectOnActive, &setting))
     data->SelectOnActive = *(IPTR*)setting;
   else
-    data->SelectOnActive = FALSE;
+    data->SelectOnActive = CFG_BetterString_SelectOnActive_Def;
 
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_SelectPointer, &setting))
     data->SelectPointer = *(IPTR*)setting;
   else
-    data->SelectPointer = TRUE;
+    data->SelectPointer = CFG_BetterString_SelectPointer_Def;
 
   if(isFlagClear(data->Flags, FLG_OwnBackground))
     set(obj, MUIA_Background, data->InactiveBackground);

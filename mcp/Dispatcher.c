@@ -43,17 +43,16 @@ struct PrefsExchangeData
 
 static const struct PrefsExchangeData PrefsInfo[] =
 {
-  { ActiveBack,     MUIA_Imagedisplay_Spec,  MUICFG_BetterString_ActiveBack,     0, (APTR)"2:m1"    },
-  { ActiveText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_ActiveText,     0, (APTR)"m5"      },
-  { InactiveBack,   MUIA_Imagedisplay_Spec,  MUICFG_BetterString_InactiveBack,   0, (APTR)"2:m2"    },
-  { InactiveText,   MUIA_Pendisplay_Spec,    MUICFG_BetterString_InactiveText,   0, (APTR)"m4"      },
-  { Cursor,         MUIA_Pendisplay_Spec,    MUICFG_BetterString_Cursor,         0, (APTR)"m0"      },
-  { MarkedBack,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedBack,     0, (APTR)"m6"      },
-  { MarkedText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedText,     0, (APTR)"m5"      },
-//{ Font,           MUIA_String_Contents,    MUICFG_BetterString_Font,           0, (APTR)""        },
-  { Frame,          MUIA_Framedisplay_Spec,  MUICFG_BetterString_Frame,          0, (APTR)"302211"  },
-  { SelectOnActive, MUIA_Selected,           MUICFG_BetterString_SelectOnActive, 1, (APTR)0         },
-  { SelectPointer,  MUIA_Selected,           MUICFG_BetterString_SelectPointer,  1, (APTR)1         }
+  { ActiveBack,     MUIA_Imagedisplay_Spec,  MUICFG_BetterString_ActiveBack,     0, (APTR)CFG_BetterString_ActiveBack_Def     },
+  { ActiveText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_ActiveText,     0, (APTR)CFG_BetterString_ActiveText_Def     },
+  { InactiveBack,   MUIA_Imagedisplay_Spec,  MUICFG_BetterString_InactiveBack,   0, (APTR)CFG_BetterString_InactiveBack_Def   },
+  { InactiveText,   MUIA_Pendisplay_Spec,    MUICFG_BetterString_InactiveText,   0, (APTR)CFG_BetterString_InactiveText_Def   },
+  { Cursor,         MUIA_Pendisplay_Spec,    MUICFG_BetterString_Cursor,         0, (APTR)CFG_BetterString_Cursor_Def         },
+  { MarkedBack,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedBack,     0, (APTR)CFG_BetterString_MarkedBack_Def     },
+  { MarkedText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedText,     0, (APTR)CFG_BetterString_MarkedText_Def     },
+  { Frame,          MUIA_Framedisplay_Spec,  MUICFG_BetterString_Frame,          0, (APTR)CFG_BetterString_Frame_Def          },
+  { SelectOnActive, MUIA_Selected,           MUICFG_BetterString_SelectOnActive, 1, (APTR)CFG_BetterString_SelectOnActive_Def },
+  { SelectPointer,  MUIA_Selected,           MUICFG_BetterString_SelectPointer,  1, (APTR)CFG_BetterString_SelectPointer_Def  }
 };
 
 DISPATCHER(_DispatcherP)

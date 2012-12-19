@@ -70,6 +70,17 @@ extern "C" {
 #define MUICFG_BetterString_SelectOnActive  0xad00030aUL
 #define MUICFG_BetterString_SelectPointer   0xad000309UL
 
+#define CFG_BetterString_ActiveBack_Def     "2:m1"
+#define CFG_BetterString_ActiveText_Def     "m5"
+#define CFG_BetterString_InactiveBack_Def   "2:m2"
+#define CFG_BetterString_InactiveText_Def   "m4"
+#define CFG_BetterString_Cursor_Def         "m0"
+#define CFG_BetterString_MarkedBack_Def     "m6"
+#define CFG_BetterString_MarkedText_Def     "m5"
+#define CFG_BetterString_Frame_Def          "302211"
+#define CFG_BetterString_SelectOnActive_Def FALSE
+#define CFG_BetterString_SelectPointer_Def  TRUE
+
 #if !defined(__AROS__) && defined(__PPC__)
   #if defined(__GNUC__)
     #pragma pack()
