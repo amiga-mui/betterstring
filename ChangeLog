@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2012-12-19 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/InitConfig.c: fixed an ancient bug which prevented the custom mouse
+    pointer setting to be successfully applied if the default setting had to
+    be used.
+
 2012-12-14 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Dispatcher.c, mcc/HandleInput.c: fixed a selection issue triggered by
