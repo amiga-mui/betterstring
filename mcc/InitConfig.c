@@ -97,7 +97,7 @@ void InitConfig(Object *obj, struct InstData *data)
   if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_SelectPointer, &setting))
     data->SelectPointer = *(IPTR*)setting;
   else
-    data->SelectPointer = FALSE;
+    data->SelectPointer = TRUE;
 
   if(isFlagClear(data->Flags, FLG_OwnBackground))
     set(obj, MUIA_Background, data->InactiveBackground);
