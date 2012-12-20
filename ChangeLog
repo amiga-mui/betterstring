@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.24 RELEASE ###########################################################
+
+2012-12-20 Jens Langner <Jens.Langner@light-speed.de>
+
+  * misc: final 11.24 release preparations
+
 2012-12-19 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/InitConfig.c: fixed an ancient bug which prevented the custom mouse
