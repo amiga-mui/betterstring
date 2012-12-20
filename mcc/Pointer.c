@@ -409,8 +409,10 @@ void ShowSelectPointer(Object *obj, struct InstData *data)
     // that we can't unfortunately check for data->activeSelectPointer
     // here because otherwise we might end up with the standard
     // window pointer when quickly switching pointer TE.mcc
-    #if defined(__amigaos4__) || defined(__AROS__)
+    #if defined(__amigaos4__)
     SetWindowPointer(_window(obj), LIB_VERSION_IS_AT_LEAST(IntuitionBase, 53, 37) ? WA_PointerType : WA_Pointer, data->PointerObj, TAG_DONE);
+    #elif defined(__AROS__)
+    SetWindowPointer(_window(obj), WA_Pointer, data->PointerObj, TAG_DONE);
     #elif defined(__MORPHOS__)
     SetWindowPointer(_window(obj), IS_MORPHOS2 ? WA_PointerType : WA_Pointer, data->PointerObj, TAG_DONE);
     #else
