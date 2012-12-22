@@ -302,7 +302,7 @@ void SetupSelectPointer(struct InstData *data)
   ENTER();
 
   #if defined(__amigaos4__)
-  if(LIB_VERSION_IS_AT_LEAST(IntuitionBase, 53, 37))
+  if(LIB_VERSION_IS_AT_LEAST(IntuitionBase, 53, 40))
     data->PointerObj = (APTR)POINTERTYPE_TEXT;
   #elif defined(__MORPHOS__)
   if(IS_MORPHOS2)
@@ -353,7 +353,7 @@ void CleanupSelectPointer(struct InstData *data)
   ENTER();
 
   #if defined(__amigaos4__)
-  if(LIB_VERSION_IS_AT_LEAST(IntuitionBase, 53, 37))
+  if(LIB_VERSION_IS_AT_LEAST(IntuitionBase, 53, 40))
     data->PointerObj = NULL;
   #elif defined(__MORPHOS__)
   if (IS_MORPHOS2)
@@ -410,7 +410,7 @@ void ShowSelectPointer(Object *obj, struct InstData *data)
     // here because otherwise we might end up with the standard
     // window pointer when quickly switching pointer TE.mcc
     #if defined(__amigaos4__)
-    SetWindowPointer(_window(obj), LIB_VERSION_IS_AT_LEAST(IntuitionBase, 53, 37) ? WA_PointerType : WA_Pointer, data->PointerObj, TAG_DONE);
+    SetWindowPointer(_window(obj), LIB_VERSION_IS_AT_LEAST(IntuitionBase, 53, 40) ? WA_PointerType : WA_Pointer, data->PointerObj, TAG_DONE);
     #elif defined(__AROS__)
     SetWindowPointer(_window(obj), WA_Pointer, data->PointerObj, TAG_DONE);
     #elif defined(__MORPHOS__)
