@@ -188,18 +188,33 @@ void AddWindowSleepNotify(struct IClass *cl, Object *obj)
       // NOTE: this is neither a bug in MUIbase nor in BetterString but an ancient
       // bug in MUI itself as it does not take into account that a set() may cause
       // nested notifications which in turn may be removed inbetween!
-      BOOL addDummyNotify = FALSE;
+      BOOL safeNotifies;
 
-      #if defined(__amigaos4__)
-      // MUI 4.x for AmigaOS4 is no longer affected since V20.5824
-      addDummyNotify = (LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 5824) == FALSE);
+      #if defined(__amigaos3__) || defined(__amigaos4__)
+      if(LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 5824))
+      {
+        // MUI4 for AmigaOS is safe for V20.5824+
+        safeNotifies = TRUE;
+      }
+      else if(LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 2346) && LIBREV(MUIMasterBase) < 5000)
+      {
+        // MUI3.9 for AmigaOS is safe for V20.2346+
+        safeNotifies = TRUE;
+      }
+      else
+      {
+        // MUI 3.8 and older version of MUI 3.9 or MUI4 are definitely unsafe
+        safeNotifies = FALSE;
+      }
       #else
-      // all other systems need this workaround
-      addDummyNotify = TRUE;
+      // MorphOS and AROS must be considered unsafe unless someone from the
+      // MorphOS/AROS team confirms that removing notifies in nested OM_SET
+      // calls is safe.
+      safeNotifies = FALSE;
       #endif
 
       // add the dummy notify only once
-      if(addDummyNotify == TRUE && isFlagClear(data->Flags, FLG_DummyNotifyAdded))
+      if(safeNotifies == FALSE && isFlagClear(data->Flags, FLG_DummyNotifyAdded))
       {
         // add a notify for an attribute which will *NEVER* be modified, thus the
         // trigger action will never be executed as well
