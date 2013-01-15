@@ -181,9 +181,11 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
         Child, objs[InactiveBack] = PopimageObject,
           MUIA_Imageadjust_Type,  2,
           MUIA_CycleChain,      TRUE,
+          MUIA_FixHeight,       0,
           End,
         Child, objs[InactiveText] = PoppenObject,
           MUIA_CycleChain,      TRUE,
+          MUIA_FixHeight,       0,
           End,
         End,
 
@@ -192,9 +194,11 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
         Child, objs[ActiveBack] = PopimageObject,
           MUIA_Imageadjust_Type,  2,
           MUIA_CycleChain,      TRUE,
+          MUIA_FixHeight,       0,
           End,
         Child, objs[ActiveText] = PoppenObject,
           MUIA_CycleChain,      TRUE,
+          MUIA_FixHeight,       0,
           End,
         End,
 
@@ -207,15 +211,18 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
       Child, TxtLabel(GetStr(MSG_Label_Cursor)),
       Child, objs[Cursor] = PoppenObject,
         MUIA_CycleChain, TRUE,
+        MUIA_FixHeight,  0,
         End,
 
       Child, TxtLabel(GetStr(MSG_Label_Marked)),
       Child, HGroup,
         Child, objs[MarkedBack] = PoppenObject,
           MUIA_CycleChain, TRUE,
+          MUIA_FixHeight,  0,
           End,
         Child, objs[MarkedText] = PoppenObject,
           MUIA_CycleChain, TRUE,
+          MUIA_FixHeight,  0,
           End,
         End,
 
@@ -228,6 +235,7 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
       Child, TxtLabel(GetStr(MSG_Label_Frame)),
       Child, objs[Frame] = PopframeObject,
         MUIA_CycleChain, TRUE,
+        MUIA_FixHeight,  0,
         End,
 
       Child, HSpace(-1),
@@ -238,7 +246,7 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
 
       Child, HSpace(-1),
       Child, HGroup,
-	      MUIA_Weight, 0,
+	    MUIA_Weight, 0,
         Child, objs[SelectOnActive] = MUI_MakeObject(MUIO_Checkmark, NULL),
         Child, TxtLLabel(GetStr(MSG_SelectOnActive)),
         Child, HSpace(-1),
@@ -246,15 +254,13 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
 
       Child, HSpace(-1),
       Child, HGroup,
-	      MUIA_Weight, 0,
+	    MUIA_Weight, 0,
         Child, objs[SelectPointer] = MUI_MakeObject(MUIO_Checkmark, NULL),
         Child, TxtLLabel(GetStr(MSG_SelectPointer)),
         Child, HSpace(-1),
       End,
 
     End,
-
-    Child, VSpace(0),
 
     Child, CrawlingObject,
       TextFrame,

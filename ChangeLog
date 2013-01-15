@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2013-01-15 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcp/CreatePrefsGroup.c: used a fixed height of 0 to enforce a suitable
+    height of all pen and frame buttons.
+
 #### v11.24 RELEASE ###########################################################
 
 2012-12-20 Jens Langner <Jens.Langner@light-speed.de>
