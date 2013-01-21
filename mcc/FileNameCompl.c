@@ -50,7 +50,7 @@ BOOL OverwriteA(STRPTR text, UWORD x, UWORD length, UWORD ptrn_length, struct In
       ptrn_length += (data->MaxLength-1)-strlen(data->Contents);
       result = FALSE;
     }
-    if(ExpandContents(data, expand) == TRUE)
+    if(ExpandContentString(&data->Contents, expand) == TRUE)
       memmove(data->Contents+x+ptrn_length, data->Contents+x+length, strlen(data->Contents+x+length)+1);
     else
       E(DBF_ALWAYS, "content expansion by %ld bytes failed", expand);

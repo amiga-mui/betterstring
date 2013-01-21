@@ -156,35 +156,116 @@ void SharedPoolFree(APTR mem)
   LEAVE();
 }
 
-BOOL ExpandContents(struct InstData *data, ULONG extra)
+struct ContentString
 {
-  BOOL success = FALSE;
-  ULONG sz = strlen(data->Contents) + 1 + extra;
+  ULONG size;
+  char string[0];
+};
+
+#define STR_TO_CSTR(str)    (struct ContentString *)(((size_t)(str)) - sizeof(struct ContentString))
+#define CSTR_TO_STR(cstr)   (&(cstr)->string[0])
+
+static struct ContentString *AllocContentStringInternal(ULONG size)
+{
+  struct ContentString *cstr;
 
   ENTER();
 
-  // check if we have to expand our contents string
-  if(data->ContentsAllocSize < sz)
+  if((cstr = SharedPoolAlloc(sizeof(*cstr) + size)) != NULL)
   {
-    STRPTR newContents;
+    cstr->size = size;
+    cstr->string[0] = '\0';
+  }
 
-    // add another 32 bytes for less expansions in the future
-    sz += 32;
-    if((newContents = SharedPoolAlloc(sz)) != NULL)
+  RETURN(cstr);
+  return cstr;
+}
+
+char *AllocContentString(ULONG size)
+{
+  struct ContentString *cstr;
+  char *result = NULL;
+
+  ENTER();
+
+  if((cstr = AllocContentStringInternal(size)) != NULL)
+  {
+    result = CSTR_TO_STR(cstr);
+  }
+
+  RETURN(result);
+  return result;
+}
+
+void FreeContentString(char *str)
+{
+  ENTER();
+
+  if(str != NULL)
+  {
+    struct ContentString *cstr = STR_TO_CSTR(str);
+
+    SharedPoolFree(cstr);
+  }
+
+  LEAVE();
+}
+
+ULONG ContentStringSize(char *str)
+{
+  ULONG size = 0;
+
+  ENTER();
+
+  if(str != NULL)
+  {
+    struct ContentString *cstr = STR_TO_CSTR(str);
+
+    size = cstr->size;
+  }
+
+  RETURN(size);
+  return size;
+}
+
+BOOL ExpandContentString(char **str, ULONG extra)
+{
+  BOOL success = FALSE;
+
+  ENTER();
+
+  if(*str != NULL)
+  {
+    struct ContentString *cstr = STR_TO_CSTR(*str);
+    ULONG newsize = strlen(cstr->string) + 1 + extra;
+
+    // check if we have to expand our contents string
+    if(cstr->size < newsize)
     {
-      strlcpy(newContents, data->Contents, sz);
-      SharedPoolFree(data->Contents);
+      struct ContentString *newcstr;
 
-      data->Contents = newContents;
-      data->ContentsAllocSize = sz;
+      // add another 32 bytes for less expansions in the future
+      newsize += 32;
+      if((newcstr = AllocContentStringInternal(newsize)) != NULL)
+      {
+        strlcpy(newcstr->string, cstr->string, newsize);
+        FreeContentString(*str);
+        *str = CSTR_TO_STR(newcstr);
 
+        success = TRUE;
+      }
+    }
+    else
+    {
+      // no expansion necessary, instant success
       success = TRUE;
     }
   }
   else
   {
-    // no expansion necessary, instant success
-    success = TRUE;
+    // allocate a new content string
+    if((*str = AllocContentString(extra)) != NULL)
+      success = TRUE;
   }
 
   RETURN(success);

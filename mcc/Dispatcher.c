@@ -40,10 +40,8 @@ static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
   {
     struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
-    if((data->Contents = SharedPoolAlloc(40)) != NULL)
+    if((data->Contents = AllocContentString(40)) != NULL)
     {
-      *data->Contents = '\0';
-      data->ContentsAllocSize = 40;
       data->locale = OpenLocale(NULL);
 
       set(obj, MUIA_FillArea, FALSE);
@@ -86,23 +84,14 @@ static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
     E(DBF_INPUT, "MUIA_Window_Sleep notify still active at OM_DISPOSE!!");
   }
 
-  if(data->Contents != NULL)
-  {
-    SharedPoolFree(data->Contents);
-    data->Contents = NULL;
-  }
+  FreeContentString(data->Contents);
+  data->Contents = NULL;
 
-  if(data->Original != NULL)
-  {
-    SharedPoolFree(data->Original);
-    data->Original = NULL;
-  }
+  FreeContentString(data->Original);
+  data->Original = NULL;
 
-  if(data->Undo != NULL)
-  {
-    SharedPoolFree(data->Undo);
-    data->Undo = NULL;
-  }
+  FreeContentString(data->Undo);
+  data->Undo = NULL;
 
   if(data->FNCBuffer != NULL)
   {
@@ -489,10 +478,8 @@ static IPTR mGoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
 
   D(DBF_INPUT, "GoActive: %08lx %08lx", obj, data->Flags);
 
-  if(data->Original != NULL)
-    SharedPoolFree(data->Original);
-
-  if((data->Original = (STRPTR)SharedPoolAlloc(strlen(data->Contents)+1)) != NULL)
+  FreeContentString(data->Original);
+  if((data->Original = AllocContentString(strlen(data->Contents)+1)) != NULL)
     strlcpy(data->Original, data->Contents, strlen(data->Contents+1));
 
   // select everything if this is necessary or requested
