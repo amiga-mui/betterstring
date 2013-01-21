@@ -74,10 +74,9 @@ static void AddToUndo(struct InstData *data)
 {
   ENTER();
 
-  if(data->Undo != NULL)
-    SharedPoolFree(data->Undo);
+  FreeContentString(data->Undo);
 
-  if((data->Undo = (STRPTR)SharedPoolAlloc(strlen(data->Contents)+1)) != NULL)
+  if((data->Undo = AllocContentString(strlen(data->Contents)+1)) != NULL)
   {
     strlcpy(data->Undo, data->Contents, strlen(data->Contents)+1);
     data->UndoPos = data->BufferPos;
@@ -324,7 +323,7 @@ static void Paste(struct InstData *data)
       length = data->MaxLength - 1 - strlen(data->Contents);
     }
 
-    if(ExpandContents(data, length) == TRUE)
+    if(ExpandContentString(&data->Contents, length) == TRUE)
     {
       memmove(data->Contents + data->BufferPos + length, data->Contents + data->BufferPos, strlen(data->Contents + data->BufferPos)+1);
       memcpy(data->Contents + data->BufferPos, str, length);
@@ -343,11 +342,13 @@ static void Paste(struct InstData *data)
 
 static void UndoRedo(struct InstData *data)
 {
-  STRPTR oldcontents = data->Contents;
-  UWORD oldpos = data->BufferPos;
+  STRPTR oldcontents;
+  UWORD oldpos;
 
   ENTER();
 
+  // swap content and undo pointers
+  oldcontents = data->Contents;
   data->Contents = data->Undo;
   data->Undo = oldcontents;
 
@@ -357,6 +358,9 @@ static void UndoRedo(struct InstData *data)
     setFlag(data->Flags, FLG_RedoAvailable);
 
   clearFlag(data->Flags, FLG_BlockEnabled);
+
+  // swap content and undo positions
+  oldpos = data->BufferPos;
   data->BufferPos = data->UndoPos;
   data->UndoPos = oldpos;
 
@@ -365,12 +369,15 @@ static void UndoRedo(struct InstData *data)
 
 static void RevertToOriginal(struct InstData *data)
 {
-  STRPTR oldcontents = data->Contents;
+  STRPTR oldcontents;
 
   ENTER();
 
+  // swap content and original pointers
+  oldcontents = data->Contents;
   data->Contents = data->Original;
   data->Original = oldcontents;
+
   setFlag(data->Flags, FLG_Original);
   clearFlag(data->Flags, FLG_BlockEnabled);
   data->BufferPos = strlen(data->Contents);
@@ -1025,7 +1032,7 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
                     if((data->MaxLength == 0 || (ULONG)data->MaxLength-1 > strlen(data->Contents)) &&
                        Accept(code, data->Accept) && Reject(code, data->Reject))
                     {
-                      if(ExpandContents(data, 1) == TRUE)
+                      if(ExpandContentString(&data->Contents, 1) == TRUE)
                       {
                         memmove(data->Contents+data->BufferPos+1, data->Contents+data->BufferPos, strlen(data->Contents + data->BufferPos)+1);
                         *(data->Contents+data->BufferPos) = code;

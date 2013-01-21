@@ -5,6 +5,15 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2013-01-21 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/misc: completely reworked the string buffer handling to keep a size
+    information for each single string (normal, undo, original). Before the class
+    kept a size information for the normal contents string only and after the
+    first undo action this size information was bogus but still used whenever the
+    current allocation size needed to be checked. Upon the next contents change
+    memory was trashed due to this wrong size information.
+
 2013-01-15 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcp/CreatePrefsGroup.c: used a fixed height of 0 to enforce a suitable

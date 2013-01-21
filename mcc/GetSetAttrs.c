@@ -249,13 +249,13 @@ IPTR mSet(struct IClass *cl, Object *obj, struct opSet *msg)
             BOOL ok;
 
             if(extra > 0)
-              ok = ExpandContents(data, extra);
+              ok = ExpandContentString(&data->Contents, extra);
             else
               ok = TRUE;
 
             if(ok == TRUE)
             {
-              strlcpy(data->Contents, new_str, data->ContentsAllocSize);
+              strlcpy(data->Contents, new_str, ContentStringSize(data->Contents));
               data->BufferPos = strlen(data->Contents);
               data->DisplayPos = 0;
               if(data->MaxLength != 0 && data->BufferPos >= data->MaxLength)

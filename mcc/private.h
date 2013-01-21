@@ -44,15 +44,14 @@ struct FNCData
 struct InstData
 {
   /* Normal stringgadget info */
-  STRPTR  Contents;
-  STRPTR  InactiveContents;
-  STRPTR  Original;   /* Amiga-q (toggle) */
-  STRPTR  Undo;       /* Amiga-z (toggle) */
-  STRPTR  Accept;
-  STRPTR  Reject;
+  char    *Contents;
+  char    *InactiveContents;
+  char    *Original;   /* Amiga-q (toggle) */
+  char    *Undo;       /* Amiga-z (toggle) */
+  char    *Accept;
+  char    *Reject;
   Object  *ForwardObject;
   Object  *Popup;     /* ctrl-p popup object */
-  ULONG   ContentsAllocSize;
   UWORD   DisplayPos;
   UWORD   BufferPos;
   UWORD   BufferLastPos;
@@ -226,7 +225,10 @@ BOOL CreateSharedPool(void);
 void DeleteSharedPool(void);
 APTR SharedPoolAlloc(ULONG);
 void SharedPoolFree(APTR);
-BOOL ExpandContents(struct InstData *data, ULONG extra);
+char *AllocContentString(ULONG size);
+void FreeContentString(char *str);
+ULONG ContentStringSize(char *str);
+BOOL ExpandContentString(char **str, ULONG extra);
 
 BOOL Overwrite(STRPTR, UWORD, UWORD, struct InstData *);
 BOOL OverwriteA(STRPTR, UWORD, UWORD, UWORD, struct InstData *);
