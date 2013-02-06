@@ -117,7 +117,6 @@ struct InstData
 #define FLG_Original               (1L << 6)
 #define FLG_RedoAvailable          (1L << 7)
 #define FLG_StayActive             (1L << 8)
-#define FLG_SetFrame               (1L << 9)
 #define FLG_OwnBackground          (1L << 11)
 #define FLG_NoInput                (1L << 12)
 #define FLG_DragOutside            (1L << 13)

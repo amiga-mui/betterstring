@@ -1,4 +1,4 @@
-## version $VER: BetterString_mcp.catalog 2.4 (13.05.2012)
+## version $VER: BetterString_mcp.catalog 2.5 (06.02.2013)
 ## language italiano
 ## codeset 0
 ## chunk AUTH Translated by Samir Hawamdeh (http://www.betatesting.it/backforthefuture)
@@ -19,10 +19,6 @@ Sfondo
 MSG_Label_Cursor
 Cursore:
 ; Cursor:
-;
-MSG_Label_Frame
-Contorno:
-; Frame:
 ;
 MSG_Label_Inactive
 Inattivo:

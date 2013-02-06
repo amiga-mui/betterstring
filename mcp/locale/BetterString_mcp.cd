@@ -15,9 +15,6 @@ Background
 MSG_Label_Cursor (2//)
 Cursor:
 ;
-MSG_Label_Frame (4//)
-Frame:
-;
 MSG_Label_Inactive (5//)
 Inactive:
 ;

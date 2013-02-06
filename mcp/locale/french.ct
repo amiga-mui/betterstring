@@ -1,5 +1,5 @@
 ## chunk AUTH pferrucci@free.fr
-## version $VER: BetterString_mcp.catalog 2.1 (13.4.2012)
+## version $VER: BetterString_mcp.catalog 2.2 (06.02.2013)
 ## language français
 ## codeset 0
 ;
@@ -23,10 +23,6 @@ Arrière-plan
 MSG_Label_Cursor
 Curseur :
 ; Cursor:
-;
-MSG_Label_Frame
-Cadre :
-; Frame:
 ;
 MSG_Label_Inactive
 Inactif :

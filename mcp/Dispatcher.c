@@ -50,7 +50,6 @@ static const struct PrefsExchangeData PrefsInfo[] =
   { Cursor,         MUIA_Pendisplay_Spec,    MUICFG_BetterString_Cursor,         0, (APTR)CFG_BetterString_Cursor_Def         },
   { MarkedBack,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedBack,     0, (APTR)CFG_BetterString_MarkedBack_Def     },
   { MarkedText,     MUIA_Pendisplay_Spec,    MUICFG_BetterString_MarkedText,     0, (APTR)CFG_BetterString_MarkedText_Def     },
-  { Frame,          MUIA_Framedisplay_Spec,  MUICFG_BetterString_Frame,          0, (APTR)CFG_BetterString_Frame_Def          },
   { SelectOnActive, MUIA_Selected,           MUICFG_BetterString_SelectOnActive, 1, (APTR)CFG_BetterString_SelectOnActive_Def },
   { SelectPointer,  MUIA_Selected,           MUICFG_BetterString_SelectPointer,  1, (APTR)CFG_BetterString_SelectPointer_Def  }
 };
@@ -157,6 +156,10 @@ DISPATCHER(_DispatcherP)
           }
         }
       }
+
+      // erase obsolete settings
+      DoMethod(configdata, MUIM_Dataspace_Remove, MUICFG_BetterString_Font);
+      DoMethod(configdata, MUIM_Dataspace_Remove, MUICFG_BetterString_Frame);
     }
     break;
 
