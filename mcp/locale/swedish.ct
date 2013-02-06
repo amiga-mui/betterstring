@@ -1,4 +1,4 @@
-## version $VER: BetterString_mcp.catalog 2.3 (13.4.2012)
+## version $VER: BetterString_mcp.catalog 2.4 (06.02.2013)
 ## language svenska
 ## codeset 0
 ;
@@ -22,10 +22,6 @@ Bakgrund
 MSG_Label_Cursor
 Markör:
 ; Cursor:
-;
-MSG_Label_Frame
-Ram:
-; Frame:
 ;
 MSG_Label_Inactive
 Inaktiv:

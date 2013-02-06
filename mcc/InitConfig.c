@@ -50,17 +50,6 @@ void InitConfig(Object *obj, struct InstData *data)
 
   ENTER();
 
-  if(isFlagSet(data->Flags, FLG_SetFrame) && MUIMasterBase->lib_Version >= 20)
-  {
-    // don't remember the string from the configuration but copy it
-    // with MUI4's realtime prefs the configuration might change upon
-    // canceling MUI prefs and hence we would operate on invalid data.
-    if(DoMethod(obj, MUIM_GetConfigItem, MUICFG_BetterString_Frame, &setting))
-      set(obj, MUIA_Frame, setting);
-    else
-      set(obj, MUIA_Frame, CFG_BetterString_Frame_Def);
-  }
-
   data->InactiveText = GetCol(obj, MUICFG_BetterString_InactiveText, (struct MUI_PenSpec *)CFG_BetterString_InactiveText_Def);
   data->ActiveText = GetCol(obj, MUICFG_BetterString_ActiveText, (struct MUI_PenSpec *)CFG_BetterString_ActiveText_Def);
   data->CursorColor = GetCol(obj, MUICFG_BetterString_Cursor, (struct MUI_PenSpec *)CFG_BetterString_Cursor_Def);

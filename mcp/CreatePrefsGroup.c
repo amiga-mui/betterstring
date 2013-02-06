@@ -142,7 +142,7 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
   group = VGroup,
 
     Child, PopobjectObject,
-      MUIA_Popstring_String,  BetterStringObject, StringFrame,
+      MUIA_Popstring_String,  BetterStringObject,
         MUIA_String_Contents,  GetStr(MSG_String_TestString),
         MUIA_String_Format,    MUIV_String_Format_Center,
         MUIA_CycleChain,      TRUE,
@@ -232,18 +232,6 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
         MUIA_VertWeight,      0,
       End,
 
-      Child, TxtLabel(GetStr(MSG_Label_Frame)),
-      Child, objs[Frame] = PopframeObject,
-        MUIA_CycleChain, TRUE,
-        MUIA_FixHeight,  0,
-        End,
-
-      Child, HSpace(-1),
-      Child, RectangleObject,
-        MUIA_Rectangle_HBar,  TRUE,
-        MUIA_VertWeight,      0,
-      End,
-
       Child, HSpace(-1),
       Child, HGroup,
 	    MUIA_Weight, 0,
@@ -293,9 +281,6 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
 
   if(objs[SelectPointer] != NULL)
     set(objs[SelectPointer], MUIA_ShortHelp, GetStr(MSG_HELP_SelectPointer));
-
-  if(MUIMasterBase->lib_Version <= 19 && objs[Frame] != NULL)
-    set(objs[Frame], MUIA_Disabled, TRUE);
 
   return group;
 }

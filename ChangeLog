@@ -5,6 +5,14 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2013-02-06 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc, mcp: completely removed the custom frame setting. The object's frame is
+    now derived from the global MUI string object frame setting, unless a custom
+    frame is specified during OM_NEW or set() later. Since BetterString is meant
+    as a replacement class for String.mui it is much more intuitive to inherit
+    the global style than have to define the same frame again.
+
 2013-01-21 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/misc: completely reworked the string buffer handling to keep a size

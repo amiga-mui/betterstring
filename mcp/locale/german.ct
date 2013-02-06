@@ -1,5 +1,5 @@
-## chunk AUTH Jens Langner
-## version $VER: BetterString_mcp.catalog 2.2 (13.4.2012)
+## chunk AUTH Jens Langner, Thore Böckelmann
+## version $VER: BetterString_mcp.catalog 2.3 (06.02.2013)
 ## language deutsch
 ## codeset 0
 ;
@@ -19,10 +19,6 @@ Hintergrund
 MSG_Label_Cursor
 Cursor:
 ; Cursor:
-;
-MSG_Label_Frame
-Rahmen:
-; Frame:
 ;
 MSG_Label_Inactive
 Inaktiv:

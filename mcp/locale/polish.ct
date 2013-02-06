@@ -1,4 +1,4 @@
-## version $VER: BetterString_mcp.catalog 2.1 (13.4.2012)
+## version $VER: BetterString_mcp.catalog 2.2 (06.02.2013)
 ## language polski
 ## codeset 5
 ## chunk AUTH Mariusz Danilewicz <mandi@interia.pl>
@@ -19,10 +19,6 @@ T³o
 MSG_Label_Cursor
 Kursor:
 ; Cursor:
-;
-MSG_Label_Frame
-Ramka:
-; Frame:
 ;
 MSG_Label_Inactive
 Niekatywny:
