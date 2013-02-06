@@ -43,8 +43,6 @@ enum
   Cursor,
   MarkedBack,
   MarkedText,
-  //Font,
-  Frame,
   SelectOnActive,
   SelectPointer,
 
