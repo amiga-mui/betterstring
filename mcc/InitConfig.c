@@ -88,7 +88,7 @@ void InitConfig(Object *obj, struct InstData *data)
   else
     data->SelectPointer = CFG_BetterString_SelectPointer_Def;
 
-  if(isFlagClear(data->Flags, FLG_OwnBackground))
+  if(isFlagClear(data->Flags, FLG_OwnBackground) && data->mui4x == FALSE)
     set(obj, MUIA_Background, data->InactiveBackground);
 
   LEAVE();

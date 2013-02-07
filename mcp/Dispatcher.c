@@ -68,8 +68,11 @@ DISPATCHER(_DispatcherP)
       if((obj = (Object *)DoSuperMethodA(cl, obj, (Msg)msg)))
       {
         struct InstData_MCP *data = (struct InstData_MCP *)INST_DATA(cl, obj);
-
         Object *prefsobject;
+
+        // everything beyond muimaster 20.5500 is considered to be MUI4
+        data->mui4x = LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 5500);
+
         if((prefsobject = CreatePrefsGroup(data)))
         {
           ULONG i;
@@ -77,7 +80,7 @@ DISPATCHER(_DispatcherP)
           DoMethod(obj, OM_ADDMEMBER, prefsobject);
 
           // This is MUI 3.9 stuff: Each registered object will get a context-menu, like normal pref-items
-          if(MUIMasterBase->lib_Version >= 20)
+          if(LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 0))
           {
             for(i=0; i < NumberOfObject; i++)
               DoMethod(obj, MUIM_Mccprefs_RegisterGadget, data->Objects[PrefsInfo[i].ObjIndex], PrefsInfo[i].CfgItem, 2, NULL, PrefsInfo[i].Tag);

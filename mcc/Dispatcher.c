@@ -42,12 +42,22 @@ static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
 
     if((data->Contents = AllocContentString(40)) != NULL)
     {
+      struct TagItem *tag;
+
       set(obj, MUIA_FillArea, FALSE);
+
+      // muimaster V20 is MUI 3.9
+      data->mui39 = LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 0);
+      // everything beyond muimaster 20.5500 is considered to be MUI4
+      data->mui4x = LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 5500);
 
       data->locale = OpenLocale(NULL);
 
-      if(FindTagItem(MUIA_Background, msg->ops_AttrList) != NULL)
+      if((tag = FindTagItem(MUIA_Background, msg->ops_AttrList)) != NULL)
+      {
         setFlag(data->Flags, FLG_OwnBackground);
+        data->OwnBackground = (STRPTR)tag->ti_Data;
+      }
 
       mSet(cl, obj, (struct opSet *)msg);
 
@@ -490,8 +500,10 @@ static IPTR mGoActive(struct IClass *cl, Object *obj, UNUSED Msg msg)
   setFlag(data->Flags, FLG_Active);
   setFlag(data->Flags, FLG_FreshActive);
 
-  if(isFlagClear(data->Flags, FLG_OwnBackground))
+  if(isFlagClear(data->Flags, FLG_OwnBackground) && data->mui4x == FALSE)
     set(obj, MUIA_Background, data->ActiveBackground);
+  else if(data->mui4x == TRUE)
+    set(obj, MUIA_Background, MUII_StringActiveBack);
   else
     MUI_Redraw(obj, MADF_DRAWUPDATE);
 
@@ -513,10 +525,17 @@ static IPTR mGoInactive(struct IClass *cl, Object *obj, UNUSED Msg msg)
   clearFlag(data->Flags, FLG_Active);
   clearFlag(data->Flags, FLG_FreshActive);
 
-  if(isFlagClear(data->Flags, FLG_OwnBackground))
-    set(obj, MUIA_Background, data->InactiveBackground);
+  if(isFlagSet(data->Flags, FLG_OwnBackground))
+  {
+    set(obj, MUIA_Background, data->OwnBackground);
+    // MUI 3.8 needs an explicit refresh
+    if(data->mui39 == FALSE && data->mui4x == FALSE)
+      MUI_Redraw(obj, MADF_DRAWUPDATE);
+  }
+  else if(data->mui4x == TRUE)
+    set(obj, MUIA_Background, MUII_StringBack);
   else
-    MUI_Redraw(obj, MADF_DRAWUPDATE);
+    set(obj, MUIA_Background, data->InactiveBackground);
 
   RETURN(TRUE);
   return TRUE;
