@@ -142,7 +142,7 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
   group = VGroup,
 
     Child, PopobjectObject,
-      MUIA_Popstring_String,  BetterStringObject,
+      MUIA_Popstring_String,  BetterStringObject, StringFrame,
         MUIA_String_Contents,  GetStr(MSG_String_TestString),
         MUIA_String_Format,    MUIV_String_Format_Center,
         MUIA_CycleChain,      TRUE,
