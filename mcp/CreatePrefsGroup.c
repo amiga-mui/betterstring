@@ -276,6 +276,14 @@ Object *CreatePrefsGroup(struct InstData_MCP *data)
 
   End;
 
+  // the inactive background will be the same as for String.mui on MUI4
+  if(objs[InactiveBack] != NULL)
+    set(objs[InactiveBack], MUIA_Disabled, data->mui4x);
+
+  // the active background will be the same as for String.mui on MUI4
+  if(objs[ActiveBack] != NULL)
+    set(objs[ActiveBack], MUIA_Disabled, data->mui4x);
+
   if(objs[SelectOnActive] != NULL)
     set(objs[SelectOnActive], MUIA_ShortHelp, GetStr(MSG_HELP_SelectOnActive));
 

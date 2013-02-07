@@ -5,6 +5,15 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2013-02-07 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc, mcp: when running under MUI 4.x BetterString will automatically fall
+    back to the background settings of the internal String.mui class to ensure
+    a consistent look of all string objects unless an application explicitly
+    sets a custom background. With MUI 3.x the user will still have to configure
+    the two background images, because here String.mui is based on intuition's
+    strgclass and hence there is nothing which could be cloned.
+
 2013-02-06 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc, mcp: completely removed the custom frame setting. Since BetterString is

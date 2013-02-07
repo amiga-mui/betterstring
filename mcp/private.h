@@ -51,10 +51,16 @@ enum
 
 struct InstData_MCP
 {
+  BOOL mui4x;
   Object *Objects[NumberOfObject];
 };
 
 Object *CreatePrefsGroup(struct InstData_MCP *data);
+
+#define LIBVER(lib) ((struct Library *)lib)->lib_Version
+#define LIBREV(lib) ((struct Library *)lib)->lib_Revision
+#define VERSION_IS_AT_LEAST(ver, rev, minver, minrev) (((ver) > (minver)) || ((ver) == (minver) && (rev) == (minrev)) || ((ver) == (minver) && (rev) > (minrev)))
+#define LIB_VERSION_IS_AT_LEAST(lib, minver, minrev)  VERSION_IS_AT_LEAST(((struct Library *)(lib))->lib_Version, ((struct Library *)(lib))->lib_Revision, minver, minrev)
 
 /// xget()
 //  Gets an attribute value from a MUI object

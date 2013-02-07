@@ -106,6 +106,10 @@ struct InstData
 
   /* Edit hook */
   struct Hook *EditHook;
+
+  BOOL mui39;
+  BOOL mui4x;
+  STRPTR OwnBackground;
 };
 
 #define FLG_Secret                 (1L << 0)
@@ -313,6 +317,14 @@ IPTR xget(Object *obj, const IPTR attr);
 
 #ifndef MUIA_String_Popup
 #define MUIA_String_Popup 0x80420d71
+#endif
+
+#ifndef MUII_StringBack
+#define MUII_StringBack        49
+#endif
+
+#ifndef MUII_StringActiveBack
+#define MUII_StringActiveBack  50
 #endif
 
 #endif /* BETTERSTRING_MCC_PRIV_H */
