@@ -32,48 +32,21 @@
 
 #include "private.h"
 
-#if !defined(__MORPHOS__)
-#ifdef __AROS__
-static __attribute__ ((noinline)) Object * VARARGS68K DoSuperNew(struct IClass *cl, Object *obj, Tag tag1, ...)
-{
-    AROS_SLOWSTACKTAGS_PRE_AS(tag1, Object *)
-    retval = (Object *)DoSuperMethod(cl, obj, OM_NEW, AROS_SLOWSTACKTAGS_ARG(tag1), NULL);
-    AROS_SLOWSTACKTAGS_POST
-}
-#else
-static Object * VARARGS68K DoSuperNew(struct IClass *cl, Object *obj, ...)
-{
-  Object *rc;
-  VA_LIST args;
-
-  ENTER();
-
-  VA_START(args, obj);
-  rc = (Object *)DoSuperMethod(cl, obj, OM_NEW, VA_ARG(args, ULONG), NULL);
-  VA_END(args);
-
-  RETURN(rc);
-  return rc;
-}
-#endif
-#endif // !__MORPHOS__
-
 static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
 {
   ENTER();
 
-  if((obj = (Object *)DoSuperNew(cl, obj,
-    MUIA_Frame, MUIV_Frame_String,
-    MUIA_FillArea, FALSE,
-    TAG_MORE, msg->ops_AttrList)) != NULL)
+  if((obj = (Object *)DoSuperMethodA(cl, obj, (Msg)msg)) != NULL)
   {
     struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
     if((data->Contents = AllocContentString(40)) != NULL)
     {
+      set(obj, MUIA_FillArea, FALSE);
+
       data->locale = OpenLocale(NULL);
 
-      if(FindTagItem(MUIA_Background, msg->ops_AttrList))
+      if(FindTagItem(MUIA_Background, msg->ops_AttrList) != NULL)
         setFlag(data->Flags, FLG_OwnBackground);
 
       mSet(cl, obj, (struct opSet *)msg);
@@ -94,6 +67,7 @@ static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
 static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
 {
   struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
+
   ENTER();
 
   if(isFlagSet(data->Flags, FLG_WindowSleepNotifyAdded))

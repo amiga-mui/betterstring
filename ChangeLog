@@ -7,11 +7,12 @@ $URL$
 
 2013-02-06 Thore Böckelmann <tboeckel@gmx.de>
 
-  * mcc, mcp: completely removed the custom frame setting. The object's frame is
-    now derived from the global MUI string object frame setting, unless a custom
-    frame is specified during OM_NEW or set() later. Since BetterString is meant
-    as a replacement class for String.mui it is much more intuitive to inherit
-    the global style than have to define the same frame again.
+  * mcc, mcp: completely removed the custom frame setting. Since BetterString is
+    meant as a replacement class for String.mui it is much more intuitive to have
+    to do the same steps when creating a BetterString object as when creating a
+    normal String.mui object. Furthermore it is also more intuitive for the user
+    to get the same look for all string objects rather than have a different look
+    for BetterString objects.
 
 2013-01-21 Thore Böckelmann <tboeckel@gmx.de>
 
