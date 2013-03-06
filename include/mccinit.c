@@ -228,6 +228,8 @@ struct IntuitionBase  *IntuitionBase = NULL;
 extern "C" {
 #endif
 
+/******************************************************************************/
+
 // we place a stack cookie in the binary so that
 // newer OS version can directly take the specified
 // number for the ramlib process
@@ -366,36 +368,8 @@ STATIC IPTR                   LIBFUNC MCC_Query  (REG(d0, LONG which));
 #endif
 
 /******************************************************************************/
-/* Dummy entry point and LibNull() function all in one                        */
+/* Dummy LibNull() function                                                   */
 /******************************************************************************/
-
-/*
- * The system (and compiler) rely on a symbol named _start which marks
- * the beginning of execution of an ELF file. To prevent others from
- * executing this library, and to keep the compiler/linker happy, we
- * define an empty _start symbol here.
- *
- * On the classic system (pre-AmigaOS4) this was usually done by
- * moveq #0,d0
- * rts
- *
- */
-
-#if defined(__amigaos4__) && !defined(__AROS__) && !defined(__MORPHOS__)
-#if !defined(__mc68000__)
-int32 _start(void)
-{
-  return RETURN_FAIL;
-}
-#else
-asm(".text                    \n\
-     .even                    \n\
-     .globl _start            \n\
-   _start:                    \n\
-     moveq #0,d0              \n\
-     rts");
-#endif
-#endif
 
 #if !defined(__amigaos4__)
 STATIC LONG LIBFUNC LibNull(VOID)
