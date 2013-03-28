@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2013-03-28 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/PrintString.c: fixed a redraw issue with bitmap backgrounds.
+
 2013-03-06 Thore Böckelmann <tboeckel@gmx.de>
 
   * include/mccinit.c, include/shellstart.c: rearranged the code to ensure that

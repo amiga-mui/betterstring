@@ -139,7 +139,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   }
 
   _rp(obj) = rport;
-  DoMethod(obj, MUIM_DrawBackground, 0+XOFF, 0+YOFF, _mwidth(obj), _mheight(obj), _mleft(obj), _mtop(obj), 0L);
+  DoMethod(obj, MUIM_DrawBackground, 0+XOFF, 0+YOFF, _mwidth(obj), _mheight(obj), _mleft(obj)-XOFF, _mtop(obj)-YOFF, 0L);
   _rp(obj) = oldrport;
 
   length = TextFit(rport, text, StrLength, &tExtend, NULL, 1, _mwidth(obj), _mheight(obj));
