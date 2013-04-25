@@ -5,8 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.25 RELEASE ###########################################################
+
 2013-04-25 Jens Langner <Jens.Langner@light-speed.de>
 
+  * misc: final 11.25 release preparations
   * mcp/BetterString_mcp.h: changed default colors for marked text to match the
     well-known defaults of string.mui.
 
