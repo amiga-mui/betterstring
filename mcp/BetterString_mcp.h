@@ -75,8 +75,13 @@ extern "C" {
 #define CFG_BetterString_InactiveBack_Def   "2:m2"
 #define CFG_BetterString_InactiveText_Def   "m4"
 #define CFG_BetterString_Cursor_Def         "m0"
+#if defined(__amigaos4__)
 #define CFG_BetterString_MarkedBack_Def     "m7"
+#define CFG_BetterString_MarkedText_Def     "m8"
+#else
+#define CFG_BetterString_MarkedBack_Def     "m5"
 #define CFG_BetterString_MarkedText_Def     "m0"
+#endif
 #define CFG_BetterString_SelectOnActive_Def FALSE
 #define CFG_BetterString_SelectPointer_Def  TRUE
 
