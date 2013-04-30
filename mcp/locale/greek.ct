@@ -3,6 +3,7 @@
 ## language greek
 ## codeset 0
 ;
+; Greek translation by Anthony Iliakis (phantom@amigafuture.de)
 ;
 ; BetterString_mcp.cd - BetterString MUI custom prefs catalog description file
 ; $Id$
@@ -22,6 +23,10 @@ MSG_Label_Background
 MSG_Label_Cursor
 Κέρσορας:
 ; Cursor:
+;
+;MSG_Label_Frame
+;Πλαίσιο:
+; Frame:
 ;
 MSG_Label_Inactive
 Ανενεργό:
@@ -88,7 +93,7 @@ Amiga + q
 ; Amiga + q
 ;
 MSG_Help_ToggleCaseChar
-Εναλλαγή παιζών/κεφαλαίων στον χαρακτήρα
+Εναλλαγή πεζών/κεφαλαίων στο χαρακτήρα
 ; Toggle case on character
 ;
 MSG_Help_ToggleCaseChar_Shortcut
@@ -96,7 +101,7 @@ Amiga + g
 ; Amiga + g
 ;
 MSG_Help_ToggleCaseWord
-Εναλλαγή παιζών/κεφαλαίων στην λέξη
+Εναλλαγή πεζών/κεφαλαίων στη λέξη
 ; Toggle case on word
 ;
 MSG_Help_ToggleCaseWord_Shortcut
@@ -168,7 +173,7 @@ SHIFT + BACKSPACE/DELETE
 ; SHIFT + BACKSPACE/DELETE
 ;
 MSG_Help_GotoToPrevNextWord
-Πηγαίνετε στην προηγούμενη/επόμενη λέξη
+Πηγαίνετε στη προηγούμενη/επόμενη λέξη
 ; Goto to previous/next word
 ;
 MSG_Help_GotoToPrevNextWord_Shortcut
@@ -176,7 +181,7 @@ ALT + κέρσορας
 ; ALT + cursor
 ;
 MSG_Help_DeleteToPrevNextWord
-Διαγράψτε την προηγούμενη/επόμενη λέξη
+Διαγράψτε τη προηγούμενη/επόμενη λέξη
 ; Delete previous/next word
 ;
 MSG_Help_DeleteToPrevNextWord_Shortcut
@@ -188,7 +193,9 @@ MSG_SelectOnActive
 ; Select on Active
 ;
 MSG_HELP_SelectOnActive
-Επιλογή όλου του κειμένου αυτόματα όταν ένα\n\αντικείμενο BetterString ενεργοποιείται μέσω της\n\κύλισης TAB ή την ενεργοποίηση του ποντικιού.
+Επιλογή όλου του κειμένου αυτόματα όταν ένα\n\
+αντικείμενο BetterString ενεργοποιείται μέσω της\n\
+κύλισης TAB ή την ενεργοποίηση του ποντικιού.
 ; Automatically select all text when a\n\
 ; BetterString object gets activated\n\
 ; via TAB cycling or mouse activation.
@@ -198,7 +205,8 @@ MSG_SelectPointer
 ; Selection Pointer
 ;
 MSG_HELP_SelectPointer
-Αν ενεργοποιηθεί, θα εμφανιστεί μια τροποποιημένη επιλογή δείκτη\n\όταν ο δείκτης του ποντικιού είναι πάνω από ένα αντικείμενο BetterString.
+Αν ενεργοποιηθεί, θα εμφανιστεί μια τροποποιημένη επιλογή δείκτη\n\
+όταν ο δείκτης του ποντικιού είναι πάνω από ένα αντικείμενο BetterString.
 ; If enabled, a custom selection pointer will appear\n\
 ; when the mouse pointer is above a betterstring gadget.
 ;
