@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2013-07-21 Jens Langner <Jens.Langner@light-speed.de>
+
+  * mcc/ClipboardServer.c: fixed a potential NULL pointer use when str had been
+    NULL and strlen() in StringToClipboard() was called.
+
 2013-04-30 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcp/locale/greek.ct: updated greek translation kindly provided by Antonis
