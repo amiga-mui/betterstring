@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.26 RELEASE ###########################################################
+
+2013-12-13 Jens Maus <mail@jens-maus.de>
+
+  * misc: final 11.26 release preparations
+
 2013-07-21 Jens Langner <Jens.Langner@light-speed.de>
 
   * mcc/ClipboardServer.c: fixed a potential NULL pointer use when str had been
