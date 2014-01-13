@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2014-01-13 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcp/locale/danish.ct: updated greek translation kindly provided by Niels
+    Bache.
+
 #### v11.26 RELEASE ###########################################################
 
 2013-12-13 Jens Maus <mail@jens-maus.de>
