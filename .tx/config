@@ -1,0 +1,15 @@
+[main]
+host = https://www.transifex.com
+
+[bstring-mcc.trunk]
+source_file = mcp/locale/BetterString_mcp.pot
+source_lang = en
+trans.cs = mcp/locale/czech.po
+trans.da = mcp/locale/danish.po
+trans.de = mcp/locale/german.po
+trans.el = mcp/locale/greek.po
+trans.fr = mcp/locale/french.po
+trans.it = mcp/locale/italian.po
+trans.pl = mcp/locale/polish.po
+trans.ru = mcp/locale/russian.po
+trans.sv = mcp/locale/swedish.po
