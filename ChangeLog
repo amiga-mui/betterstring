@@ -7,6 +7,8 @@ $URL$
 
 2014-03-20 Jens Maus <mail@jens-maus.de>
 
+  * tools/mkrelease.sh: modified release script to dynamically identify all
+    catalogs to be included in the release archive.
   * mcc/FileNameCompl.c: added <dos/obsolete.h> which is required for the OS4
     build with newer SDKs.
   * mcp/locale/dutch.po: added new dutch translation
