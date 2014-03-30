@@ -2,7 +2,6 @@
 # $Id$
 # 
 # version 2
-# language english
 # Translators:
 msgid ""
 msgstr ""
