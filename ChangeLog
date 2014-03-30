@@ -5,8 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
-2014-03-20 Jens Maus <mail@jens-maus.de>
+#### v11.27 RELEASE ###########################################################
 
+2014-03-30 Jens Maus <mail@jens-maus.de>
+
+  * misc: final 11.27 release preparations
   * tools/mkrelease.sh: modified release script to dynamically identify all
     catalogs to be included in the release archive.
   * mcc/FileNameCompl.c: added <dos/obsolete.h> which is required for the OS4
