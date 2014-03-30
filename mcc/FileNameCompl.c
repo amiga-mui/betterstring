@@ -30,6 +30,10 @@
 #include <proto/utility.h>
 #include <proto/dos.h>
 
+#if defined(__amigaos4__)
+#include <dos/obsolete.h>
+#endif
+
 #include "private.h"
 
 #include "Debug.h"
