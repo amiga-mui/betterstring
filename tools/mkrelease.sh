@@ -63,7 +63,7 @@ for language in `ls mcp/locale/*.catalog`; do
   catalog=$(basename "$language")
   lang="${catalog%.*}"
   mkdir -p "release/MCC_BetterString/Locale/Catalogs/${lang}"
-  cp -a ${language} "release/MCC_BetterString/Locale/Catalogs/${lang}"
+  cp -a ${language} "release/MCC_BetterString/Locale/Catalogs/${lang}/BetterString_mcp.catalog"
 done
 
 cp -a -R dist/* "release/"
