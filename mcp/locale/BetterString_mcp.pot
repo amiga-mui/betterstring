@@ -1,7 +1,9 @@
 # Translation catalog description file (pot-style)
 # $Id$
-# 
+#
 # version 2
+# Translators:
+# Translators:
 # Translators:
 msgid ""
 msgstr ""
@@ -14,6 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Catalog-Name: BetterString_mcp\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
