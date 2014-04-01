@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2014-04-01 Jens Maus <mail@jens-maus.de>
+
+  * tools/mkrelease.sh: fixed a problem where the release script didn't rename
+    the catalog files correctly to "BetterString_mcp.catalog". This fixes #18.
+
 #### v11.27 RELEASE ###########################################################
 
 2014-03-30 Jens Maus <mail@jens-maus.de>
