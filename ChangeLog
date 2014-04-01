@@ -5,6 +5,11 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2014-04-01 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcp/locale: added a new header line to the .po files to specify a correct
+    name for the generated .catalog file. This fixes #18.
+
 2014-04-01 Jens Maus <mail@jens-maus.de>
 
   * tools/mkrelease.sh: fixed a problem where the release script didn't rename
