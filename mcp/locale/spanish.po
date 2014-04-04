@@ -3,9 +3,6 @@
 # 
 # version 2
 # Translators:
-# Translators:
-# Translators:
-# Translators:
 # Javier Rivas <jabierdlr@gmail.com>, 2014
 msgid ""
 msgstr ""

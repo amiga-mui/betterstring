@@ -3,9 +3,6 @@
 # 
 # version 2
 # Translators:
-# Translators:
-# Translators:
-# Translators:
 # peguser <mobydick@amiga.org.ru>, 2014
 msgid ""
 msgstr ""
