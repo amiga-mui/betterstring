@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.28 RELEASE ###########################################################
+
+2014-04-04 Jens Maus <mail@jens-maus.de>
+
+  * misc: final 11.28 release preparations
+
 2014-04-01 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcp/locale: added a new header line to the .po files to specify a correct

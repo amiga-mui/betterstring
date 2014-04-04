@@ -3,9 +3,6 @@
 # 
 # version 2
 # Translators:
-# Translators:
-# Translators:
-# Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: MCC BetterString\n"
