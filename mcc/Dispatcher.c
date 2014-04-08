@@ -44,7 +44,10 @@ static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
     {
       struct TagItem *tag;
 
-      set(obj, MUIA_FillArea, FALSE);
+      SetAttrs(obj,
+        MUIA_FillArea, FALSE,
+        MUIA_PointerType, MUIV_PointerType_Text,
+        TAG_DONE);
 
       // muimaster V20 is MUI 3.9
       data->mui39 = LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 0);
@@ -261,7 +264,7 @@ static IPTR mSetup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
   if(DoSuperMethodA(cl, obj, (Msg)rinfo))
   {
     // tell MUI we know how to indicate the active state
-    _flags(obj) |= (1<<7);
+    _flags(obj) |= MADF_KNOWSACTIVE;
 
     // remember that we went through MUIM_Setup
     setFlag(data->Flags, FLG_Setup);
@@ -272,8 +275,9 @@ static IPTR mSetup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
     data->ehnode.ehn_Class    = cl;
     data->ehnode.ehn_Events   = IDCMP_MOUSEBUTTONS | IDCMP_RAWKEY;
 
-    // setup the selection pointer
-    if(data->SelectPointer == TRUE)
+    // setup the selection pointer if this is requested and MUI doesn't already
+    // handle this for us
+    if(data->SelectPointer == TRUE && xget(obj, MUIA_PointerType) == MUIV_PointerType_Normal)
     {
       data->ehnode.ehn_Events |= IDCMP_MOUSEMOVE;
       SetupSelectPointer(data);

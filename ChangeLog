@@ -11,6 +11,9 @@ $URL$
     event handler in case the IDCMP flags changed. MUI already internally takes
     care of changed IDCMP masks without the need to temporarily disable the
     event handler.
+  * mcc/Dispatcher.c, mcp/CreatePrefsGroup.c: disable the custom selection
+    pointer if MUI already handles this. The selection pointer can then be
+    globally enabled/disabled in MUI prefs (AmigaOS only).
 
 #### v11.28 RELEASE ###########################################################
 
