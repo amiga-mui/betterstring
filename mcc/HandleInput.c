@@ -1293,7 +1293,12 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           // forget the pressed mouse button
           clearFlag(data->Flags, FLG_MouseButtonDown);
 
-          clearFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
+          if(isFlagSet(data->ehnode.ehn_Flags, IDCMP_INTUITICKS)
+          {
+            DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
+            clearFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
+            DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
+          }
 
           // make sure to select the whole content in case the object was freshly activated
           // and the user just released the mousebutton (no matter if inside or outside)
@@ -1422,7 +1427,12 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             data->BlockStop = data->BufferPos;
             setFlag(data->Flags, FLG_BlockEnabled);
 
-            setFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
+            if(isFlagClear(data->ehnode.ehn_Flags, IDCMP_INTUITICKS)
+            {
+              DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
+              setFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
+              DoMethod(_win(obj), MUIM_Window_AddEventHandler, &data->ehnode);
+            }
 
             if(isFlagSet(data->Flags, FLG_Active))
               MUI_Redraw(obj, MADF_DRAWUPDATE);
