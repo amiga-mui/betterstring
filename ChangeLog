@@ -5,6 +5,13 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2014-04-08 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/HandleInput.c: eleminated the constant removing and readding of the
+    event handler in case the IDCMP flags changed. MUI already internally takes
+    care of changed IDCMP masks without the need to temporarily disable the
+    event handler.
+
 #### v11.28 RELEASE ###########################################################
 
 2014-04-04 Jens Maus <mail@jens-maus.de>
