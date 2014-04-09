@@ -1293,7 +1293,7 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
           // forget the pressed mouse button
           clearFlag(data->Flags, FLG_MouseButtonDown);
 
-          if(isFlagSet(data->ehnode.ehn_Flags, IDCMP_INTUITICKS))
+          if(isFlagSet(data->ehnode.ehn_Events, IDCMP_INTUITICKS))
           {
             DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
             clearFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
@@ -1427,7 +1427,7 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
             data->BlockStop = data->BufferPos;
             setFlag(data->Flags, FLG_BlockEnabled);
 
-            if(isFlagClear(data->ehnode.ehn_Flags, IDCMP_INTUITICKS))
+            if(isFlagClear(data->ehnode.ehn_Events, IDCMP_INTUITICKS))
             {
               DoMethod(_win(obj), MUIM_Window_RemEventHandler, &data->ehnode);
               setFlag(data->ehnode.ehn_Events, IDCMP_INTUITICKS);
