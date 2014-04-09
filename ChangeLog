@@ -5,6 +5,15 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2014-04-09 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcc/HandleInput.c: added a missing end of string check when double/tripple
+    clicking the contents. This might have caused BetterString.mcc to enter an
+    endless loop. Thanks to Mikhail Malyshev for the hint. Please note however
+    that the used russian locale to trigger this bug causes some other issues
+    which prevent BetterString.mcc from marking to the correct portion of the
+    contents as a word. This is beyond the scope of BetterString.mcc.
+
 2014-04-08 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Dispatcher.c, mcp/CreatePrefsGroup.c: disable the custom selection
