@@ -1542,7 +1542,7 @@ IPTR mHandleInput(struct IClass *cl, Object *obj, struct MUIP_HandleEvent *msg)
 
               if(newpos >= data->BlockStart)
               {
-                while(IsAlNum(data->locale, (UBYTE)*(data->Contents+newpos)))
+                while(IsAlNum(data->locale, (UBYTE)*(data->Contents+newpos)) && *(data->Contents+newpos) != '\0')
                   newpos++;
               }
               else
