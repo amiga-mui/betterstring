@@ -5,6 +5,10 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+2014-08-27 Thore Böckelmann <tboeckel@gmx.de>
+
+  * mcp/locale/turkish.po: added turkish translation.
+
 2014-04-09 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/HandleInput.c: added a missing end of string check when double/tripple
