@@ -3,13 +3,14 @@
 # 
 # version 2
 # Translators:
+# Thore Böckelmann <tboeckel@gmx.de>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: MCC BetterString\n"
 "Report-Msgid-Bugs-To: http://sf.net/p/bstring-mcc/\n"
 "POT-Creation-Date: 2014-02-18 15:35+0100\n"
-"PO-Revision-Date: 2014-04-12 12:33+0000\n"
-"Last-Translator: tboeckel <tboeckel@gmx.de>\n"
+"PO-Revision-Date: 2014-08-27 17:54+0000\n"
+"Last-Translator: Thore Böckelmann <tboeckel@gmx.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/bstring-mcc/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
