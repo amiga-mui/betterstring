@@ -5,6 +5,12 @@ MUI BetterString MCC class - ChangeLog
 $Id$
 $URL$
 
+#### v11.29 RELEASE ###########################################################
+
+2015-03-21 Jens Maus <mail@jens-maus.de>
+
+  * misc: final 11.29 release preparations
+
 2014-08-27 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcp/locale/turkish.po: added turkish translation.
