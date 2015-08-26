@@ -1,0 +1,4 @@
+.obj_*/
+bin_*/
+mcp/locale.c
+mcp/locale.h
