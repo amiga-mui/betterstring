@@ -2,3 +2,7 @@
 bin_*/
 mcp/locale.c
 mcp/locale.h
+/release
+/mcp/locale/*.catalog
+/MCC_BetterString-*.lha
+/MCC_BetterString-*.readme

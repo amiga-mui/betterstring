@@ -2,7 +2,7 @@
 
  BetterString.mcc - A better String gadget MUI Custom Class
  Copyright (C) 1997-2000 Allan Odgaard
- Copyright (C) 2005-2015 BetterString.mcc Open Source Team
+ Copyright (C) 2005-2016 BetterString.mcc Open Source Team
 
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,11 @@
 
 #define BlockEnabled(data)  (isFlagSet((data)->Flags, FLG_BlockEnabled) && (data)->BlockStart != (data)->BlockStop)
 
-#if defined(__amigaos4__) || defined(__MORPHOS__)
+#if defined(__AROS__) || defined(__MORPHOS__)
+#define MySPrintf(buf, fmt, ...) \
+ ({ IPTR __args[] = { SDI_VACAST(__VA_ARGS__) }; \
+     RawDoFmt(fmt, __args, NULL, (STRPTR)buf); })
+#elif defined(__amigaos4__)
 static int VARARGS68K MySPrintf(char *buf, const char *fmt, ...)
 {
   VA_LIST args;
@@ -51,8 +55,6 @@ static int VARARGS68K MySPrintf(char *buf, const char *fmt, ...)
 
   return(strlen(buf));
 }
-#elif defined(__AROS__)
-#define MySPrintf __sprintf /* from amiga lib */
 #else
 static int STDARGS MySPrintf(char *buf, const char *fmt, ...)
 {

@@ -2,8 +2,14 @@
 MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
-$Id$
-$URL$
+#### v11.30 RELEASE ###########################################################
+
+2016-08-06 Jens Maus <mail@jens-maus.de>
+
+  * misc: final 11.30 release preparations
+  * mcc/HandleInput.c: updated MySPrintf() function to use a inline macros for
+    AROS and MORPHOS builds instead.
+  * include: updated SDI headers.
 
 #### v11.29 RELEASE ###########################################################
 
