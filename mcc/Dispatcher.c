@@ -32,22 +32,38 @@
 
 #include "private.h"
 
+#if !defined(__MORPHOS__)
+Object * VARARGS68K DoSuperNew(struct IClass *cl, Object *obj, ...)
+{
+  Object *rc;
+  VA_LIST args;
+
+  VA_START(args, obj);
+  #if defined(__AROS__)
+  rc = (Object *)DoSuperNewTagList(cl, obj, NULL, (struct TagItem *)VA_ARG(args, IPTR));
+  #else
+  rc = (Object *)DoSuperMethod(cl, obj, OM_NEW, VA_ARG(args, ULONG), NULL);
+  #endif
+  VA_END(args);
+
+  return rc;
+}
+#endif // !__MORPHOS
+
 static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
 {
   ENTER();
 
-  if((obj = (Object *)DoSuperMethodA(cl, obj, (Msg)msg)) != NULL)
+  if((obj = (Object *)DoSuperNew(cl, obj,
+    MUIA_FillArea, FALSE,
+    MUIA_PointerType, MUIV_PointerType_Text,
+    TAG_MORE, msg->ops_AttrList)) != NULL)
   {
     struct InstData *data = (struct InstData *)INST_DATA(cl, obj);
 
     if((data->Contents = AllocContentString(40)) != NULL)
     {
       struct TagItem *tag;
-
-      SetAttrs(obj,
-        MUIA_FillArea, FALSE,
-        MUIA_PointerType, MUIV_PointerType_Text,
-        TAG_DONE);
 
       // muimaster V20 is MUI 3.9
       data->mui39 = LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 0);
@@ -74,7 +90,7 @@ static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
   }
 
   RETURN(obj);
-  return((IPTR)obj);
+  return (IPTR)obj;
 }
 
 static IPTR mDispose(struct IClass *cl, Object *obj, Msg msg)
