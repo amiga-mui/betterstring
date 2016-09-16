@@ -6,6 +6,8 @@ MUI BetterString MCC class - ChangeLog
 
   * mcc/Dispatcher.c: added DoSuperNew() to be able to specify additional tags
     directly during OM_NEW instead of having to use SetAttrs() afterwards.
+  * mcc/PrintString.c: added one more check for non-input objects to avoid
+    drawing a cursor when none is desired.
 
 2016-09-07 Thore Böckelmann <tboeckel@gmx.de>
 

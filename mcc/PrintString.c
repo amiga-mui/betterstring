@@ -76,7 +76,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
   }
 
   SetFont(rport, _font(obj));
-  if(isFlagSet(data->Flags, FLG_Active) && BlockEnabled == FALSE)
+  if(isFlagSet(data->Flags, FLG_Active) && isFlagClear(data->Flags, FLG_NoInput) && BlockEnabled == FALSE)
   {
     char *c;
 
