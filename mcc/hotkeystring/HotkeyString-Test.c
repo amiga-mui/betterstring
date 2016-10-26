@@ -43,7 +43,7 @@ struct Library *KeymapBase = NULL;
 #else
 struct IntuitionBase *IntuitionBase = NULL;
 struct Library *MUIMasterBase = NULL;
-#if defined(__AROS__)
+#if defined(__AROS__) || defined(__amigaos3__)
 struct UtilityBase *UtilityBase = NULL;
 #else
 struct Library *UtilityBase = NULL;
