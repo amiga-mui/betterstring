@@ -111,7 +111,7 @@ int main(void)
     app =  ApplicationObject,
           MUIA_Application_Author,       "BetterString.mcc Open Source Team",
           MUIA_Application_Base,         "BetterString-Test",
-          MUIA_Application_Copyright     "Copyright (C) 2005-2017 BetterString.mcc Open Source Team",
+          MUIA_Application_Copyright,    "Copyright (C) 2005-2017 BetterString.mcc Open Source Team",
           MUIA_Application_Description,  "BetterString.mcc demonstration program",
           MUIA_Application_Title,        "BetterString-Test",
           MUIA_Application_Version,      "$VER: BetterString-Demo V1.0 (18.05.2007)",
