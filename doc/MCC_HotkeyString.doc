@@ -6,7 +6,7 @@ HotkeyString.mcc/MUIA_HotkeyString_Snoop
 HotkeyString.mcc/HotkeyString.mcc
 
     *******************************************************************
-    Copyright (C) 2005-2016 BetterString.mcc Open Source Team
+    Copyright (C) 2005-2017 BetterString.mcc Open Source Team
     $Id$
 
     HotkeyString.mcc is a subclass of BetterString.mcc, it overloads
