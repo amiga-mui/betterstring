@@ -300,7 +300,7 @@ BOOL FileNameComplete(Object *obj, BOOL backwards, struct InstData *data)
 
             if((control = (struct ExAllControl *)AllocDosObject(DOS_EXALLCONTROL, NULL)))
             {
-              char tokenized[sizeof(pattern) * 2 + 2];
+              TEXT tokenized[sizeof(pattern) * 2 + 2];
 
               if(ParsePatternNoCase(pattern, tokenized, sizeof(tokenized)) != -1)
                 control->eac_MatchString = tokenized;
