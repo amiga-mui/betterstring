@@ -2,6 +2,8 @@
 MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
+#### v11.31 RELEASE (special MUI 5.0-2017R3 release) ###########################
+
 2016-09-16 Thore Böckelmann <tboeckel@gmx.de>
 
   * mcc/Dispatcher.c: added DoSuperNew() to be able to specify additional tags
