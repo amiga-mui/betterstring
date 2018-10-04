@@ -2,6 +2,12 @@
 MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
+2018-10-04 Thore Böckelmann <tboeckel@gmx.de>
+
+  * PrintString.c: the inactive contents are displayed with 50% transparency in
+    case the system and the screen support this effect. Otherwise the usual
+    italic style is used.
+
 #### v11.32 RELEASE ###########################################################
 
 #### v11.31 RELEASE (special MUI 5.0-2017R3 release) ##########################

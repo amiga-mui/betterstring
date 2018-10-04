@@ -134,6 +134,7 @@ struct InstData
 #define FLG_Setup                  (1L << 21) // successful MUIM_Setup
 #define FLG_WindowSleepNotifyAdded (1L << 22) // notify for MUIA_Window_Sleep was added
 #define FLG_DummyNotifyAdded       (1L << 23) // dummy notify was added
+#define FLG_Truecolor              (1L << 24) // we live on a truecolor screen
 
 // private attributes
 #define MUIA_BetterString_InternalSelectOnActive   0xad002000UL

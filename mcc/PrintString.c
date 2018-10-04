@@ -25,6 +25,7 @@
 
 #include <clib/alib_protos.h>
 #include <graphics/gfxmacros.h>
+#include <graphics/rpattr.h>
 #include <proto/intuition.h>
 #include <proto/graphics.h>
 #include <proto/muimaster.h>
@@ -196,14 +197,43 @@ VOID PrintString(struct IClass *cl, Object *obj)
       length -= newlength + (Blk_Start-data->DisplayPos);
     }
 
-    // switch to italic style if the inactive text is to be displayed
     if(showInactiveContents == TRUE)
     {
-      SetSoftStyle(rport, FSF_ITALIC, AskSoftStyle(rport));
-      textcolor = _pens(obj)[MPEN_SHADOW];
+      // transparent text is supported on certain platforms only
+      #if defined(__amigaos4__) || defined(__MORPHOS__) || defined(__AROS__)
+      if(isFlagSet(data->Flags, FLG_Truecolor))
+      {
+        ULONG rgb3[3];
+        ULONG color;
+
+        GetRGB32(_screen(obj)->ViewPort.ColorMap, MUIPEN(textcolor), 1, rgb3);
+        color = 0x80000000 | ((rgb3[0] >> 24) & 0xff) << 16 | ((rgb3[1] >> 24) & 0xff) << 8 | ((rgb3[2] >> 24) & 0xff) << 0;
+
+        SetRPAttrs(rport,
+          #if defined(__MORPHOS__)
+          RPTAG_PenMode,   FALSE,
+          RPTAG_AlphaMode, FALSE,
+          #endif
+          #if defined(__amigaos4__)
+          RPTAG_APenColor, color,
+          #else
+          RPTAG_FgColor,   color,
+          #endif
+          TAG_DONE);
+      }
+      else
+      #endif
+      {
+        // switch to italic style if the system or the screen does not support alpha blended text
+        SetSoftStyle(rport, FSF_ITALIC, AskSoftStyle(rport));
+        SetAPen(rport, MUIPEN(_pens(obj)[MPEN_SHADOW]));
+      }
+    }
+    else
+    {
+      SetAPen(rport, MUIPEN(textcolor));
     }
 
-    SetAPen(rport, MUIPEN(textcolor));
     Text(rport, text, length);
 
     // switch back to normal style

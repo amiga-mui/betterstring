@@ -275,6 +275,11 @@ static IPTR mSetup(struct IClass *cl, Object *obj, struct MUI_RenderInfo *rinfo)
 
   ENTER();
 
+  if(GetBitMapAttr(_screen(obj)->RastPort.BitMap, BMA_DEPTH) > 8)
+    setFlag(data->Flags, FLG_Truecolor);
+  else
+    clearFlag(data->Flags, FLG_Truecolor);
+
   InitConfig(obj, data);
 
   if(DoSuperMethodA(cl, obj, (Msg)rinfo))
