@@ -45,6 +45,10 @@ VOID SetWindowPointer( struct Window *win, Tag tag1, ... )
 struct Process *CreateNewProcTags( ULONG tag1, ... )
 { return CreateNewProc((struct TagItem *)&tag1); }
 
+#include <proto/graphics.h>
+VOID SetRPAttrs( struct RastPort *rp, Tag tag1, ... )
+{ SetRPAttrsA(rp, (struct TagItem *)&tag1); }
+
 #else
   #error "VARGS stubs are only save on m68k systems!"
 #endif

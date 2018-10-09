@@ -349,4 +349,18 @@ struct  MUIP_WhichPointerType   { ULONG MethodID; LONG mx; LONG my; };
 #define MUIV_PointerType_Text   30
 #endif
 
+#if defined(__amigaos3__)
+#ifndef RPTAG_PenMode
+#define RPTAG_PenMode         0x80000080
+#endif
+
+#ifndef RPTAG_FgColor
+#define RPTAG_FgColor         0x80000081
+#endif
+
+#ifndef RPTAG_BgColor
+#define RPTAG_BgColor         0x80000082
+#endif
+#endif // __amigaos3__
+
 #endif /* BETTERSTRING_MCC_PRIV_H */

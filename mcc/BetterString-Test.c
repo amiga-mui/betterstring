@@ -40,6 +40,7 @@ struct Library *LayersBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *UtilityBase = NULL;
 struct Library *KeymapBase = NULL;
+struct Library *CyberGfxBase = NULL;
 #elif defined(__MORPHOS__)
 struct Library *DiskfontBase = NULL;
 struct Library *GfxBase = NULL;
@@ -49,6 +50,7 @@ struct Library *LayersBase = NULL;
 struct Library *LocaleBase = NULL;
 struct Library *UtilityBase = NULL;
 struct Library *KeymapBase = NULL;
+struct Library *CyberGfxBase = NULL;
 #else
 struct Library *DiskfontBase = NULL;
 struct Library *GfxBase = NULL;
@@ -62,6 +64,7 @@ struct UtilityBase *UtilityBase = NULL;
 struct Library *UtilityBase = NULL;
 #endif
 struct Library *KeymapBase = NULL;
+struct Library *CyberGfxBase = NULL;
 #endif
 
 #if defined(__amigaos4__)
@@ -73,6 +76,7 @@ struct LayersIFace *ILayers = NULL;
 struct LocaleIFace *ILocale = NULL;
 struct UtilityIFace *IUtility = NULL;
 struct KeymapIFace *IKeymap = NULL;
+struct CyberGfxIFace *ICyberGfx = NULL;
 #endif
 
 DISPATCHERPROTO(_Dispatcher);
@@ -95,6 +99,8 @@ int main(void)
     GETINTERFACE(IUtility, UtilityBase))
   if((MUIMasterBase = OpenLibrary("muimaster.library", MUIMASTER_VMIN)) &&
     GETINTERFACE(IMUIMaster, MUIMasterBase))
+  if((CyberGfxBase = OpenLibrary("cybergraphics.library", 41)) &&
+    GETINTERFACE(ICyberGfx, CyberGfxBase))
   if(StartClipboardServer() == TRUE)
   if(CreateSharedPool() == TRUE)
   {
@@ -303,6 +309,13 @@ int main(void)
 
   DeleteSharedPool();
   ShutdownClipboardServer();
+
+  if(CyberGfxBase)
+  {
+    DROPINTERFACE(ICyberGfx);
+    CloseLibrary(CyberGfxBase);
+    CyberGfxBase = NULL;
+  }
 
   if(UtilityBase)
   {

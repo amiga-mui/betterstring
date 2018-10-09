@@ -26,9 +26,15 @@
 #include <clib/alib_protos.h>
 #include <graphics/gfxmacros.h>
 #include <graphics/rpattr.h>
+#include <proto/exec.h>
 #include <proto/intuition.h>
 #include <proto/graphics.h>
 #include <proto/muimaster.h>
+
+#if defined(__amigaos3__)
+#include <cybergraphx/cybergraphics.h>
+#include <proto/cybergraphics.h>
+#endif
 
 #include "private.h"
 
@@ -37,8 +43,90 @@
 // kerning values and hence the Text() function might trash innocent
 // memory, or in case of AfAOS' Text() replacement nothing will be
 // drawn at all.
-#define XOFF	10
-#define YOFF	0
+#define XOFF  10
+#define YOFF  0
+
+#if defined(__amigaos3__)
+static void reconstructAlpha(ULONG *pix, ULONG width, ULONG height, ULONG text, ULONG back)
+{
+  LONG tr = (text >> 16) & 0xff;
+  LONG tg = (text >>  8) & 0xff;
+  LONG tb = (text >>  0) & 0xff;
+  LONG br = (back >> 16) & 0xff;
+  LONG bg = (back >>  8) & 0xff;
+  LONG bb = (back >>  0) & 0xff;
+  // calculate the difference between text and background color
+  LONG tmb_r = tr - br;
+  LONG tmb_g = tg - bg;
+  LONG tmb_b = tb - bb;
+  ULONG i;
+
+  for(i = 0; i < width*height; i++)
+  {
+    ULONG p = *pix & 0x00ffffff;
+
+    if(p == text)
+    {
+      // text is always opaque
+      p |= 0xff000000;
+    }
+    else if(p != back)
+    {
+      // reconstruct the alpha value for all non-background pixels from the
+      // difference between the current color and the background color in
+      // respect to the text color
+      LONG r = (p >> 16) & 0xff;
+      LONG g = (p >>  8) & 0xff;
+      LONG b = (p >>  0) & 0xff;
+      LONG p_r = ((r - br) * 0xff) / tmb_r;
+      LONG p_g = ((g - bg) * 0xff) / tmb_g;
+      LONG p_b = ((b - bb) * 0xff) / tmb_b;
+
+      p |= (((p_r + p_g + p_b) / 3) << 24);
+    }
+
+    *pix++ = p;
+  }
+}
+
+static void AlphaText(struct RastPort *rp, const char *txt, LONG len, ULONG fgcolor, ULONG alpha)
+{
+  struct TextExtent te;
+  struct BitMap *bm;
+  LONG w;
+  LONG h;
+
+  TextExtent(rp, txt, len, &te);
+  // use a one pixel border around the text to ensure we have at least one background colored pixel
+  w = te.te_Width+2;
+  h = te.te_Height+2;
+  if((bm = AllocBitMap(w, h, 32, BMF_CLEAR|BMF_MINPLANES|BMF_DISPLAYABLE, rp->BitMap)) != NULL)
+  {
+    struct RastPort _rp;
+    ULONG *pix;
+
+    _rp = *rp;
+    _rp.BitMap = bm;
+    _rp.Layer = NULL;
+
+    Move(&_rp, 1, _rp.TxBaseline+1);
+    Text(&_rp, txt, len);
+
+    if((pix = AllocVec(w * h * sizeof(ULONG), MEMF_ANY)) != NULL)
+    {
+      ReadPixelArray(pix, 0, 0, w*4, &_rp, 0, 0, w, h, RECTFMT_ARGB);
+      reconstructAlpha(pix, w, h, fgcolor, pix[0] & 0x00ffffff);
+      WritePixelArrayAlpha(pix, 1, 1, w*4, rp, rp->cp_x, rp->cp_y - rp->TxBaseline, te.te_Width, te.te_Height, alpha);
+
+      FreeVec(pix);
+    }
+
+    FreeBitMap(bm);
+  }
+
+  Move(rp, rp->cp_x + te.te_Width, rp->cp_y);
+}
+#endif
 
 VOID PrintString(struct IClass *cl, Object *obj)
 {
@@ -199,8 +287,6 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
     if(showInactiveContents == TRUE)
     {
-      // transparent text is supported on certain platforms only
-      #if defined(__amigaos4__) || defined(__MORPHOS__) || defined(__AROS__)
       if(isFlagSet(data->Flags, FLG_Truecolor))
       {
         ULONG rgb3[3];
@@ -220,21 +306,29 @@ VOID PrintString(struct IClass *cl, Object *obj)
           RPTAG_FgColor,   color,
           #endif
           TAG_DONE);
+
+        #if defined(__amigaos3__)
+        if(CyberGfxBase != NULL)
+          AlphaText(rport, text, length, color, 0x80000000);
+        else
+          Text(rport, text, length);
+        #else
+        Text(rport, text, length);
+        #endif
       }
       else
-      #endif
       {
         // switch to italic style if the system or the screen does not support alpha blended text
         SetSoftStyle(rport, FSF_ITALIC, AskSoftStyle(rport));
         SetAPen(rport, MUIPEN(_pens(obj)[MPEN_SHADOW]));
+        Text(rport, text, length);
       }
     }
     else
     {
       SetAPen(rport, MUIPEN(textcolor));
+      Text(rport, text, length);
     }
-
-    Text(rport, text, length);
 
     // switch back to normal style
     if(showInactiveContents == TRUE)

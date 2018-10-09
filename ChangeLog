@@ -2,6 +2,12 @@
 MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
+2018-10-09 Thore Böckelmann <tboeckel@gmx.de>
+
+  * PrintString.c: integrated the display of transparent text for AmigaOS3 as
+    known from MUI5 for AmigaOS. Now the alternative text can be displayed with
+    50% transparency on AmigaOS3, too.
+
 2018-10-04 Thore Böckelmann <tboeckel@gmx.de>
 
   * PrintString.c: the inactive contents are displayed with 50% transparency in
