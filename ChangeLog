@@ -2,6 +2,8 @@
 MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
+#### v11.33 RELEASE ###########################################################
+
 2018-10-09 Thore Böckelmann <tboeckel@gmx.de>
 
   * PrintString.c: integrated the display of transparent text for AmigaOS3 as
