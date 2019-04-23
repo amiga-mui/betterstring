@@ -3,210 +3,211 @@
 # 
 # version 2
 # Translators:
+# Gabriel Sokol <falco2@stonline.sk>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: MCC BetterString\n"
 "Report-Msgid-Bugs-To: http://sf.net/p/bstring-mcc/\n"
 "POT-Creation-Date: 2014-02-18 15:35+0100\n"
-"PO-Revision-Date: 2014-02-18 14:47+0000\n"
-"Last-Translator: damato <mail@jens-maus.de>\n"
+"PO-Revision-Date: 2019-04-07 02:49+0000\n"
+"Last-Translator: Gabriel Sokol <falco2@stonline.sk>\n"
 "Language-Team: Slovak (http://www.transifex.com/ato/bstring-mcc/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Catalog-Name: BetterString_mcp\n"
 "Language: sk\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "MSG_Label_Active (0//)"
 msgid "Active:"
-msgstr ""
+msgstr "Aktívne:"
 
 msgctxt "MSG_Label_Background (1//)"
 msgid "Background"
-msgstr ""
+msgstr "Pozadie"
 
 msgctxt "MSG_Label_Cursor (2//)"
 msgid "Cursor:"
-msgstr ""
+msgstr "Kurzor:"
 
 msgctxt "MSG_Label_Inactive (5//)"
 msgid "Inactive:"
-msgstr ""
+msgstr "Neaktívne:"
 
 msgctxt "MSG_Label_Marked (6//)"
 msgid "Marked:"
-msgstr ""
+msgstr "Označené:"
 
 msgctxt "MSG_Label_Text (7//)"
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 msgctxt "MSG_String_TestString (8//)"
 msgid "Test the power of BetterString here!"
-msgstr ""
+msgstr "Vyskúšajte možnosti BetterString !"
 
 msgctxt "MSG_Help_Copy (9//)"
 msgid "Copy all or marked text"
-msgstr ""
+msgstr "Skopíruje všetko alebo označí text"
 
 msgctxt "MSG_Help_Copy_Shortcut (10//)"
 msgid "Amiga + c"
-msgstr ""
+msgstr "Amiga + c"
 
 msgctxt "MSG_Help_Cut (11//)"
 msgid "Cut all or marked text"
-msgstr ""
+msgstr "Vystrihne všetko alebo označí text"
 
 msgctxt "MSG_Help_Cut_Shortcut (12//)"
 msgid "Amiga + x"
-msgstr ""
+msgstr "Amiga + x"
 
 msgctxt "MSG_Help_Paste (13//)"
 msgid "Paste"
-msgstr ""
+msgstr "Vloží"
 
 msgctxt "MSG_Help_Paste_Shortcut (14//)"
 msgid "Amiga + v"
-msgstr ""
+msgstr "Amiga + v"
 
 msgctxt "MSG_Help_Undo (15//)"
 msgid "Undo last deletion"
-msgstr ""
+msgstr "Vráti späť poslednú zmenu"
 
 msgctxt "MSG_Help_Undo_Shortcut (16//)"
 msgid "Amiga + z"
-msgstr ""
+msgstr "Amiga + z"
 
 msgctxt "MSG_Help_Redo (17//)"
 msgid "Redo last deletion"
-msgstr ""
+msgstr "Odvolá späť poslednú zmenu"
 
 msgctxt "MSG_Help_Redo_Shortcut (18//)"
 msgid "Amiga + Z"
-msgstr ""
+msgstr "Amiga + Z"
 
 msgctxt "MSG_Help_ToggleBuffer (19//)"
 msgid "Toggle between original and modified buffer"
-msgstr ""
+msgstr "Prepne medzi originálnym na zmeneným obsahom"
 
 msgctxt "MSG_Help_ToggleBuffer_Shortcut (20//)"
 msgid "Amiga + q"
-msgstr ""
+msgstr "Amiga + q"
 
 msgctxt "MSG_Help_ToggleCaseChar (21//)"
 msgid "Toggle case on character"
-msgstr ""
+msgstr "Prepne veľkosť písmena"
 
 msgctxt "MSG_Help_ToggleCaseChar_Shortcut (22//)"
 msgid "Amiga + g"
-msgstr ""
+msgstr "Amiga + g"
 
 msgctxt "MSG_Help_ToggleCaseWord (23//)"
 msgid "Toggle case on word"
-msgstr ""
+msgstr "Prepne veľkosť slova"
 
 msgctxt "MSG_Help_ToggleCaseWord_Shortcut (24//)"
 msgid "Amiga + G"
-msgstr ""
+msgstr "Amiga + G"
 
 msgctxt "MSG_Help_IncreaseNumber (25//)"
 msgid "Increase number"
-msgstr ""
+msgstr "K aktuálnej hodnote pričíta jednotku"
 
 msgctxt "MSG_Help_IncreaseNumber_Shortcut (26//)"
 msgid "Amiga + i"
-msgstr ""
+msgstr "Amiga + i"
 
 msgctxt "MSG_Help_DecreaseNumber (27//)"
 msgid "Decrease number"
-msgstr ""
+msgstr "Od aktuálnej hodnoty odčíta jednotku"
 
 msgctxt "MSG_Help_DecreaseNumber_Shortcut (28//)"
 msgid "Amiga + d"
-msgstr ""
+msgstr "Amiga + d"
 
 msgctxt "MSG_Help_HexToDecimal (29//)"
 msgid "Hex to Decimal"
-msgstr ""
+msgstr "Preloží HEXa tvar na DECimálny tvar"
 
 msgctxt "MSG_Help_HexToDecimal_Shortcut (30//)"
 msgid "Amiga + #"
-msgstr ""
+msgstr "Amiga + #"
 
 msgctxt "MSG_Help_DecimalToHex (31//)"
 msgid "Decimal to Hex"
-msgstr ""
+msgstr "Preloží DECimálny tvat na HEXa tvar"
 
 msgctxt "MSG_Help_DecimalToHex_Shortcut (32//)"
 msgid "Amiga + $"
-msgstr ""
+msgstr "Amiga + $"
 
 msgctxt "MSG_Help_FilenameCompletition (33//)"
 msgid "Filenamecompletion (use SHIFT to cycle back)"
-msgstr ""
+msgstr "Postupné doplnenie názvu súboru (pomocou SHIFT + back)"
 
 msgctxt "MSG_Help_FilenameCompletition_Shortcut (34//)"
 msgid "Amiga + TAB"
-msgstr ""
+msgstr "Amiga + TAB"
 
 msgctxt "MSG_Help_Mark (35//)"
 msgid "Mark"
-msgstr ""
+msgstr "Označ"
 
 msgctxt "MSG_Help_Mark_Shortcut (36//)"
 msgid "CTRL + cursor"
-msgstr ""
+msgstr "CTRL + Kurzor"
 
 msgctxt "MSG_Help_GotoToStartEndOfLine (37//)"
 msgid "Goto to start/end of line"
-msgstr ""
+msgstr "Prejde na začiatok/koniec riadka"
 
 msgctxt "MSG_Help_GotoToStartEndOfLine_Shortcut (38//)"
 msgid "SHIFT + cursor"
-msgstr ""
+msgstr "SHIFT + Kurzor"
 
 msgctxt "MSG_Help_DeleteToStartEndOfLine (39//)"
 msgid "Delete to start/end of line"
-msgstr ""
+msgstr "Zmaže začiatok/koniec riadka"
 
 msgctxt "MSG_Help_DeleteToStartEndOfLine_Shortcut (40//)"
 msgid "SHIFT + BACKSPACE/DELETE"
-msgstr ""
+msgstr "SHIFT + BACKSPACE/DELETE"
 
 msgctxt "MSG_Help_GotoToPrevNextWord (41//)"
 msgid "Goto to previous/next word"
-msgstr ""
+msgstr "Prejde na predošlé/ďaľšie slovo"
 
 msgctxt "MSG_Help_GotoToPrevNextWord_Shortcut (42//)"
 msgid "ALT + cursor"
-msgstr ""
+msgstr "ALT + Kurzor"
 
 msgctxt "MSG_Help_DeleteToPrevNextWord (43//)"
 msgid "Delete previous/next word"
-msgstr ""
+msgstr "Zmaže predošlé/ďaľšie slovo"
 
 msgctxt "MSG_Help_DeleteToPrevNextWord_Shortcut (44//)"
 msgid "ALT + BACKSPACE/DELETE"
-msgstr ""
+msgstr "ALT + BACKSPACE/DELETE"
 
 msgctxt "MSG_SelectOnActive (45//)"
 msgid "Select on Active"
-msgstr ""
+msgstr "Voľba na aktívne"
 
 msgctxt "MSG_HELP_SelectOnActive (46//)"
 msgid ""
 "Automatically select all text when a\n"
 "BetterString object gets activated\n"
 "via TAB cycling or mouse activation."
-msgstr ""
+msgstr "Automaticky vyberie všetok text, keď\npríde k aktivácii BetterString objektu\npomocou klávesy TAB alebo activáciou myši."
 
 msgctxt "MSG_SelectPointer (47//)"
 msgid "Selection Pointer"
-msgstr ""
+msgstr "Zmení šípku na kurzor"
 
 msgctxt "MSG_HELP_SelectPointer (48//)"
 msgid ""
 "If enabled, a custom selection pointer will appear\n"
 "when the mouse pointer is above a betterstring gadget."
-msgstr ""
+msgstr "Týmto zapnete zmenu vzhľadu šípky myši \nna kurzor keď prejdete myšou na BetterString prvok."
