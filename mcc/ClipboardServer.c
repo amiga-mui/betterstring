@@ -454,10 +454,11 @@ BOOL StartClipboardServer(void)
     if(serverProcess !=  NULL)
     {
       // we use one global reply port with a static signal bit
+      memset( &replyPort, 0, sizeof( replyPort ) );
       replyPort.mp_Node.ln_Type = NT_MSGPORT;
-      NewList(&replyPort.mp_MsgList);
       replyPort.mp_SigBit = SIGB_SINGLE;
       replyPort.mp_SigTask = FindTask(NULL);
+      NewList(&replyPort.mp_MsgList);
 
       msg.mn_ReplyPort = &replyPort;
       msg.mn_Node.ln_Name = (STRPTR)NULL;
