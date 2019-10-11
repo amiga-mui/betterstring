@@ -2,6 +2,11 @@
 MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
+2019-10-11 Thore Böckelmann <tboeckel@gmx.de>
+
+  * PrintString.c: fixed a possible division by zero bug during alpha channel
+    reconstruction. This refs #5.
+
 #### v11.33 RELEASE ###########################################################
 
 2018-10-09 Thore Böckelmann <tboeckel@gmx.de>

@@ -78,9 +78,9 @@ static void reconstructAlpha(ULONG *pix, ULONG width, ULONG height, ULONG text, 
       LONG r = (p >> 16) & 0xff;
       LONG g = (p >>  8) & 0xff;
       LONG b = (p >>  0) & 0xff;
-      LONG p_r = ((r - br) * 0xff) / tmb_r;
-      LONG p_g = ((g - bg) * 0xff) / tmb_g;
-      LONG p_b = ((b - bb) * 0xff) / tmb_b;
+      LONG p_r = (tmb_r != 0) ? ((r - br) * 0xff) / tmb_r : 0;
+      LONG p_g = (tmb_g != 0) ? ((g - bg) * 0xff) / tmb_g : 0;
+      LONG p_b = (tmb_b != 0) ? ((b - bb) * 0xff) / tmb_b : 0;
 
       p |= (((p_r + p_g + p_b) / 3) << 24);
     }
