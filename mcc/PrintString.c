@@ -34,6 +34,27 @@
 #if defined(__amigaos3__)
 #include <cybergraphx/cybergraphics.h>
 #include <proto/cybergraphics.h>
+
+#ifndef RPTAG_PenMode
+#define RPTAG_PenMode         0x80000080
+#endif
+#ifndef RPTAG_FgColor
+#define RPTAG_FgColor         0x80000081
+#endif
+#ifndef RPTAG_BgColor
+#define RPTAG_BgColor         0x80000082
+#endif
+#endif
+
+#if defined(__amigaos4__)
+#define COLOR_TAGS(color)     RPTAG_APenColor, (color)
+#define PEN_TAGS(pen)         RPTAG_APen, (pen)
+#elif defined(__amigaos3__) || defined(__AROS__)
+#define COLOR_TAGS(color)     RPTAG_PenMode, FALSE, RPTAG_FgColor, (color)
+#define PEN_TAGS(pen)         RPTAG_PenMode, TRUE,  RPTAG_APen, (pen)
+#elif defined(__MORPHOS__)
+#define COLOR_TAGS(color)     RPTAG_AlphaMode, TRUE,  RPTAG_PenMode, FALSE, RPTAG_FgColor, (color)
+#define PEN_TAGS(pen)         RPTAG_AlphaMode, FALSE, RPTAG_PenMode, TRUE,  RPTAG_APen, (pen)
 #endif
 
 #include "private.h"
@@ -46,6 +67,7 @@
 #define XOFF  10
 #define YOFF  0
 
+void kprintf(const char *,...);
 #if defined(__amigaos3__)
 static void reconstructAlpha(ULONG *pix, ULONG width, ULONG height, ULONG text, ULONG back)
 {
@@ -61,14 +83,18 @@ static void reconstructAlpha(ULONG *pix, ULONG width, ULONG height, ULONG text, 
   LONG tmb_b = tb - bb;
   ULONG i;
 
+  //kprintf("%08lx %08lx\n", text, back);
+
   for(i = 0; i < width*height; i++)
   {
     ULONG p = *pix & 0x00ffffff;
+    //kprintf("%3ld %08lx", i, *pix);
 
     if(p == text)
     {
       // text is always opaque
       p |= 0xff000000;
+      //kprintf("   text");
     }
     else if(p != back)
     {
@@ -82,24 +108,27 @@ static void reconstructAlpha(ULONG *pix, ULONG width, ULONG height, ULONG text, 
       LONG p_g = (tmb_g != 0) ? ((g - bg) * 0xff) / tmb_g : 0;
       LONG p_b = (tmb_b != 0) ? ((b - bb) * 0xff) / tmb_b : 0;
 
-      p |= (((p_r + p_g + p_b) / 3) << 24);
+      p |= ((ULONG)((p_r + p_g + p_b) / 3) << 24);
+      //kprintf("   alpha %08lx", p);
     }
+    //else kprintf("   back");
+	//kprintf("\n");
 
     *pix++ = p;
   }
 }
 
-static void AlphaText(struct RastPort *rp, const char *txt, LONG len, ULONG fgcolor, ULONG alpha)
+static void AlphaText(struct InstData *data, struct MUI_RenderInfo *mri, const char *txt, LONG len, ULONG fgcolor, ULONG alpha)
 {
+  struct RastPort *rp = &data->rport;
   struct TextExtent te;
   struct BitMap *bm;
   LONG w;
   LONG h;
 
   TextExtent(rp, txt, len, &te);
-  // use a one pixel border around the text to ensure we have at least one background colored pixel
-  w = te.te_Width+2;
-  h = te.te_Height+2;
+  w = te.te_Width;
+  h = te.te_Height;
   if((bm = AllocBitMap(w, h, 32, BMF_CLEAR|BMF_MINPLANES|BMF_DISPLAYABLE, rp->BitMap)) != NULL)
   {
     struct RastPort _rp;
@@ -109,14 +138,19 @@ static void AlphaText(struct RastPort *rp, const char *txt, LONG len, ULONG fgco
     _rp.BitMap = bm;
     _rp.Layer = NULL;
 
-    Move(&_rp, 1, _rp.TxBaseline+1);
+	// prepare a completely white background
+    FillPixelArray(&_rp, 0, 0, w, h, 0xffffffff);
+    // draw the text with the desired color
+    SetRGB32(&mri->mri_Screen->ViewPort, data->exclusivePen, ARGB32_TO_RED(fgcolor) << 24, ARGB32_TO_GREEN(fgcolor) << 24, ARGB32_TO_BLUE(fgcolor) << 24);
+    SetRPAttrs(&_rp, PEN_TAGS(data->exclusivePen), TAG_DONE);
+    Move(&_rp, 0, _rp.TxBaseline);
     Text(&_rp, txt, len);
 
     if((pix = AllocVec(w * h * sizeof(ULONG), MEMF_ANY)) != NULL)
     {
       ReadPixelArray(pix, 0, 0, w*4, &_rp, 0, 0, w, h, RECTFMT_ARGB);
-      reconstructAlpha(pix, w, h, fgcolor, pix[0] & 0x00ffffff);
-      WritePixelArrayAlpha(pix, 1, 1, w*4, rp, rp->cp_x, rp->cp_y - rp->TxBaseline, te.te_Width, te.te_Height, alpha);
+      reconstructAlpha(pix, w, h, fgcolor & 0x00ffffff, /*pix[0] &*/ 0x00ffffff);
+      WritePixelArrayAlpha(pix, 0, 0, w*4, rp, rp->cp_x, rp->cp_y - rp->TxBaseline, te.te_Width, te.te_Height, alpha);
 
       FreeVec(pix);
     }
@@ -294,22 +328,11 @@ VOID PrintString(struct IClass *cl, Object *obj)
 
         GetRGB32(_screen(obj)->ViewPort.ColorMap, MUIPEN(textcolor), 1, rgb3);
         color = 0x80000000 | ((rgb3[0] >> 24) & 0xff) << 16 | ((rgb3[1] >> 24) & 0xff) << 8 | ((rgb3[2] >> 24) & 0xff) << 0;
-
-        SetRPAttrs(rport,
-          #if defined(__MORPHOS__)
-          RPTAG_PenMode,   FALSE,
-          RPTAG_AlphaMode, FALSE,
-          #endif
-          #if defined(__amigaos4__)
-          RPTAG_APenColor, color,
-          #else
-          RPTAG_FgColor,   color,
-          #endif
-          TAG_DONE);
+        SetRPAttrs(rport, COLOR_TAGS(color), TAG_DONE);
 
         #if defined(__amigaos3__)
-        if(CyberGfxBase != NULL)
-          AlphaText(rport, text, length, color, 0x80000000);
+        if(CyberGfxBase != NULL && data->exclusivePen != -1)
+          AlphaText(data, muiRenderInfo(obj), text, length, color, 0x80000000);
         else
           Text(rport, text, length);
         #else
@@ -320,13 +343,13 @@ VOID PrintString(struct IClass *cl, Object *obj)
       {
         // switch to italic style if the system or the screen does not support alpha blended text
         SetSoftStyle(rport, FSF_ITALIC, AskSoftStyle(rport));
-        SetAPen(rport, MUIPEN(_pens(obj)[MPEN_SHADOW]));
+        SetRPAttrs(rport, PEN_TAGS(MUIPEN(_pens(obj)[MPEN_SHADOW])), TAG_DONE);
         Text(rport, text, length);
       }
     }
     else
     {
-      SetAPen(rport, MUIPEN(textcolor));
+      SetRPAttrs(rport, PEN_TAGS(MUIPEN(textcolor)), TAG_DONE);
       Text(rport, text, length);
     }
 
@@ -356,7 +379,7 @@ VOID PrintString(struct IClass *cl, Object *obj)
     struct RastPort *rport = muiRenderInfo(obj)->mri_RastPort;
 
     SetAfPt(rport, GhostPattern, 1);
-    SetAPen(rport, _pens(obj)[MPEN_SHADOW]);
+    SetRPAttrs(rport, PEN_TAGS(MUIPEN(_pens(obj)[MPEN_SHADOW])), TAG_DONE);
     RectFill(rport, _left(obj), _top(obj), _right(obj), _bottom(obj));
     SetAfPt(rport, 0, 0);
   }
