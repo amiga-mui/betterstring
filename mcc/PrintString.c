@@ -67,7 +67,6 @@
 #define XOFF  10
 #define YOFF  0
 
-void kprintf(const char *,...);
 #if defined(__amigaos3__)
 static void reconstructAlpha(ULONG *pix, ULONG width, ULONG height, ULONG text, ULONG back)
 {
@@ -83,18 +82,14 @@ static void reconstructAlpha(ULONG *pix, ULONG width, ULONG height, ULONG text, 
   LONG tmb_b = tb - bb;
   ULONG i;
 
-  //kprintf("%08lx %08lx\n", text, back);
-
   for(i = 0; i < width*height; i++)
   {
     ULONG p = *pix & 0x00ffffff;
-    //kprintf("%3ld %08lx", i, *pix);
 
     if(p == text)
     {
       // text is always opaque
       p |= 0xff000000;
-      //kprintf("   text");
     }
     else if(p != back)
     {
@@ -109,10 +104,7 @@ static void reconstructAlpha(ULONG *pix, ULONG width, ULONG height, ULONG text, 
       LONG p_b = (tmb_b != 0) ? ((b - bb) * 0xff) / tmb_b : 0;
 
       p |= ((ULONG)((p_r + p_g + p_b) / 3) << 24);
-      //kprintf("   alpha %08lx", p);
     }
-    //else kprintf("   back");
-	//kprintf("\n");
 
     *pix++ = p;
   }
