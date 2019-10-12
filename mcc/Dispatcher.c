@@ -69,7 +69,10 @@ static IPTR mNew(struct IClass *cl, Object *obj, struct opSet *msg)
       data->mui39 = LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 0);
       // everything beyond muimaster 20.5500 is considered to be MUI4
       data->mui4x = LIB_VERSION_IS_AT_LEAST(MUIMasterBase, 20, 5500);
+
+      #if defined(__amigaos3__)
       data->exclusivePen = -1;
+      #endif
 
       data->locale = OpenLocale(NULL);
 
