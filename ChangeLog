@@ -2,10 +2,15 @@
 MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
+2019-10-15 Thore Böckelmann <tboeckel@gmx.de>
+
+  * PrintString.c: added a custom implementation of WritePixelArrayAlpha() in
+    case cybergraphics.library is older than V45. This refs #5.
+
 2019-10-12 Thore Böckelmann <tboeckel@gmx.de>
 
   * Dispatcher.c, PrintString.c: use an exclusively allocated pen on AmigaOS3
-    when printing transparent text. This finally closes #5.
+    when printing transparent text. This closes #5.
 
 2019-10-11 Thore Böckelmann <tboeckel@gmx.de>
 
