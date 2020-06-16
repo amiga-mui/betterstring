@@ -1,14 +1,11 @@
 #   $Id$
-include $(TOP)/config/make.cfg
+
+include $(SRCDIR)/config/aros.cfg
 
 #MM workbench-classes-zune-betterstring-class : includes linklibs
 
 #MM workbench-classes-zune-betterstring-test : \
 #MM workbench-classes-zune-betterstring-class includes linklibs
-
-# We need to use -idirafter, so that we
-# *don't* pick up the project's local MUI headers.
-USER_INCLUDES := -I$(SRCDIR)/$(CURDIR)/../mcp -idirafter $(SRCDIR)/$(CURDIR)/../include
 
 FILES := \
         AllocBitMap \
@@ -23,21 +20,22 @@ FILES := \
         PrintString \
         Debug
 
-%build_module_simple mmake=workbench-classes-zune-betterstring-class \
-  modname=BetterString modtype=mcc \
-  files="library $(FILES)" uselibs="amiga mui rom m"
-
-
-
-USER_INCLUDES = -idirafter $(SRCDIR)/$(CURDIR)/../include
-USER_CFLAGS := -DNO_INLINE_STDARG
+USER_INCLUDES := -idirafter $(SRCDIR)/$(CURDIR)/../include
+USER_CPPFLAGS := -DNO_INLINE_STDARG
 
 %build_prog mmake=workbench-classes-zune-betterstring-test \
     progname=BetterString-Test files="BetterString-Test $(FILES)" \
-    targetdir=$(AROS_TESTS)/Zune \
-    uselibs="amiga mui"
+    targetdir=$(AROS_TESTS)/Zune
 
+# We need to use -idirafter, so that we
+# *don't* pick up the project's local MUI headers.
+USER_INCLUDES := -I$(SRCDIR)/$(CURDIR)/../mcp -idirafter $(SRCDIR)/$(CURDIR)/../include
+USER_CPPFLAGS := -DAROS_ABI_V1
+USER_LDFLAGS := -static
 
+%build_module_simple mmake=workbench-classes-zune-betterstring-class \
+  modname=BetterString modtype=mcc \
+  files="library $(FILES)"
 
 #MM includes-copy
 
