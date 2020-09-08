@@ -3,14 +3,15 @@
 # 
 # version 2
 # Translators:
+# ancalimon <ancalimon@gmail.com>, 2020
 # İbrahim Alper Sönmez <amithlondestek@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: MCC BetterString\n"
 "Report-Msgid-Bugs-To: http://sf.net/p/bstring-mcc/\n"
 "POT-Creation-Date: 2014-02-18 15:35+0100\n"
-"PO-Revision-Date: 2014-05-27 06:30+0000\n"
-"Last-Translator: İbrahim Alper Sönmez <amithlondestek@gmail.com>\n"
+"PO-Revision-Date: 2020-09-06 15:32+0000\n"
+"Last-Translator: ancalimon <ancalimon@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/ato/bstring-mcc/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,7 +26,7 @@ msgstr "Etkin:"
 
 msgctxt "MSG_Label_Background (1//)"
 msgid "Background"
-msgstr "Art Alan"
+msgstr "Art-alan"
 
 msgctxt "MSG_Label_Cursor (2//)"
 msgid "Cursor:"
@@ -73,7 +74,7 @@ msgstr "Amiga + v"
 
 msgctxt "MSG_Help_Undo (15//)"
 msgid "Undo last deletion"
-msgstr "Son silineni geri al"
+msgstr "Son silineni geri-al"
 
 msgctxt "MSG_Help_Undo_Shortcut (16//)"
 msgid "Amiga + z"
@@ -81,7 +82,7 @@ msgstr "Amiga + z"
 
 msgctxt "MSG_Help_Redo (17//)"
 msgid "Redo last deletion"
-msgstr "Son silmeyi yeniden yap"
+msgstr "Son silmeyi yine-yap"
 
 msgctxt "MSG_Help_Redo_Shortcut (18//)"
 msgid "Amiga + Z"
@@ -89,7 +90,7 @@ msgstr "Amiga + Z"
 
 msgctxt "MSG_Help_ToggleBuffer (19//)"
 msgid "Toggle between original and modified buffer"
-msgstr "Özgün veya değiştirilmiş tampon arasında geçiş yap"
+msgstr "Özgün veya değişmiş tampon arasında geçiş yap"
 
 msgctxt "MSG_Help_ToggleBuffer_Shortcut (20//)"
 msgid "Amiga + q"
@@ -97,7 +98,7 @@ msgstr "Amiga + q"
 
 msgctxt "MSG_Help_ToggleCaseChar (21//)"
 msgid "Toggle case on character"
-msgstr "Büyük harf/küçük harf değiştir"
+msgstr "Karakterde B/k harf geçişi"
 
 msgctxt "MSG_Help_ToggleCaseChar_Shortcut (22//)"
 msgid "Amiga + g"
@@ -105,7 +106,7 @@ msgstr "Amiga + g"
 
 msgctxt "MSG_Help_ToggleCaseWord (23//)"
 msgid "Toggle case on word"
-msgstr "Sözcüğü büyük/küçük harf değiştir"
+msgstr "Sözcükte B/k harf geçişi"
 
 msgctxt "MSG_Help_ToggleCaseWord_Shortcut (24//)"
 msgid "Amiga + G"
@@ -145,7 +146,7 @@ msgstr "Amiga + $"
 
 msgctxt "MSG_Help_FilenameCompletition (33//)"
 msgid "Filenamecompletion (use SHIFT to cycle back)"
-msgstr "Dosya adı tamamlama (geri sekmek için BÜYÜKHARF tuşu kullanın)"
+msgstr "Dosya-adı-tamamlama (geri çevirmek için SHIFT tuşu kullanın)"
 
 msgctxt "MSG_Help_FilenameCompletition_Shortcut (34//)"
 msgid "Amiga + TAB"
@@ -165,7 +166,7 @@ msgstr "Satırın başına/sonuna git"
 
 msgctxt "MSG_Help_GotoToStartEndOfLine_Shortcut (38//)"
 msgid "SHIFT + cursor"
-msgstr "BÜYÜKHARF + yön tuşu"
+msgstr "SHIFT + ok tuşu"
 
 msgctxt "MSG_Help_DeleteToStartEndOfLine (39//)"
 msgid "Delete to start/end of line"
@@ -173,7 +174,7 @@ msgstr "Satırın başına/sonuna kadar sil"
 
 msgctxt "MSG_Help_DeleteToStartEndOfLine_Shortcut (40//)"
 msgid "SHIFT + BACKSPACE/DELETE"
-msgstr "BÜYÜKHARF + GERİ/SİL"
+msgstr "SHIFT + GERİ/DEL"
 
 msgctxt "MSG_Help_GotoToPrevNextWord (41//)"
 msgid "Goto to previous/next word"
@@ -181,7 +182,7 @@ msgstr "Önceki/sonraki sözcük"
 
 msgctxt "MSG_Help_GotoToPrevNextWord_Shortcut (42//)"
 msgid "ALT + cursor"
-msgstr "ALT + yön tuşu"
+msgstr "ALT + ok tuşu"
 
 msgctxt "MSG_Help_DeleteToPrevNextWord (43//)"
 msgid "Delete previous/next word"
