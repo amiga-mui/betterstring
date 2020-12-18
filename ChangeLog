@@ -2,6 +2,8 @@
 MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
+#### v11.35 RELEASE ###########################################################
+
 2020-09-09 Thore Böckelmann <tboeckel@gmx.de>
 
   * ClipboardServer.c: changed the default path for "CURRDIR:" and "PROGDIR:" to
