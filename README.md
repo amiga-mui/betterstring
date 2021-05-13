@@ -1,6 +1,7 @@
 # BetterString.mcc
 
-[![Build Status](https://travis-ci.org/amiga-mui/betterstring.svg?branch=master)](https://travis-ci.org/amiga-mui/betterstring) [![Code Climate](https://codeclimate.com/github/amiga-mui/betterstring/badges/gpa.svg)](https://codeclimate.com/github/amiga-mui/betterstring) [![License](http://img.shields.io/:license-lgpl2-blue.svg?style=flat)](http://www.gnu.org/licenses/lgpl-2.1.html) [![Github Issues](http://githubbadges.herokuapp.com/amiga-mui/betterstring/issues.svg)](https://github.com/amiga-mui/betterstring/issues)
+[![Build](https://github.com/amiga-mui/betterstring/workflows/CI/badge.svg)](https://github.com/amiga-mui/betterstring/actions)
+[![License](http://img.shields.io/:license-lgpl2-blue.svg?style=flat)](http://www.gnu.org/licenses/lgpl-2.1.html)
 
 BetterString is a string gadget replacement for Amiga systems. It is created for MUI,
 so using it should eliminate the problems with the original BOOPSI string class.
