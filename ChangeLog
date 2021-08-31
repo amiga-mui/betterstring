@@ -2,6 +2,8 @@
 MUI BetterString MCC class - ChangeLog
 --------------------------------------
 
+#### v11.36 RELEASE ###########################################################
+
 2021-01-03 Thore Böckelmann <tboeckel@gmx.de>
 
   * dist: added italian translation to Installer script kindly provided by Samir
